@@ -1,0 +1,48 @@
+%agent: L(r)
+%agent: R(l,r,Y~0~P)
+
+%var: 'f' 1.000000e-02
+%var: 'NA' 6.022140e+23
+%var: 'EGF_conc_nM' 1.000000e+00
+%var: 'KD1__FREE__' 1
+%var: 'km1__FREE__' 1
+%var: 'K2RT__FREE__' 20
+%var: 'km2__FREE__' 1
+%var: 'kphos__FREE__' 1
+%var: 'kdephos__FREE__' 1
+%var: 'zero' 0.000000e+00
+%var: 'Vecf' 2.1e-9*'f'
+%var: 'EGF_conc' 1.0e-9*'EGF_conc_nM'
+%var: 'EGF_copy_number' 'EGF_conc'*'NA'*'Vecf'
+%var: 'EGFR_copy_number' 100000.0*'f'
+%var: 'KD1' 'KD1__FREE__'
+%var: 'km1' 'km1__FREE__'
+%var: 'kp1_nMs' 'km1'*'KD1'^(-1)
+%var: 'kp1_Ms' 1000000000.0*'kp1_nMs'
+%var: 'kp1' 'kp1_Ms'*('NA'*'Vecf')^(-1)
+%var: 'K2RT' 'K2RT__FREE__'
+%var: 'km2' 'km2__FREE__'
+%var: 'kp2' 'K2RT'*'km2'*'EGFR_copy_number'^(-1)
+%var: 'kp3' 0.2*'kp2'
+%var: 'kphos' 'kphos__FREE__'
+%var: 'kdephos' 'kdephos__FREE__'
+
+'r1' L(r),R(l) -> L(r!1),R(l!1) @ 'kp1'
+'r1_rev' L(r!1),R(l!1) -> L(r),R(l) @ 'km1'
+'r2' R(l!_,r),R(l!_,r) -> R(l!_,r!1),R(l!_,r!1) @ 'kp2'
+'r3' R(r!1),R(r!1) -> R(r),R(r) @ 'km2'
+'r4' R(l,r),R(l,r) -> R(l,r!1),R(l,r!1) @ 'kp3'
+'r5' R(r!_,Y~0) -> R(r!_,Y~P) @ 'kphos'
+'r6' R(Y~P) -> R(Y~0) @ 'kdephos'
+
+%obs: 'Ltot' |L()|
+%obs: 'freeL' |L(r)|
+%obs: 'Rtot' |R()|
+%obs: 'RLbonds' |L(r!1),R(l!1)|
+%obs: 'pR' |R(Y~P)|
+
+%init: 'zero' L(r)
+%init: 'EGFR_copy_number' R(l,r,Y~0)
+
+%mod: alarm 600 do $ADD EGF_copy_number L(r)
+%mod: [true] do $FLUX "K2RT__FREE__level2.dot" [true]

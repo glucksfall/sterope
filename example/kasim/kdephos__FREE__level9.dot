@@ -1,0 +1,25 @@
+// "uuid" : "445074525",
+digraph G{ label="Dynamic influence network" ; labelloc="t" ; node [shape=box,style=filled,fillcolor=lightskyblue]
+"r1" -> "r1" [weight=0,label="-0.002",color=red3,arrowhead=tee];
+"r1" -> "r1_rev" [weight=0,label="0.002",color=green3,arrowhead=normal];
+"r1" -> "r2" [weight=0,label="0.005",color=green3,arrowhead=normal];
+"r1" -> "r4" [weight=0,label="-0.004",color=red3,arrowhead=tee];
+"r1_rev" -> "r1" [weight=0,label="0.002",color=green3,arrowhead=normal];
+"r1_rev" -> "r1_rev" [weight=0,label="-0.002",color=red3,arrowhead=tee];
+"r1_rev" -> "r2" [weight=0,label="-0.004",color=red3,arrowhead=tee];
+"r1_rev" -> "r4" [weight=0,label="0.003",color=green3,arrowhead=normal];
+"r2" -> "r2" [weight=0,label="-0.011",color=red3,arrowhead=tee];
+"r2" -> "r3" [weight=0,label="0.011",color=green3,arrowhead=normal];
+"r2" -> "r5" [weight=0,label="0.011",color=green3,arrowhead=normal];
+"r3" -> "r2" [weight=0,label="0.001",color=green3,arrowhead=normal];
+"r3" -> "r3" [weight=0,label="-0.013",color=red3,arrowhead=tee];
+"r3" -> "r4" [weight=0,label="0.005",color=green3,arrowhead=normal];
+"r3" -> "r5" [weight=0,label="-0.013",color=red3,arrowhead=tee];
+"r4" -> "r3" [weight=0,label="0.014",color=green3,arrowhead=normal];
+"r4" -> "r4" [weight=0,label="-0.005",color=red3,arrowhead=tee];
+"r4" -> "r5" [weight=0,label="0.014",color=green3,arrowhead=normal];
+"r5" -> "r5" [weight=0,label="-0.007",color=red3,arrowhead=tee];
+"r5" -> "r6" [weight=18,label="18.159",color=green3,arrowhead=normal];
+"r6" -> "r5" [weight=0,label="0.007",color=green3,arrowhead=normal];
+"r6" -> "r6" [weight=0,label="-0.492",color=red3,arrowhead=tee];
+}
