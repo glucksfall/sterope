@@ -114,6 +114,13 @@ def argsparser():
 	parser.add_argument('--slurm'  , metavar = 'str'  , type = str  , required = False, default = None            , help = 'SLURM partition to use, default None')
 
 	# general options
+	parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'global'        , help = 'global or local sensitivity analysis')
+	parser.add_argument('--tick'   , metavar = 'int'  , type = str  , required = False, default = '0'             , help = 'local sensitivity ...')
+	parser.add_argument('--size'   , metavar = 'int'  , type = str  , required = False, default = '1'             , help = 'local sensitivity ...')
+	parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'           , help = 'local sensitivity ...')
+	# more general options
+	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , help = 'Initial time to calculate the Dynamical Influence Network')
+	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None            , help = 'Final time to calculate the Dynamical Influence Network')
 	parser.add_argument('--seed'   , metavar = 'int'  , type = int  , required = False, default = None            , help = 'random number generator seed, default None')
 	parser.add_argument('--sims'   , metavar = 'int'  , type = int  , required = False, default = 10              , help = 'number of simulations per individual, default 100')
 	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'            , help = 'precision and format of parameter values, default 7g')
@@ -145,6 +152,9 @@ def argsparser():
 		else:
 			parser.error('pleione requires --seed integer')
 
+	if args.tmax is None:
+		args.tmax = args.final[0]
+
 	return args
 
 def ga_opts():
@@ -159,6 +169,12 @@ def ga_opts():
 		#'nfsim'     : os.path.expanduser(args.nfsim), # nfsim only
 		'python'    : os.path.expanduser(args.python),
 		'slurm'     : args.slurm,
+		'type'      : args.type,
+		'beat'      : args.beat,
+		'size'      : args.size,
+		'tick'      : args.tick,
+		'tmin'      : args.tmin,
+		'tmax'      : args.tmax,
 		'rng_seed'  : args.seed,
 		'num_sims'  : args.sims,
 		'par_prec'  : args.prec,
@@ -228,12 +244,13 @@ def populate():
 	par_keys = list(parameters.keys())
 
 	population = {}
-	model_string = 'model_level{:0' + str(len(str(opts['p_levels']))) + 'd}_{:s}'
+	model_string = 'level{:0' + str(len(str(opts['p_levels']))) + 'd}_{:s}'
 
 	for par_name in opts['par_name']:
 		for level in range(opts['p_levels']+1):
-			var_key = par_name + 'level' + str(level)
-			population[var_key, 'model'] = model_string.format(level, par_name)
+			model_key = model_string.format(level, par_name)
+			population[model_key, 'model'] = model_key
+			population[model_key, 'folder'] = './SA_{:s}/level{:d}'.format(par_name, level)
 
 			for line in range(len(par_keys)):
 				if parameters[line][0] == 'par':
@@ -242,11 +259,11 @@ def populate():
 					morris = numpy.arange(lower, upper+1, upper // opts['p_levels'])
 
 					if parameters[par_keys[line]][1] == par_name:
-						population[var_key, parameters[par_keys[line]][1]] = morris[level]
+						population[model_key, parameters[par_keys[line]][1]] = morris[level]
 					elif parameters[par_keys[line]][1] != par_name:
-						population[var_key, parameters[par_keys[line]][1]] = float(parameters[par_keys[line]][2])
+						population[model_key, parameters[par_keys[line]][1]] = float(parameters[par_keys[line]][2])
 					else:
-						raise ValueError('Use sensitivity[lower upper] for a valid range to define the levels.')
+						raise ValueError('Use sensitivity[lower upper] for a valid range to define the grid of levels.')
 	#print(population)
 	return population
 
@@ -266,38 +283,60 @@ def simulate():
 	par_keys = list(parameters.keys())
 	par_string = '%var: \'{:s}\' {:.' + opts['par_prec'] + '}\n'
 
-	for par_name in opts['par_name']:
-		for level in range(opts['p_levels']):
-			var_key = par_name + 'level' + str(level)
-			model = population[var_key, 'model']
+	for model in sorted(population.keys()):
+		if model[1] == 'model':
+			model_key = model[0]
+			model_name = population[model_key, 'model']
+			model_folder = population[model_key, 'folder']
+			os.makedirs(model_folder)
 
-			if not os.path.exists(model + '.kappa'):
-				with open(model + '.kappa', 'w') as file:
+			if opts['type'] == 'global':
+				if opts['syntax'] == '4':
+					flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [true];'.format(opts['tmin'], model_key) + \
+						'%mod: [T]>{:s} do $DIN \"flux_{:s}.json\" [false];'.format(opts['tmax'], model_key)
+				else: # kappa3.5 uses $FLUX instead of $DIN
+					flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [true]\n'.format(opts['tmin'], model_key) + \
+						'%mod: [T]>{:s} do $FLUX \"flux_{:s}.json\" [false]'.format(opts['tmax'], model_key)
+			else:
+				if opts['syntax'] == '4':
+					flux = '%mod: repeat (([T] > DIM_clock) && (DIM_tick > (DIM_length - 1))) do $DIN "flux_".(DIM_tick - DIM_length).".json" [false] until [false];'
+				else: # kappa3.5 uses $FLUX instead of $DIN
+					flux = '\n# Added to calculate a local sensitivity analysis\n' + \
+						'%var: \'DIN_beat\' {:s}\n'.format(opts['beat']) + \
+						'%var: \'DIN_length\' {:s}\n'.format(opts['size']) + \
+						'%var: \'DIN_tick\' {:s}\n'.format(opts['tick']) + \
+						'%var: \'DIN_clock\' {:s}\n'.format(opts['tmin']) + \
+						'%mod: repeat (([T] > DIN_clock) && (DIN_tick > (DIN_length - 1))) do ' + \
+							'$FLUX \"flux_{:s}\".(DIN_tick - DIN_length).\".json\" [false] until [false]\n'.format(model_key) + \
+						'%mod: repeat ([T] > DIN_clock) do ' + \
+							'$FLUX "flux_{:s}".DIN_tick.".json" "probability" [true] until ((((DIN_tick + DIN_length) + 1) * DIN_beat) > [Tmax])\n'.format(model_key) + \
+						'%mod: repeat ([T] > DIN_clock) do $UPDATE DIN_clock (DIN_clock + DIN_beat); $UPDATE DIN_tick (DIN_tick + 1) until [false]'
+
+			if not os.path.exists(model_folder + '/model_' + model_name + '.kappa'):
+				with open(model_folder + '/model_' + model_name + '.kappa', 'w') as file:
 					for line in range(len(par_keys)):
 						if parameters[par_keys[line]][0] == 'par':
-							file.write(par_string.format(parameters[line][1], population[var_key, parameters[par_keys[line]][1]]))
+							file.write(par_string.format(parameters[line][1], population[model_key, parameters[par_keys[line]][1]]))
 						else:
 							file.write(parameters[par_keys[line]])
-					# add the DYN command at the end of the kappa file
-					if opts['syntax'] == '4':
-						file.write('%mod: [true] do $DIN \"' + var_key + '.dot\" [true];')
-					else:
-						file.write('%mod: [true] do $FLUX \"' + var_key + '.dot\" [true]')
+					# add the DIN perturbation at the end of the kappa file
+					file.write(flux)
 
 	# submit simulations to the queue
 	squeue = []
 	model_string = '{:s}.{:0' + str(len(str(opts['p_levels']))) + 'd}.out.txt'
 
-	for par_name in opts['par_name']:
-		for level in range(opts['p_levels']):
-			var_key = par_name + 'level' + str(level)
-			for sim in range(opts['num_sims']):
-				model = population[var_key, 'model']
-				output = model_string.format(model, sim)
+	for sim in range(opts['num_sims']):
+		for model in sorted(population.keys()):
+			if model[1] == 'model':
+				model_key = model[0]
+				model_name = population[model_key, 'model']
+				model_folder = population[model_key, 'folder']
+				output = model_string.format(model_name, sim)
 
 				if not os.path.exists(output):
-					job_desc['exec_kasim'] = '{:s} -i {:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log'.format( \
-						opts['kasim'], model, opts['final'], opts['steps'], output, opts['syntax'])
+					job_desc['exec_kasim'] = '{:s} -i {:s}/model_{:s}.kappa -d {:s} -l {:s} -p {:s} -syntax {:s} --no-log'.format( \
+						opts['kasim'], model_folder, model_name, model_folder, opts['final'], opts['steps'], opts['syntax'])
 
 					# use SLURM Workload Manager
 					if opts['slurm'] is not None:
@@ -312,7 +351,6 @@ def simulate():
 					# use multiprocessing.Pool
 					else:
 						cmd = os.path.expanduser(job_desc['exec_kasim'])
-						print(cmd)
 						cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
 						squeue.append(cmd)
 
@@ -469,129 +507,6 @@ def ranking():
 			for key in range(len(par_keys)):
 				file.write(par_string.format(float(population[par_keys[key], ind])))
 			file.write('\n')
-
-	return population
-
-def mutate():
-	# par_keys stores parameter values only
-	par_keys = list(set([key[0] for key in population.keys() if str(key[0]).isdigit()]))
-
-	# slice the population dictionary retrieving the best models, if needed
-	ranked_population = population['rank']
-
-	if opts['pop_best'] == 0:
-		best_population = population
-	else:
-		best_population = {}
-		for best in range(opts['pop_best']):
-			for key in range(len(par_keys)):
-				best_population[par_keys[key], best] = population[par_keys[key], ranked_population[best]]
-			best_population['model', best] = population['model', ranked_population[best]]
-			best_population['error', best] = population['error', ranked_population[best]]
-
-	# fill the population dictionary with the elite, because population is a global variable
-	for ind in range(opts['pop_best']):
-		for par in range(len(par_keys)):
-			population[par_keys[par], ind] = best_population[par_keys[par], ind]
-		population['model', ind] = best_population['model', ind]
-		population['error', ind] = best_population['error', ind]
-
-	# User defined best population
-	top = opts['pop_best']
-	if opts['pop_best'] == 0:
-		top = opts['pop_size']
-	elif opts['pop_best'] == 1:
-		opts['self_rec'] == True # allow self recombination to generate descendants from only one parent
-
-	# probability distribution to select parents
-	if opts['dist_type'] == 'uniform':
-		# Define a uniform probability distribution according to the best population size
-		dist = [1 for n in range(1, top + 1)]
-	elif opts['dist_type'] == 'inverse':
-		# Define an inverse probability distribution according to the best population size
-		dist = [1/n for n in range(1, top + 1)]
-	prob = numpy.divide(dist, float(numpy.sum(dist)))
-
-	# fill the population dictionary with individuals from the best parents
-	for ind in range(opts['pop_best'], opts['pop_size'], 2):
-		if opts['pop_best'] == 0:
-			# choose two random individuals from the ranked population (index start at zero)
-			n1 = numpy.random.choice(ranked_population[0:top], p = prob[0:top])
-			n2 = numpy.random.choice(ranked_population[0:top], p = prob[0:top])
-			if opts['self_rec'] == False and not opts['pop_size'] == 1:
-				while n2 == n1:
-					n2 = numpy.random.choice(ranked_population[0:top], p = prob[0:top])
-
-		elif opts['pop_best'] != 0:
-			if not args.legacy:
-				# choose two random individuals from the best population (reindexed from 0 to 'pop_best' size)
-				n1 = numpy.random.choice(range(top), p = prob[0:top])
-				n2 = numpy.random.choice(range(top), p = prob[0:top])
-			else:
-				n1 = random.choice(range(top))
-				n2 = random.choice(range(top))
-
-			if opts['self_rec'] == False and not opts['pop_size'] == 1:
-				while n2 == n1:
-					if args.legacy:
-						n2 = numpy.random.choice(range(top), p = prob[0:top])
-					else:
-						n2 = random.choice(range(top))
-
-		# perform multiple or single crossover
-		if opts['xpoints'] == 'multiple':
-			for par in range(len(par_keys)):
-				# create children
-				population[par_keys[par], ind] = best_population[par_keys[par], n1]
-				population[par_keys[par], ind + 1] = best_population[par_keys[par], n2]
-
-				# swap parameter values using a probability threshold
-				if opts['mut_swap'] >= custom.random.random():
-					population[par_keys[par], ind] = best_population[par_keys[par], n2]
-					population[par_keys[par], ind + 1] = best_population[par_keys[par], n1]
-
-		elif opts['xpoints'] == 'single':
-			point = custom.random.uniform(0, len(par_keys))
-			for par in range(len(par_keys)):
-				# create children and do not swap parameters!
-				if par <= point:
-					population[par_keys[par], ind] = best_population[par_keys[par], n1]
-					population[par_keys[par], ind + 1] = best_population[par_keys[par], n2]
-				else:
-					population[par_keys[par], ind] = best_population[par_keys[par], n2]
-					population[par_keys[par], ind + 1] = best_population[par_keys[par], n1]
-
-		# include the model id
-		population['model', ind] = 'model_{:03d}_{:03d}'.format(iter + 1, ind)
-		population['model', ind + 1] = 'model_{:03d}_{:03d}'.format(iter + 1, ind + 1)
-
-		# include the error in the population dictionary
-		population['error', ind] = opts['max_error']
-		population['error', ind + 1] = opts['max_error']
-
-	# mutate parameter values
-	for ind in range(opts['pop_best'], opts['pop_size']):
-		for par in range(len(par_keys)):
-			if parameters[par_keys[par]][6] == 'factor':
-				if float(parameters[par_keys[par]][7]) >= custom.random.random():
-					population[par_keys[par], ind] = population[par_keys[par], ind] * \
-						custom.random.uniform(1.0 - float(parameters[par_keys[par]][8]), 1.0 + float(parameters[par_keys[par]][8]))
-
-			elif parameters[par_keys[par]][6] == 'uniform' or parameters[par_keys[par]][6] == 'loguniform':
-				lower = float(parameters[par_keys[par]][7])
-				upper = float(parameters[par_keys[par]][8])
-
-				if parameters[par_keys[par]][9] is None and opts['mut_rate'] >= custom.random.random():
-					if parameters[par_keys[par]][6] == 'uniform':
-						population[par_keys[par], ind] = custom.random.uniform(lower, upper)
-					if parameters[par_keys[par]][6] == 'loguniform':
-						population[par_keys[par], ind] = numpy.exp(custom.random.uniform(numpy.log(lower), numpy.log(upper)))
-
-				elif parameters[par_keys[par]][9] is not None and float(parameters[par_keys[par]][9]) >= custom.random.random():
-					if parameters[par_keys[par]][6] == 'uniform':
-						population[par_keys[par], ind] = custom.random.uniform(lower, upper)
-					if parameters[par_keys[par]][6] == 'loguniform':
-						population[par_keys[par], ind] = numpy.exp(custom.random.uniform(numpy.log(lower), numpy.log(upper)))
 
 	return population
 
