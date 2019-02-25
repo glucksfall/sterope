@@ -13,14 +13,16 @@ __software__ = 'kasim-v4.0'
 
 import argparse, glob, multiprocessing, os, random, re, shutil, subprocess, sys, time
 import pandas, numpy
+from SALib.sample import saltelli
+from SALib.analyze import sobol
 
 class custom:
 	class random:
 		def seed(number):
 			if args.legacy:
-				random.seed(args.seed)
+				random.seed(opts['rng_seed'])
 			else:
-				numpy.random.seed(args.seed)
+				numpy.random.seed(opts['rng_seed'])
 
 		def random():
 			if args.legacy:
@@ -98,9 +100,9 @@ def argsparser():
 	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Morris sequence.')
 
 	# required arguments
-	parser.add_argument('--model'  , metavar = 'str'  , type = str  , required = True , nargs = 1  , help = 'RBM with tagged variables to analyze')
-	parser.add_argument('--final'  , metavar = 'float', type = str  , required = True , nargs = 1  , help = 'limit time to simulate')
-	parser.add_argument('--steps'  , metavar = 'float', type = str  , required = True , nargs = 1  , help = 'time steps to simulate')
+	parser.add_argument('--model'  , metavar = 'str'  , type = str  , required = True , default = 'model.kappa'   , help = 'RBM with tagged variables to analyze')
+	parser.add_argument('--final'  , metavar = 'float', type = str  , required = True , default = '100'           , help = 'limit time to simulate')
+	parser.add_argument('--steps'  , metavar = 'float', type = str  , required = True , default = '1'             , help = 'time interval to simulate')
 	# choose one or more evaluation functions
 
 	# useful paths
@@ -121,10 +123,10 @@ def argsparser():
 	# more general options
 	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , help = 'Initial time to calculate the Dynamical Influence Network')
 	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None            , help = 'Final time to calculate the Dynamical Influence Network')
-	parser.add_argument('--seed'   , metavar = 'int'  , type = int  , required = False, default = None            , help = 'random number generator seed, default None')
-	parser.add_argument('--sims'   , metavar = 'int'  , type = int  , required = False, default = 10              , help = 'number of simulations per individual, default 100')
+	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None            , help = 'random number generator seed, default None')
+	parser.add_argument('--sims'   , metavar = 'int'  , type = str  , required = False, default = '10'            , help = 'number of simulations per individual, default 100')
 	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'            , help = 'precision and format of parameter values, default 7g')
-	parser.add_argument('--levels' , metavar = 'int'  , type = int  , required = False, default = 10              , help = 'number of levels, default 10')
+	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , help = 'number of samples N * (2D + 2), default N = 10, D = number of parameters')
 
 	# other options
 	parser.add_argument('--syntax' , metavar = 'str'  , type = str  , required = False, default = '4'             , help = 'KaSim syntax, default 4')
@@ -153,32 +155,32 @@ def argsparser():
 			parser.error('pleione requires --seed integer')
 
 	if args.tmax is None:
-		args.tmax = args.final[0]
+		args.tmax = args.final
 
 	return args
 
 def ga_opts():
 	return {
 		# user defined options
-		'model'     : args.model[0],
-		'final'     : args.final[0], # not bng2
-		'steps'     : args.steps[0], # not bng2
+		'model'     : args.model,
+		'final'     : args.final, # not bng2
+		'steps'     : args.steps, # not bng2
 		#'bng2'      : os.path.expanduser(args.bng2), # bng2, nfsim only
 		'kasim'     : os.path.expanduser(args.kasim), # kasim4 only
 		#'piskas'    : os.path.expanduser(args.piskas), # piskas only
 		#'nfsim'     : os.path.expanduser(args.nfsim), # nfsim only
 		'python'    : os.path.expanduser(args.python),
 		'slurm'     : args.slurm,
+		'p_levels'  : int(args.grid),
 		'type'      : args.type,
-		'beat'      : args.beat,
 		'size'      : args.size,
 		'tick'      : args.tick,
+		'beat'      : args.beat,
 		'tmin'      : args.tmin,
 		'tmax'      : args.tmax,
-		'rng_seed'  : args.seed,
-		'num_sims'  : args.sims,
+		'rng_seed'  : int(args.seed),
+		'num_sims'  : int(args.sims),
 		'par_prec'  : args.prec,
-		'p_levels'  : args.levels,
 		'syntax'    : args.syntax, # kasim4 only
 		#'binary'    : args.binary, # kasim4 beta only
 		#'equil'     : args.equil, # nfsim only
@@ -243,28 +245,33 @@ def populate():
 	# 'parameters' dictionary stores everything in the model, particularly the parameters to analyze
 	par_keys = list(parameters.keys())
 
+	problem = {
+		'names': opts['par_name'],
+		'num_vars': len(opts['par_name']),
+		'bounds': [],
+		}
+
+	for line in range(len(par_keys)):
+		if parameters[line][0] == 'par':
+			lower = float(parameters[par_keys[line]][4])
+			upper = float(parameters[par_keys[line]][5])
+
+			problem['bounds'].append([lower, upper])
+
+	models = saltelli.sample(problem, int(opts['p_levels']))
+
 	population = {}
-	model_string = 'level{:0' + str(len(str(opts['p_levels']))) + 'd}_{:s}'
+	model_string = 'level{:0' + str(len(str(len(models)))) + 'd}'
 
-	for par_name in opts['par_name']:
-		for level in range(opts['p_levels']+1):
-			model_key = model_string.format(level, par_name)
-			population[model_key, 'model'] = model_key
-			population[model_key, 'folder'] = './SA_{:s}/level{:d}'.format(par_name, level)
+	for model_index, model in enumerate(models):
+		model_key = model_string.format(model_index+1)
+		population[model_key, 'model'] = model_key
+		for par_index, par_name in enumerate(opts['par_name']):
+			population[model_key, par_name] = models[model_index][par_index]
 
-			for line in range(len(par_keys)):
-				if parameters[line][0] == 'par':
-					lower = float(parameters[par_keys[line]][4])
-					upper = float(parameters[par_keys[line]][5])
-					morris = numpy.arange(lower, upper+1, upper // opts['p_levels'])
+			if model_index == 139:
+				print(population[model_key, par_name])
 
-					if parameters[par_keys[line]][1] == par_name:
-						population[model_key, parameters[par_keys[line]][1]] = morris[level]
-					elif parameters[par_keys[line]][1] != par_name:
-						population[model_key, parameters[par_keys[line]][1]] = float(parameters[par_keys[line]][2])
-					else:
-						raise ValueError('Use sensitivity[lower upper] for a valid range to define the grid of levels.')
-	#print(population)
 	return population
 
 def simulate():
@@ -287,16 +294,14 @@ def simulate():
 		if model[1] == 'model':
 			model_key = model[0]
 			model_name = population[model_key, 'model']
-			model_folder = population[model_key, 'folder']
-			os.makedirs(model_folder)
 
 			if opts['type'] == 'global':
 				if opts['syntax'] == '4':
 					flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [true];'.format(opts['tmin'], model_key) + \
-						'%mod: [T]>{:s} do $DIN \"flux_{:s}.json\" [false];'.format(opts['tmax'], model_key)
+						'%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [false];'.format(opts['tmax'], model_key)
 				else: # kappa3.5 uses $FLUX instead of $DIN
 					flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [true]\n'.format(opts['tmin'], model_key) + \
-						'%mod: [T]>{:s} do $FLUX \"flux_{:s}.json\" [false]'.format(opts['tmax'], model_key)
+						'%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [false]'.format(opts['tmax'], model_key)
 			else:
 				if opts['syntax'] == '4':
 					flux = '%mod: repeat (([T] > DIM_clock) && (DIM_tick > (DIM_length - 1))) do $DIN "flux_".(DIM_tick - DIM_length).".json" [false] until [false];'
@@ -312,8 +317,8 @@ def simulate():
 							'$FLUX "flux_{:s}".DIN_tick.".json" "probability" [true] until ((((DIN_tick + DIN_length) + 1) * DIN_beat) > [Tmax])\n'.format(model_key) + \
 						'%mod: repeat ([T] > DIN_clock) do $UPDATE DIN_clock (DIN_clock + DIN_beat); $UPDATE DIN_tick (DIN_tick + 1) until [false]'
 
-			if not os.path.exists(model_folder + '/model_' + model_name + '.kappa'):
-				with open(model_folder + '/model_' + model_name + '.kappa', 'w') as file:
+			if not os.path.exists('./model_' + model_name + '.kappa'):
+				with open('./model_' + model_name + '.kappa', 'w') as file:
 					for line in range(len(par_keys)):
 						if parameters[par_keys[line]][0] == 'par':
 							file.write(par_string.format(parameters[line][1], population[model_key, parameters[par_keys[line]][1]]))
@@ -326,17 +331,16 @@ def simulate():
 	squeue = []
 	model_string = '{:s}.{:0' + str(len(str(opts['p_levels']))) + 'd}.out.txt'
 
-	for sim in range(opts['num_sims']):
+	for sim in range(int(opts['num_sims'])):
 		for model in sorted(population.keys()):
 			if model[1] == 'model':
 				model_key = model[0]
 				model_name = population[model_key, 'model']
-				model_folder = population[model_key, 'folder']
 				output = model_string.format(model_name, sim)
 
 				if not os.path.exists(output):
-					job_desc['exec_kasim'] = '{:s} -i {:s}/model_{:s}.kappa -d {:s} -l {:s} -p {:s} -syntax {:s} --no-log'.format( \
-						opts['kasim'], model_folder, model_name, model_folder, opts['final'], opts['steps'], opts['syntax'])
+					job_desc['exec_kasim'] = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -syntax {:s} --no-log'.format( \
+						opts['kasim'], model_name, opts['final'], opts['steps'], opts['syntax'])
 
 					# use SLURM Workload Manager
 					if opts['slurm'] is not None:
@@ -365,9 +369,9 @@ def simulate():
 				out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
 
 	#simulate with multiprocessing.Pool
-	else:
-		with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-			pool.map(parallelize, sorted(squeue), chunksize = 1)
+	#else:
+		#with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
+			#pool.map(parallelize, sorted(squeue), chunksize = 1)
 
 	return population
 
@@ -602,12 +606,11 @@ if __name__ == '__main__':
 	parameters = configurate()
 
 	# Main Algorithm
-	# generate k-dimensional grid of p-levels
+	# generate omega grid of N(2k + k) levels
 	population = populate()
 	population = simulate()
 	#population = evaluate()
 	#population = ranking()
-	#population = mutate()
 
 	# move and organize results
 	#backup()
