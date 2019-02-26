@@ -12,7 +12,8 @@ __license__ = 'gpl-3.0'
 __software__ = 'kasim-v4.0'
 
 import argparse, glob, multiprocessing, os, random, re, shutil, subprocess, sys, time
-import pandas, numpy
+import pandas, numpy, seaborn
+import matplotlib.pyplot as plt
 from SALib.sample import saltelli
 from SALib.analyze import sobol
 
@@ -363,7 +364,7 @@ def evaluate():
 	for rule in din_hits.columns:
 		sensitivity['din_hits'][rule] = sobol.analyze(population['problem', 'definition'], din_hits[rule].values, print_to_console = False)
 
-	# DIN fluxes are not that easy to evaluate recursively
+	# DIN fluxes are not that easy to evaluate recursively, need to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
 	din_fluxes = pandas.DataFrame(data = [x[0] for x in [numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes]])
 	for rule in din_fluxes.columns:
@@ -376,23 +377,76 @@ def ranking():
 	with open(files[0], 'r') as file:
 		lst = pandas.read_json(file)
 
-	# reorder DIN hits sensitivities
+	reports = {
+		'DINhits' : {},
+		'DINfluxes' : {},
+		}
+
+	# reorder sensitivities for DIN hits
 	x = sensitivity['din_hits']
 	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
-		tmp = pandas.DataFrame([x[k][key] for k in x.keys()], columns = opts['par_name'], index = lst['din_rules'][1:])
-		tmp.index.name = ''
+		reports['DINhits'][key] = pandas.DataFrame(
+			[x[k][key] for k in x.keys()], columns = opts['par_name'], index = lst['din_rules'][1:]).rename_axis('rules') #.rename_axis(['1st'], axis = 'columns')
 
-		with open('report.DIN_hits.' + key + '.txt', 'w') as file:
-			tmp.to_csv(file, sep = '\t')
+		with open(f'report_DINhits_{key}.txt', 'w') as file:
+			reports['DINhits'][key].to_csv(file, sep = '\t')
 
-	#seaborn.bar
+		# plot sensitivities and half of the 95% confidence interval
+		#for index, rule in enumerate(reports['DINhits'][key].index):
+			#fig, ax = plt.subplots(1, 1, figsize = (4, 3), dpi = 100)
+			#seaborn.barplot(y = reports['DINhits'][key].columns, x = reports['DINhits'][key].loc[rule, :], ax = ax) # horizontal barplot
+
+			#seaborn.despine()
+			#plt.tight_layout()
+			#fig.savefig(f'figure_DINhits_{key}_over_{rule}.eps', format = 'eps', bbox_inches = 'tight', dpi = 300)
+			#plt.close()
+
+	# plot sensitivities with 95% confidence interval
+	#for key in ['S1', 'ST']:
+		#for index, rule in enumerate(reports['DINhits'][key].index):
+			#fig, ax = plt.subplots(1, 1, figsize = (4, 3), dpi = 100)
+			#seaborn.barplot(y = reports['DINhits'][key].columns, x = reports['DINhits'][key].loc[rule, :], ax = ax,
+				#**{ 'xerr' : reports['DINhits'][key + '_conf'].loc[rule, :] }) # add the confidence interval to the horizontal barplot
+
+			#seaborn.despine()
+			#plt.tight_layout()
+			#fig.savefig(f'figure_DINhits_{key}+95%_over_{rule}.eps', format = 'eps', bbox_inches = 'tight', dpi = 300)
+			#plt.close()
+
+	for key in ['S2', 'S2_conf']:
+		tmp = [pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys()]
+		reports['DINhits'][key] = pandas.DataFrame(tmp, index = lst['din_rules'][1:]).rename_axis('rules')
+
+		with open(f'report_DINhits_{key}.txt', 'w') as file:
+			reports['DINhits'][key].to_csv(file, sep = '\t')
+
+	# plot second order sensitivities.
+	#TODO
+	# use a heatmap?
+
+	# reorder sensitivities for DIN fluxes
+	x = sensitivity['din_fluxes']
+	# name index: parameter sensitivities over the influence of a 1st rule over a 2nd rule
+	rules_names = list(lst['din_rules'][1:])
+	first = [y for x in [[x]*len(rules_names) for x in rules_names] for y in x]
+	second = rules_names * len(rules_names)
+
+	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
+		reports['DINhits'][key] = pandas.DataFrame([x[k][key] for k in x.keys()], columns = opts['par_name'])
+		reports['DINhits'][key]['1st'] = first
+		reports['DINhits'][key]['2nd'] = second
+		reports['DINhits'][key].set_index(['1st', '2nd'], inplace = True).fillna(0, inplace = True)
+
+		with open(f'report_DINfluxes_{key}.txt', 'w') as file:
+			reports['DINhits'][key].to_csv(file, sep = '\t')
 
 	return sensitivity
 
 def clean():
 	filelist = []
 	fileregex = [
-		'flux*.json'  # DIN files
+		'*.eps',      # figures
+		#'flux*.json', # DIN files
 		'log*.txt',   # log file
 		'*.bngl',     # bng2 simulation files
 		'*.xml',      # nfsim simulation files. Produced by bng2
@@ -484,7 +538,7 @@ if __name__ == '__main__':
 	# generate an omega grid of N(2k + k) levels
 	population = populate()
 	# simulate levels
-	population = simulate()
+	#population = simulate()
 	# evaluate sensitivity
 	sensitivity = evaluate()
 	# plot and rank

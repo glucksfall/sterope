@@ -42,8 +42,8 @@ def get_config():
     cfg.VCS = "git"
     cfg.style = "pep440"
     cfg.tag_prefix = "v"
-    cfg.parentdir_prefix = "pleione-"
-    cfg.versionfile_source = "pleione/_version.py"
+    cfg.parentdir_prefix = "sterope-"
+    cfg.versionfile_source = "sterope/_version.py"
     cfg.verbose = False
     return cfg
 
