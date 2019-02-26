@@ -16,32 +16,6 @@ import pandas, numpy
 from SALib.sample import saltelli
 from SALib.analyze import sobol
 
-class custom:
-	class random:
-		def seed(number):
-			if args.legacy:
-				random.seed(opts['rng_seed'])
-			else:
-				numpy.random.seed(opts['rng_seed'])
-
-		def random():
-			if args.legacy:
-				return random.random()
-			else:
-				return numpy.random.random()
-
-		def uniform(lower, upper):
-			if args.legacy:
-				return random.uniform(lower, upper)
-			else:
-				return numpy.random.uniform(lower, upper, None)
-
-		def lognormal(lower, upper):
-			if args.legacy:
-				return random.lognormvariate(lower, upper)
-			else:
-				return numpy.random.lognormal(lower, upper, None)
-
 def safe_checks():
 	error_msg = ''
 	if shutil.which(opts['python']) is None:
@@ -269,8 +243,8 @@ def populate():
 		for par_index, par_name in enumerate(opts['par_name']):
 			population[model_key, par_name] = models[model_index][par_index]
 
-			if model_index == 139:
-				print(population[model_key, par_name])
+	# add models sampling to population
+	population['problem', 'definition'] = problem
 
 	return population
 
@@ -302,7 +276,7 @@ def simulate():
 				else: # kappa3.5 uses $FLUX instead of $DIN
 					flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [true]\n'.format(opts['tmin'], model_key) + \
 						'%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [false]'.format(opts['tmax'], model_key)
-			else:
+			else: # local sensitivity analysis
 				if opts['syntax'] == '4':
 					flux = '%mod: repeat (([T] > DIM_clock) && (DIM_tick > (DIM_length - 1))) do $DIN "flux_".(DIM_tick - DIM_length).".json" [false] until [false];'
 				else: # kappa3.5 uses $FLUX instead of $DIN
@@ -317,46 +291,46 @@ def simulate():
 							'$FLUX "flux_{:s}".DIN_tick.".json" "probability" [true] until ((((DIN_tick + DIN_length) + 1) * DIN_beat) > [Tmax])\n'.format(model_key) + \
 						'%mod: repeat ([T] > DIN_clock) do $UPDATE DIN_clock (DIN_clock + DIN_beat); $UPDATE DIN_tick (DIN_tick + 1) until [false]'
 
-			if not os.path.exists('./model_' + model_name + '.kappa'):
-				with open('./model_' + model_name + '.kappa', 'w') as file:
-					for line in range(len(par_keys)):
-						if parameters[par_keys[line]][0] == 'par':
-							file.write(par_string.format(parameters[line][1], population[model_key, parameters[par_keys[line]][1]]))
+			model_path = './model_' + model_name + '.kappa'
+			if not os.path.exists(model_path):
+				with open(model_path, 'w') as file:
+					for line in par_keys:
+						if parameters[line][0] == 'par':
+							file.write(par_string.format(parameters[line][1], population[model_key, parameters[line][1]]))
 						else:
-							file.write(parameters[par_keys[line]])
+							file.write(parameters[line])
 					# add the DIN perturbation at the end of the kappa file
 					file.write(flux)
 
 	# submit simulations to the queue
 	squeue = []
-	model_string = '{:s}.{:0' + str(len(str(opts['p_levels']))) + 'd}.out.txt'
+	samples = opts['p_levels'] * (2 * len(opts['par_name']) + 2) # we are using saltelli sampling
 
-	for sim in range(int(opts['num_sims'])):
-		for model in sorted(population.keys()):
-			if model[1] == 'model':
-				model_key = model[0]
-				model_name = population[model_key, 'model']
-				output = model_string.format(model_name, sim)
+	for model in sorted(population.keys()):
+		if model[1] == 'model':
+			model_key = model[0]
+			model_name = population[model_key, 'model']
+			output = 'model_{:s}.out.txt'.format(model_name)
 
-				if not os.path.exists(output):
-					job_desc['exec_kasim'] = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -syntax {:s} --no-log'.format( \
-						opts['kasim'], model_name, opts['final'], opts['steps'], opts['syntax'])
+			if not os.path.exists(output):
+				job_desc['exec_kasim'] = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log'.format( \
+					opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
 
-					# use SLURM Workload Manager
-					if opts['slurm'] is not None:
-						cmd = os.path.expanduser('sbatch --no-requeue -p {partition} -N {nodes} -c {ncpus} -n {ntasks} -o {null} -e {null} -J {job_name} \
-							--wrap ""{exec_kasim}""'.format(**job_desc))
-						cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
+				# use SLURM Workload Manager
+				if opts['slurm'] is not None:
+					cmd = os.path.expanduser('sbatch --no-requeue -p {partition} -N {nodes} -c {ncpus} -n {ntasks} -o {null} -e {null} -J {job_name} \
+						--wrap ""{exec_kasim}""'.format(**job_desc))
+					cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
+					out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
+					while err == sbatch_error:
 						out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
-						while err == sbatch_error:
-							out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
-						squeue.append(out.decode('utf-8')[20:-1])
+					squeue.append(out.decode('utf-8')[20:-1])
 
-					# use multiprocessing.Pool
-					else:
-						cmd = os.path.expanduser(job_desc['exec_kasim'])
-						cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
-						squeue.append(cmd)
+				# use multiprocessing.Pool
+				else:
+					cmd = os.path.expanduser(job_desc['exec_kasim'])
+					cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
+					squeue.append(cmd)
 
 	# check if squeued jobs have finished
 	if opts['slurm'] is not None:
@@ -369,155 +343,65 @@ def simulate():
 				out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
 
 	#simulate with multiprocessing.Pool
-	#else:
-		#with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-			#pool.map(parallelize, sorted(squeue), chunksize = 1)
-
-	return population
-
-def evaluate():
-	job_desc = {
-		'nodes'     : 1,
-		'ntasks'    : 1,
-		'ncpus'     : 1,
-		'null'      : opts['null'],
-		'partition' : opts['slurm'],
-		'job_name'  : 'child_{:s}'.format(opts['systime']),
-		'stdout'    : 'stdout_{:s}.txt'.format(opts['systime']),
-		'stderr'    : 'stderr_{:s}.txt'.format(opts['systime']),
-		'doerror'   : '{:s} -m pleione.kasim-doerror --crit {:s}'.format(opts['python'], opts['crit_vals']),
-		'deverror'  : '{:s} -m pleione.kasim-allerror --crit {:s}'.format(opts['python'], opts['crit_vals']),
-		}
-
-	# submit error calculations to the queue
-	squeue = []
-
-	for ind in range(opts['pop_size']):
-		model = population['model', ind]
-
-		data = ' '.join(glob.glob(' '.join(opts['data'])))
-		error = ' '.join(opts['error'])
-		sims = ' '.join(glob.glob('{:s}.*.out.txt'.format(model)))
-		output = '{:s}.txt'.format(model)
-
-		job_desc['calc'] = job_desc['doerror'] + ' --data {:s} --sims {:s} --file {:s} --error {:s}'.format(data, sims, output, error)
-		if args.dev:
-			job_desc['calc'] = job_desc['deverror'] + ' --data {:s} --sims {:s} --file {:s}'.format(data, sims, output)
-
-		# use SLURM Workload Manager
-		if opts['slurm'] is not None:
-			cmd = 'sbatch --no-requeue -p {partition} -N {nodes} -c {ncpus} -n {ntasks} -o {null} -e {null} -J {job_name} --wrap ""{calc}""'.format(**job_desc)
-			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
-			out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
-			while err == sbatch_error:
-				out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
-			squeue.append(out.decode('utf-8')[20:-1])
-
-		# use multiprocessing.Pool
-		else:
-			cmd = os.path.expanduser(job_desc['calc'])
-			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
-			squeue.append(cmd)
-
-	# check if squeued jobs have finished
-	if opts['slurm'] is not None:
-		for job_id in range(len(squeue)):
-			cmd = 'squeue --noheader -j{:s}'.format(squeue[job_id])
-			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
-			out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
-			while out.count(b'child') > 0 or err == squeue_error:
-				time.sleep(1)
-				out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
-
-	# calc error with multiprocessing.Pool
 	else:
 		with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
 			pool.map(parallelize, sorted(squeue), chunksize = 1)
 
 	return population
 
+def evaluate():
+	sensitivity = {
+		'din_hits' : {},
+		'din_fluxes' : {},
+		}
+
+	din_hits = [] # list of column vector, one value per rule
+	din_fluxes = [] # list of squeare numpy arrays, not symmetric
+	files = sorted(glob.glob('./flux*json'))
+
+	for fluxes in files:
+		with open(fluxes, 'r') as file:
+			data = pandas.read_json(file)
+		din_hits.append(data['din_hits'].iloc[1:].values) # vector column of values
+		tmp = [x for x in data['din_fluxs']] # vector column of list of values
+		din_fluxes.append(pandas.DataFrame(tmp).values)
+
+	# DIN hits are easy to evaluate recursively
+	din_hits = pandas.DataFrame(data = din_hits)
+	for rule in din_hits.columns:
+		sensitivity['din_hits'][rule] = sobol.analyze(population['problem', 'definition'], din_hits[rule].values, print_to_console = False)
+
+	# DIN fluxes are not that easy to evaluate recursively
+	a, b = numpy.shape(din_fluxes[0][1:,1:])
+	din_fluxes = pandas.DataFrame(data = [x[0] for x in [numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes]])
+	for rule in din_fluxes.columns:
+		sensitivity['din_fluxes'][rule] = sobol.analyze(population['problem', 'definition'], din_fluxes[rule].values, print_to_console = False)
+
+	return sensitivity
+
 def ranking():
-	for ind in range(opts['pop_size']):
-		with open('{:s}.txt'.format(population['model', ind]), 'r') as file:
-			tmp = pandas.read_csv(file, delimiter = '\t', header = None)
-			data = tmp.set_index(0, drop = False).rename_axis(None, axis = 0).drop(0, axis = 1).rename(columns = {1: 'value'})
+	files = sorted(glob.glob('./flux*json'))
+	with open(files[0], 'r') as file:
+		lst = pandas.read_json(file)
 
-		if args.dev:
-			fitfunc = list(data.index)
-		else:
-			fitfunc = opts['error']
+	# reorder DIN hits sensitivities
+	x = sensitivity['din_hits']
+	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
+		tmp = pandas.DataFrame([x[k][key] for k in x.keys()], columns = opts['par_name'], index = lst['din_rules'][1:])
+		tmp.index.name = ''
 
-		# and store the error in the population dictionary
-		for name in range(len(fitfunc)):
-			population[fitfunc[name], ind] = data.loc[fitfunc[name], 'value']
+		with open('report.DIN_hits.' + key + '.txt', 'w') as file:
+			tmp.to_csv(file, sep = '\t')
 
-	# now that everything is stored in the population dict, we proceed to rank models by the selected error function(s)
-	jobs = {}
-	rank = {}
-	fitfunc = opts['error']
+	#seaborn.bar
 
-	for name in range(len(fitfunc)):
-		for ind in range(opts['pop_size']):
-			jobs[population['model', ind]] = population[fitfunc[name], ind]
-		rank[fitfunc[name]] = sorted(jobs, key = jobs.get, reverse = False)
-
-	for name in range(len(fitfunc)):
-		for ind in range(opts['pop_size']):
-			jobs[population['model', ind]] += { key : value for value, key in enumerate(rank[fitfunc[name]]) }[population['model', ind]]
-
-	# create an 'ordered' list of individuals from the 'population' dictionary by increasing fitness
-	rank = sorted(jobs, key = jobs.get, reverse = False)
-
-	# find the index that match best individual with the 'population' dictionary keys and store the rank (a list) in the population dictionary
-	ranked_population = []
-	for best in range(opts['pop_size']):
-		for ind in range(opts['pop_size']):
-			if population['model', ind] == rank[best]:
-				ranked_population.append(ind)
-				break
-
-	population['rank'] = ranked_population
-
-	# save the population dictionary as a report file
-	par_keys = list(set([x[0] for x in population.keys() if str(x[0]).isdigit()]))
-
-	if args.dev:
-		fitfunc = sorted(list(data.index))
-
-	par_string = '{:.' + opts['par_fmt'] + '}\t'
-	iter_string = '{:s}_{:0' + len(str(opts['num_iter'])) + 'd}.txt'
-	with open(iter_string.format(opts['outfile'], iter), 'w') as file:
-		file.write('# Output of {:s} {:s}\n'.format(opts['python'], subprocess.list2cmdline(sys.argv[0:])))
-		file.write('Elapsed time: {:.0f} seconds\n'.format(time.time() - float(opts['systime'])))
-		file.write('iteration: {:03d}\t'.format(iter))
-		file.write('error: {:s}\t'.format(','.join(opts['error'])))
-		file.write('seed: {:d}\n\n'.format(opts['rng_seed']))
-
-		# header
-		file.write('MODEL_ID\t')
-		for i in range(len(fitfunc)):
-			file.write('{:s}\t'.format(fitfunc[i]))
-		for key in range(len(par_keys)):
-			file.write('{:s}\t'.format(parameters[par_keys[key]][1].strip()))
-		file.write('\n')
-
-		for ind in ranked_population:
-			file.write('{:s}\t'.format(population['model', ind]))
-			for i in range(len(fitfunc)):
-				if fitfunc[i] != 'MWUT':
-					file.write(par_string.format(float(population[fitfunc[i], ind])))
-				else:
-					file.write('{:.0f}\t'.format(float(population[fitfunc[i], ind])))
-			for key in range(len(par_keys)):
-				file.write(par_string.format(float(population[par_keys[key], ind])))
-			file.write('\n')
-
-	return population
+	return sensitivity
 
 def clean():
 	filelist = []
 	fileregex = [
-		'log*txt',    # log file
+		'flux*.json'  # DIN files
+		'log*.txt',   # log file
 		'*.bngl',     # bng2 simulation files
 		'*.xml',      # nfsim simulation files. Produced by bng2
 		'*.rnf',      # nfsim configuration files
@@ -605,12 +489,15 @@ if __name__ == '__main__':
 	# read model configuration
 	parameters = configurate()
 
-	# Main Algorithm
-	# generate omega grid of N(2k + k) levels
+	# Sterope Main Algorithm
+	# generate an omega grid of N(2k + k) levels
 	population = populate()
+	# simulate levels
 	population = simulate()
-	#population = evaluate()
-	#population = ranking()
+	# evaluate sensitivity
+	sensitivity = evaluate()
+	# plot and rank
+	sensitivity = ranking() # under test
 
 	# move and organize results
 	#backup()
