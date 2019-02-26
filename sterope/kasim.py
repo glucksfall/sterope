@@ -97,7 +97,6 @@ def argsparser():
 	# more general options
 	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , help = 'Initial time to calculate the Dynamical Influence Network')
 	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None            , help = 'Final time to calculate the Dynamical Influence Network')
-	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None            , help = 'random number generator seed, default None')
 	parser.add_argument('--sims'   , metavar = 'int'  , type = str  , required = False, default = '10'            , help = 'number of simulations per individual, default 100')
 	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'            , help = 'precision and format of parameter values, default 7g')
 	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , help = 'number of samples N * (2D + 2), default N = 10, D = number of parameters')
@@ -121,12 +120,6 @@ def argsparser():
 	parser.add_argument('--dev'    , metavar = 'True' , type = str  , required = False, default = False           , help = 'calculate all evaluation functions, default False')
 
 	args = parser.parse_args()
-
-	if args.seed is None:
-		if sys.platform.startswith('linux'):
-			args.seed = int.from_bytes(os.urandom(4), byteorder = 'big')
-		else:
-			parser.error('pleione requires --seed integer')
 
 	if args.tmax is None:
 		args.tmax = args.final
@@ -152,7 +145,6 @@ def ga_opts():
 		'beat'      : args.beat,
 		'tmin'      : args.tmin,
 		'tmax'      : args.tmax,
-		'rng_seed'  : int(args.seed),
 		'num_sims'  : int(args.sims),
 		'par_prec'  : args.prec,
 		'syntax'    : args.syntax, # kasim4 only
@@ -478,7 +470,6 @@ if __name__ == '__main__':
 	# general options
 	args = argsparser()
 	opts = ga_opts()
-	seed = custom.random.seed(opts['rng_seed'])
 
 	# perform safe checks prior to any calculation
 	safe_checks()
