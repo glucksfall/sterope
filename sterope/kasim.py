@@ -94,7 +94,7 @@ def argsparser():
 	parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'global'        , help = 'global or local sensitivity analysis')
 	parser.add_argument('--tick'   , metavar = 'int'  , type = str  , required = False, default = '0'             , help = 'local sensitivity ...')
 	parser.add_argument('--size'   , metavar = 'int'  , type = str  , required = False, default = '1'             , help = 'local sensitivity ...')
-	parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'           , help = 'local sensitivity ...')
+	parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'           , help = 'local sensitivity time step to calculate DIN')
 	# more general options
 	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , help = 'Initial time to calculate the Dynamical Influence Network')
 	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None            , help = 'Final time to calculate the Dynamical Influence Network')
@@ -104,8 +104,6 @@ def argsparser():
 	# other options
 	parser.add_argument('--syntax' , metavar = 'str'  , type = str  , required = False, default = '4'             , help = 'KaSim syntax, default 4')
 	parser.add_argument('--binary' , metavar = 'str'  , type = str  , required = False, default = 'model'         , help = 'KaSim binary prefix, default model')
-	#parser.add_argument('--equil'  , metavar = 'float', type = float, required = False, default = 0               , help = 'equilibrate model before running the simulation, default 0')
-	#parser.add_argument('--sync'   , metavar = 'float', type = str  , required = False, default = '1.0'           , help = 'time period to syncronize compartments, default 1.0')
 	parser.add_argument('--results', metavar = 'str'  , type = str  , required = False, default = 'results'       , help = 'output folder where to move the results, default results')
 	parser.add_argument('--samples', metavar = 'str'  , type = str  , required = False, default = 'samples'       , help = 'folder to save the generated models, default samples')
 	parser.add_argument('--rawdata', metavar = 'str'  , type = str  , required = False, default = 'simulations'   , help = 'folder to save the simulations, default simulations')
@@ -522,8 +520,12 @@ def backup():
 	for filename in filelist:
 		shutil.move(filename, folders['samples'])
 
-	# archive fluxes outputs
+	# archive fluxes outputs and simulations
 	filelist = glob.glob('flux_*.json')
+	for filename in filelist:
+		shutil.move(filename, folders['rawdata'])
+
+	filelist = glob.glob('model_*.out.txt')
 	for filename in filelist:
 		shutil.move(filename, folders['rawdata'])
 

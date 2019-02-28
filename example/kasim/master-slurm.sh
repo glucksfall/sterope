@@ -1,7 +1,7 @@
 #!/bin/sh
 
 #SBATCH --no-requeue
-#SBATCH --partition=cpu
+#SBATCH --partition=spica
 
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
