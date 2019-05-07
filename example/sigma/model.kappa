@@ -105,6 +105,7 @@
 %var: 'rpoa_rpoa_rpob_rvs' 1.000000e+00
 %var: 'rpoa_rpoa_rpob_rpoc_fwd' 1.000000e+00
 %var: 'rpoa_rpoa_rpob_rpoc_rvs' 1.000000e+00
+<<<<<<< HEAD
 %var: 'rpoa_rpoa_rpob_rpoc_rpod_fwd' 1.000000e+00 # uniform[0 100] uniform[0 100]
 %var: 'rpoa_rpoa_rpob_rpoc_rpod_rvs' 1.000000e+00 # uniform[0 100] uniform[0 100]
 %var: 'rpoa_rpoa_rpob_rpoc_rpoe_fwd' 1.000000e+00 # uniform[0 100] uniform[0 100]
@@ -130,21 +131,57 @@
 %var: 'sliding_rnap54_rbsrpoa_fwd' 1.000000e+00
 %var: 'docking_rnap38_p1rpoa_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap38_p1rpoa_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
+=======
+%var: 'rpoa_rpoa_rpob_rpoc_rpod_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpod_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpoe_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpoe_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpoh_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpoh_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_flia_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_flia_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpon_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpon_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpos_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpos_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_feci_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_feci_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'docking_rnap70_p1rpoa_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpoa_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpoa_fwd' 1.000000e+00
+%var: 'docking_rnap32_p1rpoa_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap32_p1rpoa_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap32_rbsrpoa_fwd' 1.000000e+00
+%var: 'docking_rnap54_p1rpoa_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap54_p1rpoa_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap54_rbsrpoa_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpoa_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpoa_rvs' 1.000000e+00 # sensitivity[0 1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 %var: 'sliding_rnap38_rbsrpoa_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsrpoa_fwd' 1.000000e+00
 %var: 'sliding_rnap_terrpoa_fwd' 1.000000e+00
 %var: 'falloff_rnap_terrpoa_fwd' 1.000000e+00
+<<<<<<< HEAD
 %var: 'docking_rnap70_p1rpob_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap70_p1rpob_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'sliding_rnap70_rbsrpob_fwd' 1.000000e+00
 %var: 'docking_rnap38_p1rpob_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap38_p1rpob_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
+=======
+%var: 'docking_rnap70_p1rpob_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpob_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpob_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpob_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpob_rvs' 1.000000e+00 # sensitivity[0 1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 %var: 'sliding_rnap38_rbsrpob_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsrpob_fwd' 1.000000e+00
 %var: 'sliding_rnap70_rbsrpoc_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsrpoc_fwd' 1.000000e+00
 %var: 'sliding_rnap_terrpoc_fwd' 1.000000e+00
 %var: 'falloff_rnap_terrpoc_fwd' 1.000000e+00
+<<<<<<< HEAD
 %var: 'docking_rnap70_p1rpod_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap70_p1rpod_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'sliding_rnap70_rbsrpod_fwd' 1.000000e+00
@@ -162,10 +199,30 @@
 %var: 'sliding_rnap54_rbsrpod_fwd' 1.000000e+00
 %var: 'docking_rnap38_p1rpod_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap38_p1rpod_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
+=======
+%var: 'docking_rnap70_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap24_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap24_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap24_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap32_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap32_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap32_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap28_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap28_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap28_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap54_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap54_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap54_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 %var: 'sliding_rnap38_rbsrpod_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsrpod_fwd' 1.000000e+00
 %var: 'sliding_rnap_terrpod_fwd' 1.000000e+00
 %var: 'falloff_rnap_terrpod_fwd' 1.000000e+00
+<<<<<<< HEAD
 %var: 'docking_rnap70_p1rpoe_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap70_p1rpoe_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'sliding_rnap70_rbsrpoe_fwd' 1.000000e+00
@@ -174,10 +231,21 @@
 %var: 'sliding_rnap24_rbsrpoe_fwd' 1.000000e+00
 %var: 'docking_rnap38_p1rpoe_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap38_p1rpoe_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
+=======
+%var: 'docking_rnap70_p1rpoe_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpoe_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpoe_fwd' 1.000000e+00
+%var: 'docking_rnap24_p1rpoe_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap24_p1rpoe_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap24_rbsrpoe_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpoe_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpoe_rvs' 1.000000e+00 # sensitivity[0 1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 %var: 'sliding_rnap38_rbsrpoe_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsrpoe_fwd' 1.000000e+00
 %var: 'sliding_rnap_terrpoe_fwd' 1.000000e+00
 %var: 'falloff_rnap_terrpoe_fwd' 1.000000e+00
+<<<<<<< HEAD
 %var: 'docking_rnap70_p1rpoh_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap70_p1rpoh_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'sliding_rnap70_rbsrpoh_fwd' 1.000000e+00
@@ -189,10 +257,24 @@
 %var: 'sliding_rnap54_rbsrpoh_fwd' 1.000000e+00
 %var: 'docking_rnap38_p1rpoh_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap38_p1rpoh_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
+=======
+%var: 'docking_rnap70_p1rpoh_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpoh_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpoh_fwd' 1.000000e+00
+%var: 'docking_rnap24_p1rpoh_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap24_p1rpoh_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap24_rbsrpoh_fwd' 1.000000e+00
+%var: 'docking_rnap54_p1rpoh_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap54_p1rpoh_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap54_rbsrpoh_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpoh_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpoh_rvs' 1.000000e+00 # sensitivity[0 1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 %var: 'sliding_rnap38_rbsrpoh_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsrpoh_fwd' 1.000000e+00
 %var: 'sliding_rnap_terrpoh_fwd' 1.000000e+00
 %var: 'falloff_rnap_terrpoh_fwd' 1.000000e+00
+<<<<<<< HEAD
 %var: 'docking_rnap70_p1rpon_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap70_p1rpon_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'sliding_rnap70_rbsrpon_fwd' 1.000000e+00
@@ -204,34 +286,69 @@
 %var: 'sliding_rnap28_rbsrpon_fwd' 1.000000e+00
 %var: 'docking_rnap38_p1rpon_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap38_p1rpon_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
+=======
+%var: 'docking_rnap70_p1rpon_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpon_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpon_fwd' 1.000000e+00
+%var: 'docking_rnap24_p1rpon_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap24_p1rpon_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap24_rbsrpon_fwd' 1.000000e+00
+%var: 'docking_rnap28_p1rpon_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap28_p1rpon_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap28_rbsrpon_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpon_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpon_rvs' 1.000000e+00 # sensitivity[0 1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 %var: 'sliding_rnap38_rbsrpon_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsrpon_fwd' 1.000000e+00
 %var: 'sliding_rnap_terrpon_fwd' 1.000000e+00
 %var: 'falloff_rnap_terrpon_fwd' 1.000000e+00
+<<<<<<< HEAD
 %var: 'docking_rnap70_p1rpos_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap70_p1rpos_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
+=======
+%var: 'docking_rnap70_p1rpos_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpos_rvs' 1.000000e+00 # sensitivity[0 1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 %var: 'sliding_rnap70_rbsrpos_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsrpos_fwd' 1.000000e+00
 %var: 'sliding_rnap_terrpos_fwd' 1.000000e+00
 %var: 'falloff_rnap_terrpos_fwd' 1.000000e+00
+<<<<<<< HEAD
 %var: 'docking_rnap70_p1feci_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap70_p1feci_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'sliding_rnap70_rbsfeci_fwd' 1.000000e+00
 %var: 'docking_rnap38_p1feci_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap38_p1feci_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
+=======
+%var: 'docking_rnap70_p1feci_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1feci_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsfeci_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1feci_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1feci_rvs' 1.000000e+00 # sensitivity[0 1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 %var: 'sliding_rnap38_rbsfeci_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsfeci_fwd' 1.000000e+00
 %var: 'sliding_rnap_terfeci_fwd' 1.000000e+00
 %var: 'falloff_rnap_terfeci_fwd' 1.000000e+00
+<<<<<<< HEAD
 %var: 'docking_rnap70_p1flia_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap70_p1flia_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'sliding_rnap70_rbsflia_fwd' 1.000000e+00
 %var: 'docking_rnap28_p1flia_fwd' 1.000000e+00 # uniform[0 1] uniform[0 1]
 %var: 'docking_rnap28_p1flia_rvs' 1.000000e+00 # uniform[0 1] uniform[0 1]
+=======
+%var: 'docking_rnap70_p1flia_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1flia_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsflia_fwd' 1.000000e+00
+%var: 'docking_rnap28_p1flia_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap28_p1flia_rvs' 1.000000e+00 # sensitivity[0 1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 %var: 'sliding_rnap28_rbsflia_fwd' 1.000000e+00
 %var: 'sliding_rnap_cdsflia_fwd' 1.000000e+00
 %var: 'sliding_rnap_terflia_fwd' 1.000000e+00
 %var: 'falloff_rnap_terflia_fwd' 1.000000e+00
+<<<<<<< HEAD
 %var: 'degrade_RNA_rpoARBSRNA_rpoACDS_k' 5.710000e-02 # uniform[0 0.1] uniform[0 0.1]
 %var: 'degrade_RNA_rpoBRBSRNA_rpoBCDSRNA_rpoCRBSRNA_rpoCCDS_k' 2.860000e-02 # uniform[0 0.1] uniform[0 0.1]
 %var: 'degrade_RNA_rpoDRBSRNA_rpoDCDS_k' 8.570000e-02 # uniform[0 0.1] uniform[0 0.1]
@@ -241,6 +358,17 @@
 %var: 'degrade_RNA_rpoSRBSRNA_rpoSCDS_k' 1.430000e-02 # uniform[0 0.1] uniform[0 0.1]
 %var: 'degrade_RNA_fecIRBSRNA_fecICDS_k' 2.860000e-02 # uniform[0 0.1] uniform[0 0.1]
 %var: 'degrade_RNA_fliARBSRNA_fliACDS_k' 2.860000e-02 # uniform[0 0.1] uniform[0 0.1]
+=======
+%var: 'degrade_RNA_rpoARBSRNA_rpoACDS_k' 5.710000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoBRBSRNA_rpoBCDSRNA_rpoCRBSRNA_rpoCCDS_k' 2.860000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoDRBSRNA_rpoDCDS_k' 8.570000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoERBSRNA_rpoECDS_k' 4.290000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoHRBSRNA_rpoHCDS_k' 5.710000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoNRBSRNA_rpoNCDS_k' 5.710000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoSRBSRNA_rpoSCDS_k' 1.430000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_fecIRBSRNA_fecICDS_k' 2.860000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_fliARBSRNA_fliACDS_k' 2.860000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+>>>>>>> 258e7d9c80b7bb1e13219585d60827e1f5381e87
 
 'rpoa_rpoa' Prot_rpoA(prot,PBD_02),Prot_rpoA(prot,PBD_02) -> Prot_rpoA(prot!1,PBD_02),Prot_rpoA(prot,PBD_02!1) @ 'rpoa_rpoa_fwd'
 'rpoa_rpoa_rev' Prot_rpoA(prot!1,PBD_02),Prot_rpoA(prot,PBD_02!1) -> Prot_rpoA(prot,PBD_02),Prot_rpoA(prot,PBD_02) @ 'rpoa_rpoa_rvs'

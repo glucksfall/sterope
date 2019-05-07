@@ -1,5 +1,5 @@
 #!/bin/sh
-export PYTHONPATH="$PYTHONPATH:$HOME/opt/github-repositories/glucksfall.sterope"
+export PYTHONPATH="$PYTHONPATH:$HOME/opt/github-repositories/sterope.glucksfall"
 
 MODEL=pysbmodel-example6-kasim.kappa
 FINAL=660

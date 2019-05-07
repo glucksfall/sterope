@@ -11,7 +11,7 @@
 #SBATCH --output=stdout.txt
 #SBATCH --error=stderr.txt
 
-export PYTHONPATH="$PYTHONPATH:$HOME/opt/github-repositories/glucksfall.sterope"
+export PYTHONPATH="$PYTHONPATH:$HOME/opt/github-repositories/sterope.glucksfall"
 
 MODEL=pysbmodel-example6-kasim.kappa
 FINAL=660

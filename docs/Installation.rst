@@ -21,7 +21,7 @@ Option 1: Install sterope natively on your computer
 
 The recommended approach is to use system tools, or install them if
 necessary. To install python packages, you could use pip, or download
-the package from `python package index <https://test.pypi.org/project/sterope/>`_.
+the package from `python package index <https://pypi.org/project/sterope/>`_.
 
 1. **Install with system tools**
 
@@ -41,19 +41,19 @@ the package from `python package index <https://test.pypi.org/project/sterope/>`
 2. **Download from python package index**
 
    Alternatively, you could download the package (useful when pip fails to
-   download the package because of lack of SSL libraries) and then install with pip.
-   For instance:
+   download the package) and then install with pip. For instance:
 
    .. code-block:: bash
 
-	wget https://test-files.pythonhosted.org/packages/7a/d5/bd1f28031d9be331cbd5a7945a2934536c8ccf7c7171a80b4bde132ee245/sterope-1.0.1-py3-none-any.whl
-	pip3 install sterope-1.0.1-py3-none-any.whl --user
+	pip3 install -i https://test.pypi.org/simple/ sterope --user
 
    .. note::
 	**Why Python3?**:
-	Sterope is intended to be used with python3, because python2 won't receive
-	further development past Jan 1st, 2020. Although, the code has specific python3
-	functions over dictionaries and f-strings.
+	Pleione is intended to be used with python3, despite the lack of
+	incompatible functions with python2, because the latter won't receive
+	further development past 2020. Although, the code could be optimize with
+	specific python3 functions over dictionaries, therefore making incompatible
+	with python2.
 
    .. note::
 	**pip, Python and Anaconda**:
@@ -64,8 +64,9 @@ the package from `python package index <https://test.pypi.org/project/sterope/>`
 	added to the path at system login. Please be aware that, if you installed
 	Anaconda, pip could be linked to the Anaconda specific version of pip, which
 	will install sterope into Anaconda's installation folder.
-	Type ``which pip3`` to find out the source of pip, and type ``python3 -m site``
-	to find out where is more likely sterope would be installed.
+	Type ``which pip`` or ``which pip3`` to find out the source of pip, and type
+	``python -m site`` or ``python3 -m site`` to find out where is more likely
+	sterope would be installed.
 
 Option 2: Clone the Github repository
 -------------------------------------
@@ -75,8 +76,7 @@ Option 2: Clone the Github repository
    The source code is uploaded and maintained through Github at
    `<https://github.com/glucksfall/sterope>`_. Therefore, you could clone the
    repository locally, and then add the folder to the ``PYTHONPATH``. Beware
-   that you should install the *pandas* (`pandas`_), *seaborn* (`seaborn`_), and
-   *SALib* (`SALib`_) packages by any means.
+   that you should install the *pandas* package (`pandas`_) by any means.
 
    .. code-block:: bash
 
@@ -100,5 +100,3 @@ Option 2: Clone the Github repository
 .. _Kappa: https://www.kappalanguage.org/
 .. _BioNetGen: http://www.csb.pitt.edu/Faculty/Faeder/?page_id=409
 .. _pandas: https://pandas.pydata.org/
-.. _seaborn: https://seaborn.pydata.org/
-.. _SALib: https://salib.readthedocs.io/en/latest/

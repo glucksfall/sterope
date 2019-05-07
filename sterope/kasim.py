@@ -378,7 +378,7 @@ def ranking():
 		reports['DINhits'][key] = pandas.DataFrame([x[k][key] for k in x.keys()],
 			columns = opts['par_name'], index = lst['din_rules'][1:]).rename_axis('rules')
 
-		with open(f'./report_DINhits_{key}.txt', 'w') as file:
+		with open('./report_DINhits_{:s}.txt'.format(key), 'w') as file:
 			reports['DINhits'][key].to_csv(file, sep = '\t')
 
 		# plot sensitivities and half of the 95% confidence interval, separately
@@ -388,7 +388,7 @@ def ranking():
 
 			seaborn.despine()
 			plt.tight_layout()
-			fig.savefig(f'./figure_DINhits_{key}_over_{rule}.eps', format = 'eps', bbox_inches = 'tight', dpi = 300)
+			fig.savefig('./figure_DINhits_{:s}_over_{:s}.eps'.format(key, rule), format = 'eps', bbox_inches = 'tight', dpi = 300)
 			plt.close()
 
 	# plot sensitivities with 95% confidence interval, together
@@ -400,14 +400,14 @@ def ranking():
 
 			seaborn.despine()
 			plt.tight_layout()
-			fig.savefig(f'./figure_DINhits_{key}+95%_over_{rule}.eps', format = 'eps', bbox_inches = 'tight', dpi = 300)
+			fig.savefig('./figure_DINhits_{key}+95%_over_{rule}.eps'.format(key, rule), format = 'eps', bbox_inches = 'tight', dpi = 300)
 			plt.close()
 
 	for key in ['S2', 'S2_conf']:
 		tmp = [pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys()]
 		reports['DINhits'][key] = pandas.DataFrame(tmp, index = lst['din_rules'][1:]).rename_axis('rules')
 
-		with open(f'./report_DINhits_{key}.txt', 'w') as file:
+		with open('./report_DINhits_{key}.txt'.format(key), 'w') as file:
 			reports['DINhits'][key].to_csv(file, sep = '\t')
 
 	# plot second order sensitivities.
@@ -428,7 +428,7 @@ def ranking():
 		reports['DINfluxes'][key]['2nd'] = second
 		reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
 
-		with open(f'./report_DINfluxes_{key}.txt', 'w') as file:
+		with open('./report_DINfluxes_{:s}.txt'.format(key), 'w') as file:
 			reports['DINfluxes'][key].to_csv(file, sep = '\t')
 
 		# plot sensitivities and half of the 95% confidence interval, separately
@@ -438,13 +438,13 @@ def ranking():
 				seaborn.barplot(y = reports['DINfluxes'][key].columns, x = reports['DINfluxes'][key].loc[rule_1st].loc[rule_2nd, :], ax = ax) # horizontal barplot (x -> y)
 
 				if rule_1st == rule_2nd:
-					ax.set_xlabel(f'Influence {rule_1st} over itself')
+					ax.set_xlabel('Influence {:s} over itself'.format(rule_1st))
 				else:
-					ax.set_xlabel(f'Influence {rule_1st} over {rule_2nd}')
+					ax.set_xlabel('Influence {:s} over {:s}'.format(rule_1st, rule_2nd))
 
 				seaborn.despine()
 				plt.tight_layout()
-				fig.savefig(f'./figure_DINfluxes_{key}_over_{rule_1st}_vs_{rule_2nd}.eps', format = 'eps', bbox_inches = 'tight', dpi = 300)
+				fig.savefig('./figure_DINfluxes_{:s}_over_{:s}_vs_{:s}.eps'.format(key, rule_1st, rule_2nd), format = 'eps', bbox_inches = 'tight', dpi = 300)
 				plt.close()
 
 	# plot sensitivities with 95% confidence interval, together
@@ -456,13 +456,13 @@ def ranking():
 					**{ 'xerr' : reports['DINfluxes'][key + '_conf'].loc[rule_1st].loc[rule_2nd, :] }) # add the confidence interval to the horizontal barplot
 
 				if rule_1st == rule_2nd:
-					ax.set_xlabel(f'Influence {rule_1st} over itself')
+					ax.set_xlabel('Influence {:s} over itself'.format(rule_1st))
 				else:
-					ax.set_xlabel(f'Influence {rule_1st} over {rule_2nd}')
+					ax.set_xlabel('Influence {:s} over {:s}'.format(rule_2nd))
 
 				seaborn.despine()
 				plt.tight_layout()
-				fig.savefig(f'./figure_DINfluxes_{key}+95%_over_{rule_1st}_vs_{rule_2nd}.eps', format = 'eps', bbox_inches = 'tight', dpi = 300)
+				fig.savefig('./figure_DINfluxes_{:s}+95%_over_{:s}_vs_{:S}.eps'.format(key, rule_1st, rule_2nd), format = 'eps', bbox_inches = 'tight', dpi = 300)
 				plt.close()
 
 	for key in ['S2', 'S2_conf']:
@@ -472,7 +472,7 @@ def ranking():
 		reports['DINfluxes'][key]['2nd'] = second
 		reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
 
-		with open(f'./report_DINfluxes_{key}.txt', 'w') as file:
+		with open('./report_DINfluxes_{:s}.txt'.format(key), 'w') as file:
 			reports['DINfluxes'][key].to_csv(file, sep = '\t')
 
 	# plot second order sensitivities.
