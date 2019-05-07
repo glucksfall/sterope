@@ -237,6 +237,7 @@ def simulate():
 		'ncpus'     : 1,
 		'null'      : opts['null'],
 		'partition' : opts['slurm'],
+		'others'    : opts['others'],
 		'job_name'  : 'child_{:s}'.format(opts['systime']),
 		'stdout'    : 'stdout_{:s}.txt'.format(opts['systime']),
 		'stderr'    : 'stderr_{:s}.txt'.format(opts['systime']),
