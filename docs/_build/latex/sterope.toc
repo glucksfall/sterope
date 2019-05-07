@@ -1,0 +1,5 @@
+\babel@toc {english}{}
+\contentsline {chapter}{\numberline {1}Installation}{3}{chapter.1}
+\contentsline {section}{\numberline {1.1}Option 1: Install sterope natively on your computer}{3}{section.1.1}
+\contentsline {section}{\numberline {1.2}Option 2: Clone the Github repository}{4}{section.1.2}
+\contentsline {chapter}{\numberline {2}Indices and tables}{5}{chapter.2}
