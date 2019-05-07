@@ -1,0 +1,480 @@
+%agent: DNA_rpoA(type~P1~RBS~CDS~T1)
+%agent: DNA_rpoB(type~P1~RBS~CDS~T1)
+%agent: DNA_rpoC(type~RBS~CDS~T1)
+%agent: DNA_rpoD(type~P1~RBS~CDS~T1)
+%agent: DNA_rpoE(type~P1~RBS~CDS~T1)
+%agent: DNA_rpoH(type~P1~RBS~CDS~T1)
+%agent: DNA_fliA(type~P1~RBS~CDS~T1)
+%agent: DNA_rpoN(type~P1~RBS~CDS~T1)
+%agent: DNA_rpoS(type~P1~RBS~CDS~T1)
+%agent: DNA_fecI(type~P1~RBS~CDS~T1)
+%agent: RNA_rpoA(type~RBS~CDS,up,dw)
+%agent: RNA_rpoB(type~RBS~CDS,up,dw)
+%agent: RNA_rpoC(type~RBS~CDS,up,dw)
+%agent: RNA_rpoD(type~RBS~CDS,up,dw)
+%agent: RNA_rpoE(type~RBS~CDS,up,dw)
+%agent: RNA_rpoH(type~RBS~CDS,up,dw)
+%agent: RNA_fliA(type~RBS~CDS,up,dw)
+%agent: RNA_rpoN(type~RBS~CDS,up,dw)
+%agent: RNA_rpoS(type~RBS~CDS,up,dw)
+%agent: RNA_fecI(type~RBS~CDS,up,dw)
+%agent: Prot_rpoA(prot,PBD_02)
+%agent: Prot_rpoB(prot,PBD_02)
+%agent: Prot_rpoC(prot,PBD_02)
+%agent: Prot_rpoD(prot)
+%agent: Prot_rpoE(prot)
+%agent: Prot_rpoH(prot)
+%agent: Prot_fliA(prot)
+%agent: Prot_rpoN(prot)
+%agent: Prot_rpoS(prot)
+%agent: Prot_fecI(prot)
+%agent: RNAP(dna,prot,rna)
+
+%var: 't0_DNA_rpoA_P1' 1.000000e+00
+%var: 't0_DNA_rpoA_RBS' 1.000000e+00
+%var: 't0_DNA_rpoA_CDS' 1.000000e+00
+%var: 't0_DNA_rpoA_T1' 1.000000e+00
+%var: 't0_DNA_rpoB_P1' 1.000000e+00
+%var: 't0_DNA_rpoB_RBS' 1.000000e+00
+%var: 't0_DNA_rpoB_CDS' 1.000000e+00
+%var: 't0_DNA_rpoC_RBS' 1.000000e+00
+%var: 't0_DNA_rpoC_CDS' 1.000000e+00
+%var: 't0_DNA_rpoC_T1' 1.000000e+00
+%var: 't0_DNA_rpoD_P1' 1.000000e+00
+%var: 't0_DNA_rpoD_RBS' 1.000000e+00
+%var: 't0_DNA_rpoD_CDS' 1.000000e+00
+%var: 't0_DNA_rpoD_T1' 1.000000e+00
+%var: 't0_DNA_rpoE_P1' 1.000000e+00
+%var: 't0_DNA_rpoE_RBS' 1.000000e+00
+%var: 't0_DNA_rpoE_CDS' 1.000000e+00
+%var: 't0_DNA_rpoE_T1' 1.000000e+00
+%var: 't0_DNA_rpoH_P1' 1.000000e+00
+%var: 't0_DNA_rpoH_RBS' 1.000000e+00
+%var: 't0_DNA_rpoH_CDS' 1.000000e+00
+%var: 't0_DNA_rpoH_T1' 1.000000e+00
+%var: 't0_DNA_fliA_P1' 1.000000e+00
+%var: 't0_DNA_fliA_RBS' 1.000000e+00
+%var: 't0_DNA_fliA_CDS' 1.000000e+00
+%var: 't0_DNA_fliA_T1' 1.000000e+00
+%var: 't0_DNA_rpoN_P1' 1.000000e+00
+%var: 't0_DNA_rpoN_RBS' 1.000000e+00
+%var: 't0_DNA_rpoN_CDS' 1.000000e+00
+%var: 't0_DNA_rpoN_T1' 1.000000e+00
+%var: 't0_DNA_rpoS_P1' 1.000000e+00
+%var: 't0_DNA_rpoS_RBS' 1.000000e+00
+%var: 't0_DNA_rpoS_CDS' 1.000000e+00
+%var: 't0_DNA_rpoS_T1' 1.000000e+00
+%var: 't0_DNA_fecI_P1' 1.000000e+00
+%var: 't0_DNA_fecI_RBS' 1.000000e+00
+%var: 't0_DNA_fecI_CDS' 1.000000e+00
+%var: 't0_DNA_fecI_T1' 1.000000e+00
+%var: 't0_RNA_rpoA_RBS' 13
+%var: 't0_RNA_rpoA_CDS' 13
+%var: 't0_RNA_rpoB_RBS' 7
+%var: 't0_RNA_rpoB_CDS' 7
+%var: 't0_RNA_rpoC_RBS' 6
+%var: 't0_RNA_rpoC_CDS' 6
+%var: 't0_RNA_rpoD_RBS' 6
+%var: 't0_RNA_rpoD_CDS' 6
+%var: 't0_RNA_rpoE_RBS' 6
+%var: 't0_RNA_rpoE_CDS' 6
+%var: 't0_RNA_rpoH_RBS' 6
+%var: 't0_RNA_rpoH_CDS' 6
+%var: 't0_RNA_fliA_RBS' 8
+%var: 't0_RNA_fliA_CDS' 8
+%var: 't0_RNA_rpoN_RBS' 4
+%var: 't0_RNA_rpoN_CDS' 4
+%var: 't0_RNA_rpoS_RBS' 5
+%var: 't0_RNA_rpoS_CDS' 5
+%var: 't0_RNA_fecI_RBS' 1
+%var: 't0_RNA_fecI_CDS' 1
+%var: 't0_Prot_rpoA' 5.600000e+01
+%var: 't0_Prot_rpoB' 2.800000e+01
+%var: 't0_Prot_rpoC' 2.800000e+01
+%var: 't0_Prot_rpoD' 9.000000e+00
+%var: 't0_Prot_rpoE' 4.000000e+00
+%var: 't0_Prot_rpoH' 2.000000e+00
+%var: 't0_Prot_fliA' 3.000000e+00
+%var: 't0_Prot_rpoN' 3.000000e+00
+%var: 't0_Prot_rpoS' 7.000000e+00
+%var: 't0_Prot_fecI' 0.000000e+00
+%var: 't0_RNAP' 0.000000e+00
+%var: 'rpoa_rpoa_fwd' 1.000000e+00
+%var: 'rpoa_rpoa_rvs' 1.000000e+00
+%var: 'rpoa_rpoa_rpob_fwd' 1.000000e+00
+%var: 'rpoa_rpoa_rpob_rvs' 1.000000e+00
+%var: 'rpoa_rpoa_rpob_rpoc_fwd' 1.000000e+00
+%var: 'rpoa_rpoa_rpob_rpoc_rvs' 1.000000e+00
+%var: 'rpoa_rpoa_rpob_rpoc_rpod_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpod_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpoe_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpoe_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpoh_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpoh_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_flia_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_flia_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpon_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpon_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpos_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_rpos_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_feci_fwd' 1.000000e+00 # sensitivity[0 100]
+%var: 'rpoa_rpoa_rpob_rpoc_feci_rvs' 1.000000e+00 # sensitivity[0 100]
+%var: 'docking_rnap70_p1rpoa_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpoa_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpoa_fwd' 1.000000e+00
+%var: 'docking_rnap32_p1rpoa_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap32_p1rpoa_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap32_rbsrpoa_fwd' 1.000000e+00
+%var: 'docking_rnap54_p1rpoa_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap54_p1rpoa_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap54_rbsrpoa_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpoa_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpoa_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap38_rbsrpoa_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsrpoa_fwd' 1.000000e+00
+%var: 'sliding_rnap_terrpoa_fwd' 1.000000e+00
+%var: 'falloff_rnap_terrpoa_fwd' 1.000000e+00
+%var: 'docking_rnap70_p1rpob_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpob_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpob_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpob_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpob_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap38_rbsrpob_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsrpob_fwd' 1.000000e+00
+%var: 'sliding_rnap70_rbsrpoc_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsrpoc_fwd' 1.000000e+00
+%var: 'sliding_rnap_terrpoc_fwd' 1.000000e+00
+%var: 'falloff_rnap_terrpoc_fwd' 1.000000e+00
+%var: 'docking_rnap70_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap24_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap24_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap24_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap32_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap32_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap32_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap28_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap28_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap28_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap54_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap54_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap54_rbsrpod_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpod_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpod_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap38_rbsrpod_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsrpod_fwd' 1.000000e+00
+%var: 'sliding_rnap_terrpod_fwd' 1.000000e+00
+%var: 'falloff_rnap_terrpod_fwd' 1.000000e+00
+%var: 'docking_rnap70_p1rpoe_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpoe_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpoe_fwd' 1.000000e+00
+%var: 'docking_rnap24_p1rpoe_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap24_p1rpoe_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap24_rbsrpoe_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpoe_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpoe_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap38_rbsrpoe_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsrpoe_fwd' 1.000000e+00
+%var: 'sliding_rnap_terrpoe_fwd' 1.000000e+00
+%var: 'falloff_rnap_terrpoe_fwd' 1.000000e+00
+%var: 'docking_rnap70_p1rpoh_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpoh_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpoh_fwd' 1.000000e+00
+%var: 'docking_rnap24_p1rpoh_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap24_p1rpoh_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap24_rbsrpoh_fwd' 1.000000e+00
+%var: 'docking_rnap54_p1rpoh_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap54_p1rpoh_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap54_rbsrpoh_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpoh_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpoh_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap38_rbsrpoh_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsrpoh_fwd' 1.000000e+00
+%var: 'sliding_rnap_terrpoh_fwd' 1.000000e+00
+%var: 'falloff_rnap_terrpoh_fwd' 1.000000e+00
+%var: 'docking_rnap70_p1rpon_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpon_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpon_fwd' 1.000000e+00
+%var: 'docking_rnap24_p1rpon_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap24_p1rpon_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap24_rbsrpon_fwd' 1.000000e+00
+%var: 'docking_rnap28_p1rpon_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap28_p1rpon_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap28_rbsrpon_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1rpon_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1rpon_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap38_rbsrpon_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsrpon_fwd' 1.000000e+00
+%var: 'sliding_rnap_terrpon_fwd' 1.000000e+00
+%var: 'falloff_rnap_terrpon_fwd' 1.000000e+00
+%var: 'docking_rnap70_p1rpos_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1rpos_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsrpos_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsrpos_fwd' 1.000000e+00
+%var: 'sliding_rnap_terrpos_fwd' 1.000000e+00
+%var: 'falloff_rnap_terrpos_fwd' 1.000000e+00
+%var: 'docking_rnap70_p1feci_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1feci_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsfeci_fwd' 1.000000e+00
+%var: 'docking_rnap38_p1feci_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap38_p1feci_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap38_rbsfeci_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsfeci_fwd' 1.000000e+00
+%var: 'sliding_rnap_terfeci_fwd' 1.000000e+00
+%var: 'falloff_rnap_terfeci_fwd' 1.000000e+00
+%var: 'docking_rnap70_p1flia_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap70_p1flia_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap70_rbsflia_fwd' 1.000000e+00
+%var: 'docking_rnap28_p1flia_fwd' 1.000000e+00 # sensitivity[0 1]
+%var: 'docking_rnap28_p1flia_rvs' 1.000000e+00 # sensitivity[0 1]
+%var: 'sliding_rnap28_rbsflia_fwd' 1.000000e+00
+%var: 'sliding_rnap_cdsflia_fwd' 1.000000e+00
+%var: 'sliding_rnap_terflia_fwd' 1.000000e+00
+%var: 'falloff_rnap_terflia_fwd' 1.000000e+00
+%var: 'degrade_RNA_rpoARBSRNA_rpoACDS_k' 5.710000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoBRBSRNA_rpoBCDSRNA_rpoCRBSRNA_rpoCCDS_k' 2.860000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoDRBSRNA_rpoDCDS_k' 8.570000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoERBSRNA_rpoECDS_k' 4.290000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoHRBSRNA_rpoHCDS_k' 5.710000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoNRBSRNA_rpoNCDS_k' 5.710000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_rpoSRBSRNA_rpoSCDS_k' 1.430000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_fecIRBSRNA_fecICDS_k' 2.860000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+%var: 'degrade_RNA_fliARBSRNA_fliACDS_k' 2.860000e-02 # sensitivity[0 0.1] sensitivity[0 0.1]
+
+'rpoa_rpoa' Prot_rpoA(prot,PBD_02),Prot_rpoA(prot,PBD_02) -> Prot_rpoA(prot!1,PBD_02),Prot_rpoA(prot,PBD_02!1) @ 'rpoa_rpoa_fwd'
+'rpoa_rpoa_rev' Prot_rpoA(prot!1,PBD_02),Prot_rpoA(prot,PBD_02!1) -> Prot_rpoA(prot,PBD_02),Prot_rpoA(prot,PBD_02) @ 'rpoa_rpoa_rvs'
+'rpoa_rpoa_rpob' Prot_rpoB(prot,PBD_02),Prot_rpoA(prot!1,PBD_02),Prot_rpoA(prot,PBD_02!1) -> Prot_rpoA(prot!1,PBD_02!2),Prot_rpoA(prot,PBD_02!1),Prot_rpoB(prot!2,PBD_02) @ 'rpoa_rpoa_rpob_fwd'
+'rpoa_rpoa_rpob_rev' Prot_rpoA(prot!1,PBD_02!2),Prot_rpoA(prot,PBD_02!1),Prot_rpoB(prot!2,PBD_02) -> Prot_rpoB(prot,PBD_02),Prot_rpoA(prot!1,PBD_02),Prot_rpoA(prot,PBD_02!1) @ 'rpoa_rpoa_rpob_rvs'
+'rpoa_rpoa_rpob_rpoc' Prot_rpoC(prot,PBD_02),Prot_rpoA(prot!1,PBD_02!2),Prot_rpoA(prot,PBD_02!1),Prot_rpoB(prot!2,PBD_02) -> Prot_rpoA(prot!1,PBD_02!2),Prot_rpoA(prot!3,PBD_02!1),Prot_rpoB(prot!2,PBD_02!4),Prot_rpoC(prot!3,PBD_02!4),RNAP(dna,prot,rna) @ 'rpoa_rpoa_rpob_rpoc_fwd'
+'rpoa_rpoa_rpob_rpoc_rev' Prot_rpoA(prot!1,PBD_02!2),Prot_rpoA(prot!3,PBD_02!1),Prot_rpoB(prot!2,PBD_02!4),Prot_rpoC(prot!3,PBD_02!4),RNAP(dna,prot,rna) -> Prot_rpoC(prot,PBD_02),Prot_rpoA(prot!1,PBD_02!2),Prot_rpoA(prot,PBD_02!1),Prot_rpoB(prot!2,PBD_02) @ 'rpoa_rpoa_rpob_rpoc_rvs'
+'rpoa_rpoa_rpob_rpoc_rpod' RNAP(dna,prot,rna),Prot_rpoD(prot) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2) @ 'rpoa_rpoa_rpob_rpoc_rpod_fwd'
+'rpoa_rpoa_rpob_rpoc_rpod_rev' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2) -> RNAP(dna,prot,rna),Prot_rpoD(prot) @ 'rpoa_rpoa_rpob_rpoc_rpod_rvs'
+'rpoa_rpoa_rpob_rpoc_rpoe' RNAP(dna,prot,rna),Prot_rpoE(prot) -> RNAP(dna,prot!2,rna),Prot_rpoE(prot!2) @ 'rpoa_rpoa_rpob_rpoc_rpoe_fwd'
+'rpoa_rpoa_rpob_rpoc_rpoe_rev' RNAP(dna,prot!2,rna),Prot_rpoE(prot!2) -> RNAP(dna,prot,rna),Prot_rpoE(prot) @ 'rpoa_rpoa_rpob_rpoc_rpoe_rvs'
+'rpoa_rpoa_rpob_rpoc_rpoh' RNAP(dna,prot,rna),Prot_rpoH(prot) -> RNAP(dna,prot!2,rna),Prot_rpoH(prot!2) @ 'rpoa_rpoa_rpob_rpoc_rpoh_fwd'
+'rpoa_rpoa_rpob_rpoc_rpoh_rev' RNAP(dna,prot!2,rna),Prot_rpoH(prot!2) -> RNAP(dna,prot,rna),Prot_rpoH(prot) @ 'rpoa_rpoa_rpob_rpoc_rpoh_rvs'
+'rpoa_rpoa_rpob_rpoc_flia' RNAP(dna,prot,rna),Prot_fliA(prot) -> RNAP(dna,prot!2,rna),Prot_fliA(prot!2) @ 'rpoa_rpoa_rpob_rpoc_flia_fwd'
+'rpoa_rpoa_rpob_rpoc_flia_rev' RNAP(dna,prot!2,rna),Prot_fliA(prot!2) -> RNAP(dna,prot,rna),Prot_fliA(prot) @ 'rpoa_rpoa_rpob_rpoc_flia_rvs'
+'rpoa_rpoa_rpob_rpoc_rpon' RNAP(dna,prot,rna),Prot_rpoN(prot) -> RNAP(dna,prot!2,rna),Prot_rpoN(prot!2) @ 'rpoa_rpoa_rpob_rpoc_rpon_fwd'
+'rpoa_rpoa_rpob_rpoc_rpon_rev' RNAP(dna,prot!2,rna),Prot_rpoN(prot!2) -> RNAP(dna,prot,rna),Prot_rpoN(prot) @ 'rpoa_rpoa_rpob_rpoc_rpon_rvs'
+'rpoa_rpoa_rpob_rpoc_rpos' RNAP(dna,prot,rna),Prot_rpoS(prot) -> RNAP(dna,prot!2,rna),Prot_rpoS(prot!2) @ 'rpoa_rpoa_rpob_rpoc_rpos_fwd'
+'rpoa_rpoa_rpob_rpoc_rpos_rev' RNAP(dna,prot!2,rna),Prot_rpoS(prot!2) -> RNAP(dna,prot,rna),Prot_rpoS(prot) @ 'rpoa_rpoa_rpob_rpoc_rpos_rvs'
+'rpoa_rpoa_rpob_rpoc_feci' RNAP(dna,prot,rna),Prot_fecI(prot) -> RNAP(dna,prot!2,rna),Prot_fecI(prot!2) @ 'rpoa_rpoa_rpob_rpoc_feci_fwd'
+'rpoa_rpoa_rpob_rpoc_feci_rev' RNAP(dna,prot!2,rna),Prot_fecI(prot!2) -> RNAP(dna,prot,rna),Prot_fecI(prot) @ 'rpoa_rpoa_rpob_rpoc_feci_rvs'
+'docking_rnap70_p1rpoa' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoA(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoA(type~P1!1) @ 'docking_rnap70_p1rpoa_fwd'
+'docking_rnap70_p1rpoa_rev' RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoA(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoA(type~P1) @ 'docking_rnap70_p1rpoa_rvs'
+'sliding_rnap70_rbsrpoa' RNAP(dna!1,prot!2,rna),DNA_rpoA(type~P1!1),Prot_rpoD(prot!2),DNA_rpoA(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoA(type~RBS!1),RNA_rpoA(type~RBS,up,dw!3),DNA_rpoA(type~P1),Prot_rpoD(prot) @ 'sliding_rnap70_rbsrpoa_fwd'
+'docking_rnap32_p1rpoa' RNAP(dna,prot!2,rna),Prot_rpoH(prot!2),DNA_rpoA(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoH(prot!2),DNA_rpoA(type~P1!1) @ 'docking_rnap32_p1rpoa_fwd'
+'docking_rnap32_p1rpoa_rev' RNAP(dna!1,prot!2,rna),Prot_rpoH(prot!2),DNA_rpoA(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoH(prot!2),DNA_rpoA(type~P1) @ 'docking_rnap32_p1rpoa_rvs'
+'sliding_rnap32_rbsrpoa' RNAP(dna!1,prot!2,rna),DNA_rpoA(type~P1!1),Prot_rpoH(prot!2),DNA_rpoA(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoA(type~RBS!1),RNA_rpoA(type~RBS,up,dw!3),DNA_rpoA(type~P1),Prot_rpoH(prot) @ 'sliding_rnap32_rbsrpoa_fwd'
+'docking_rnap54_p1rpoa' RNAP(dna,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoA(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoA(type~P1!1) @ 'docking_rnap54_p1rpoa_fwd'
+'docking_rnap54_p1rpoa_rev' RNAP(dna!1,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoA(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoA(type~P1) @ 'docking_rnap54_p1rpoa_rvs'
+'sliding_rnap54_rbsrpoa' RNAP(dna!1,prot!2,rna),DNA_rpoA(type~P1!1),Prot_rpoN(prot!2),DNA_rpoA(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoA(type~RBS!1),RNA_rpoA(type~RBS,up,dw!3),DNA_rpoA(type~P1),Prot_rpoN(prot) @ 'sliding_rnap54_rbsrpoa_fwd'
+'docking_rnap38_p1rpoa' RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoA(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoA(type~P1!1) @ 'docking_rnap38_p1rpoa_fwd'
+'docking_rnap38_p1rpoa_rev' RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoA(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoA(type~P1) @ 'docking_rnap38_p1rpoa_rvs'
+'sliding_rnap38_rbsrpoa' RNAP(dna!1,prot!2,rna),DNA_rpoA(type~P1!1),Prot_rpoS(prot!2),DNA_rpoA(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoA(type~RBS!1),RNA_rpoA(type~RBS,up,dw!3),DNA_rpoA(type~P1),Prot_rpoS(prot) @ 'sliding_rnap38_rbsrpoa_fwd'
+'sliding_rnap_cdsrpoa' RNAP(dna!1,prot,rna!3),DNA_rpoA(type~RBS!1),RNA_rpoA(type~RBS,up,dw!3),DNA_rpoA(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_rpoA(type~CDS!1),RNA_rpoA(type~RBS,up!4,dw!3),RNA_rpoA(type~CDS,up,dw!4),DNA_rpoA(type~RBS) @ 'sliding_rnap_cdsrpoa_fwd'
+'sliding_rnap_terrpoa' RNAP(dna!1,prot,rna!3),DNA_rpoA(type~CDS!1),RNA_rpoA(type~RBS,up!4,dw!3),RNA_rpoA(type~CDS,up,dw!4),DNA_rpoA(type~T1) -> RNAP(dna!1,prot,rna!3),DNA_rpoA(type~T1!1),RNA_rpoA(type~RBS,up!4,dw!3),RNA_rpoA(type~CDS,up,dw!4),DNA_rpoA(type~CDS) @ 'sliding_rnap_terrpoa_fwd'
+'falloff_rnap_terrpoa' RNAP(dna!1,prot,rna!3),DNA_rpoA(type~T1!1),RNA_rpoA(type~RBS,up!4,dw!3),RNA_rpoA(type~CDS,up,dw!4) -> RNAP(dna,prot,rna),DNA_rpoA(type~T1),RNA_rpoA(type~RBS,up!4,dw),RNA_rpoA(type~CDS,up,dw!4) @ 'falloff_rnap_terrpoa_fwd'
+'docking_rnap70_p1rpob' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoB(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoB(type~P1!1) @ 'docking_rnap70_p1rpob_fwd'
+'docking_rnap70_p1rpob_rev' RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoB(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoB(type~P1) @ 'docking_rnap70_p1rpob_rvs'
+'sliding_rnap70_rbsrpob' RNAP(dna!1,prot!2,rna),DNA_rpoB(type~P1!1),Prot_rpoD(prot!2),DNA_rpoB(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoB(type~RBS!1),RNA_rpoB(type~RBS,up,dw!3),DNA_rpoB(type~P1),Prot_rpoD(prot) @ 'sliding_rnap70_rbsrpob_fwd'
+'docking_rnap38_p1rpob' RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoB(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoB(type~P1!1) @ 'docking_rnap38_p1rpob_fwd'
+'docking_rnap38_p1rpob_rev' RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoB(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoB(type~P1) @ 'docking_rnap38_p1rpob_rvs'
+'sliding_rnap38_rbsrpob' RNAP(dna!1,prot!2,rna),DNA_rpoB(type~P1!1),Prot_rpoS(prot!2),DNA_rpoB(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoB(type~RBS!1),RNA_rpoB(type~RBS,up,dw!3),DNA_rpoB(type~P1),Prot_rpoS(prot) @ 'sliding_rnap38_rbsrpob_fwd'
+'sliding_rnap_cdsrpob' RNAP(dna!1,prot,rna!3),DNA_rpoB(type~RBS!1),RNA_rpoB(type~RBS,up,dw!3),DNA_rpoB(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_rpoB(type~CDS!1),RNA_rpoB(type~RBS,up!4,dw!3),RNA_rpoB(type~CDS,up,dw!4),DNA_rpoB(type~RBS) @ 'sliding_rnap_cdsrpob_fwd'
+'sliding_rnap_rbsrpoc' RNAP(dna!1,prot,rna!3),DNA_rpoB(type~CDS!1),RNA_rpoB(type~RBS,up!4,dw!3),RNA_rpoB(type~CDS,up,dw!4),DNA_rpoC(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoC(type~RBS!1),RNA_rpoB(type~RBS,up!4,dw!3),RNA_rpoB(type~CDS,up!5,dw!4),RNA_rpoC(type~RBS,up,dw!5),DNA_rpoB(type~CDS) @ 'sliding_rnap70_rbsrpoc_fwd'
+'sliding_rnap_cdsrpoc' RNAP(dna!1,prot,rna!3),DNA_rpoC(type~RBS!1),RNA_rpoB(type~RBS,up!4,dw!3),RNA_rpoB(type~CDS,up!5,dw!4),RNA_rpoC(type~RBS,up,dw!5),DNA_rpoC(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_rpoC(type~CDS!1),RNA_rpoB(type~RBS,up!4,dw!3),RNA_rpoB(type~CDS,up!5,dw!4),RNA_rpoC(type~RBS,up!6,dw!5),RNA_rpoC(type~CDS,up,dw!6),DNA_rpoC(type~RBS) @ 'sliding_rnap_cdsrpoc_fwd'
+'sliding_rnap_terrpoc' RNAP(dna!1,prot,rna!3),DNA_rpoC(type~CDS!1),RNA_rpoB(type~RBS,up!4,dw!3),RNA_rpoB(type~CDS,up!5,dw!4),RNA_rpoC(type~RBS,up!6,dw!5),RNA_rpoC(type~CDS,up,dw!6),DNA_rpoC(type~T1) -> RNAP(dna!1,prot,rna!3),DNA_rpoC(type~T1!1),RNA_rpoB(type~RBS,up!4,dw!3),RNA_rpoB(type~CDS,up!5,dw!4),RNA_rpoC(type~RBS,up!6,dw!5),RNA_rpoC(type~CDS,up,dw!6),DNA_rpoC(type~CDS) @ 'sliding_rnap_terrpoc_fwd'
+'falloff_rnap_terrpoc' RNAP(dna!1,prot,rna!3),DNA_rpoC(type~T1!1),RNA_rpoB(type~RBS,up!4,dw!3),RNA_rpoB(type~CDS,up!5,dw!4),RNA_rpoC(type~RBS,up!6,dw!5),RNA_rpoC(type~CDS,up,dw!6) -> RNAP(dna,prot,rna),DNA_rpoC(type~T1),RNA_rpoB(type~RBS,up!4,dw),RNA_rpoB(type~CDS,up!5,dw!4),RNA_rpoC(type~RBS,up!6,dw!5),RNA_rpoC(type~CDS,up,dw!6) @ 'falloff_rnap_terrpoc_fwd'
+'docking_rnap70_p1rpod' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoD(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoD(type~P1!1) @ 'docking_rnap70_p1rpod_fwd'
+'docking_rnap70_p1rpod_rev' RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoD(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoD(type~P1) @ 'docking_rnap70_p1rpod_rvs'
+'sliding_rnap70_rbsrpod' RNAP(dna!1,prot!2,rna),DNA_rpoD(type~P1!1),Prot_rpoD(prot!2),DNA_rpoD(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoD(type~RBS!1),RNA_rpoD(type~RBS,up,dw!3),DNA_rpoD(type~P1),Prot_rpoD(prot) @ 'sliding_rnap70_rbsrpod_fwd'
+'docking_rnap24_p1rpod' RNAP(dna,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoD(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoD(type~P1!1) @ 'docking_rnap24_p1rpod_fwd'
+'docking_rnap24_p1rpod_rev' RNAP(dna!1,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoD(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoD(type~P1) @ 'docking_rnap24_p1rpod_rvs'
+'sliding_rnap24_rbsrpod' RNAP(dna!1,prot!2,rna),DNA_rpoD(type~P1!1),Prot_rpoE(prot!2),DNA_rpoD(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoD(type~RBS!1),RNA_rpoD(type~RBS,up,dw!3),DNA_rpoD(type~P1),Prot_rpoE(prot) @ 'sliding_rnap24_rbsrpod_fwd'
+'docking_rnap32_p1rpod' RNAP(dna,prot!2,rna),Prot_rpoH(prot!2),DNA_rpoD(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoH(prot!2),DNA_rpoD(type~P1!1) @ 'docking_rnap32_p1rpod_fwd'
+'docking_rnap32_p1rpod_rev' RNAP(dna!1,prot!2,rna),Prot_rpoH(prot!2),DNA_rpoD(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoH(prot!2),DNA_rpoD(type~P1) @ 'docking_rnap32_p1rpod_rvs'
+'sliding_rnap32_rbsrpod' RNAP(dna!1,prot!2,rna),DNA_rpoD(type~P1!1),Prot_rpoH(prot!2),DNA_rpoD(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoD(type~RBS!1),RNA_rpoD(type~RBS,up,dw!3),DNA_rpoD(type~P1),Prot_rpoH(prot) @ 'sliding_rnap32_rbsrpod_fwd'
+'docking_rnap28_p1rpod' RNAP(dna,prot!2,rna),Prot_fliA(prot!2),DNA_rpoD(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_fliA(prot!2),DNA_rpoD(type~P1!1) @ 'docking_rnap28_p1rpod_fwd'
+'docking_rnap28_p1rpod_rev' RNAP(dna!1,prot!2,rna),Prot_fliA(prot!2),DNA_rpoD(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_fliA(prot!2),DNA_rpoD(type~P1) @ 'docking_rnap28_p1rpod_rvs'
+'sliding_rnap28_rbsrpod' RNAP(dna!1,prot!2,rna),DNA_rpoD(type~P1!1),Prot_fliA(prot!2),DNA_rpoD(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoD(type~RBS!1),RNA_rpoD(type~RBS,up,dw!3),DNA_rpoD(type~P1),Prot_fliA(prot) @ 'sliding_rnap28_rbsrpod_fwd'
+'docking_rnap54_p1rpod' RNAP(dna,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoD(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoD(type~P1!1) @ 'docking_rnap54_p1rpod_fwd'
+'docking_rnap54_p1rpod_rev' RNAP(dna!1,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoD(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoD(type~P1) @ 'docking_rnap54_p1rpod_rvs'
+'sliding_rnap54_rbsrpod' RNAP(dna!1,prot!2,rna),DNA_rpoD(type~P1!1),Prot_rpoN(prot!2),DNA_rpoD(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoD(type~RBS!1),RNA_rpoD(type~RBS,up,dw!3),DNA_rpoD(type~P1),Prot_rpoN(prot) @ 'sliding_rnap54_rbsrpod_fwd'
+'docking_rnap38_p1rpod' RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoD(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoD(type~P1!1) @ 'docking_rnap38_p1rpod_fwd'
+'docking_rnap38_p1rpod_rev' RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoD(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoD(type~P1) @ 'docking_rnap38_p1rpod_rvs'
+'sliding_rnap38_rbsrpod' RNAP(dna!1,prot!2,rna),DNA_rpoD(type~P1!1),Prot_rpoS(prot!2),DNA_rpoD(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoD(type~RBS!1),RNA_rpoD(type~RBS,up,dw!3),DNA_rpoD(type~P1),Prot_rpoS(prot) @ 'sliding_rnap38_rbsrpod_fwd'
+'sliding_rnap_cdsrpod' RNAP(dna!1,prot,rna!3),DNA_rpoD(type~RBS!1),RNA_rpoD(type~RBS,up,dw!3),DNA_rpoD(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_rpoD(type~CDS!1),RNA_rpoD(type~RBS,up!4,dw!3),RNA_rpoD(type~CDS,up,dw!4),DNA_rpoD(type~RBS) @ 'sliding_rnap_cdsrpod_fwd'
+'sliding_rnap_terrpod' RNAP(dna!1,prot,rna!3),DNA_rpoD(type~CDS!1),RNA_rpoD(type~RBS,up!4,dw!3),RNA_rpoD(type~CDS,up,dw!4),DNA_rpoD(type~T1) -> RNAP(dna!1,prot,rna!3),DNA_rpoD(type~T1!1),RNA_rpoD(type~RBS,up!4,dw!3),RNA_rpoD(type~CDS,up,dw!4),DNA_rpoD(type~CDS) @ 'sliding_rnap_terrpod_fwd'
+'falloff_rnap_terrpod' RNAP(dna!1,prot,rna!3),DNA_rpoD(type~T1!1),RNA_rpoD(type~RBS,up!4,dw!3),RNA_rpoD(type~CDS,up,dw!4) -> RNAP(dna,prot,rna),DNA_rpoD(type~T1),RNA_rpoD(type~RBS,up!4,dw),RNA_rpoD(type~CDS,up,dw!4) @ 'falloff_rnap_terrpod_fwd'
+'docking_rnap70_p1rpoe' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoE(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoE(type~P1!1) @ 'docking_rnap70_p1rpoe_fwd'
+'docking_rnap70_p1rpoe_rev' RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoE(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoE(type~P1) @ 'docking_rnap70_p1rpoe_rvs'
+'sliding_rnap70_rbsrpoe' RNAP(dna!1,prot!2,rna),DNA_rpoE(type~P1!1),Prot_rpoD(prot!2),DNA_rpoE(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoE(type~RBS!1),RNA_rpoE(type~RBS,up,dw!3),DNA_rpoE(type~P1),Prot_rpoD(prot) @ 'sliding_rnap70_rbsrpoe_fwd'
+'docking_rnap24_p1rpoe' RNAP(dna,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoE(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoE(type~P1!1) @ 'docking_rnap24_p1rpoe_fwd'
+'docking_rnap24_p1rpoe_rev' RNAP(dna!1,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoE(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoE(type~P1) @ 'docking_rnap24_p1rpoe_rvs'
+'sliding_rnap24_rbsrpoe' RNAP(dna!1,prot!2,rna),DNA_rpoE(type~P1!1),Prot_rpoE(prot!2),DNA_rpoE(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoE(type~RBS!1),RNA_rpoE(type~RBS,up,dw!3),DNA_rpoE(type~P1),Prot_rpoE(prot) @ 'sliding_rnap24_rbsrpoe_fwd'
+'docking_rnap38_p1rpoe' RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoE(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoE(type~P1!1) @ 'docking_rnap38_p1rpoe_fwd'
+'docking_rnap38_p1rpoe_rev' RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoE(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoE(type~P1) @ 'docking_rnap38_p1rpoe_rvs'
+'sliding_rnap38_rbsrpoe' RNAP(dna!1,prot!2,rna),DNA_rpoE(type~P1!1),Prot_rpoS(prot!2),DNA_rpoE(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoE(type~RBS!1),RNA_rpoE(type~RBS,up,dw!3),DNA_rpoE(type~P1),Prot_rpoS(prot) @ 'sliding_rnap38_rbsrpoe_fwd'
+'sliding_rnap_cdsrpoe' RNAP(dna!1,prot,rna!3),DNA_rpoE(type~RBS!1),RNA_rpoE(type~RBS,up,dw!3),DNA_rpoE(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_rpoE(type~CDS!1),RNA_rpoE(type~RBS,up!4,dw!3),RNA_rpoE(type~CDS,up,dw!4),DNA_rpoE(type~RBS) @ 'sliding_rnap_cdsrpoe_fwd'
+'sliding_rnap_terrpoe' RNAP(dna!1,prot,rna!3),DNA_rpoE(type~CDS!1),RNA_rpoE(type~RBS,up!4,dw!3),RNA_rpoE(type~CDS,up,dw!4),DNA_rpoE(type~T1) -> RNAP(dna!1,prot,rna!3),DNA_rpoE(type~T1!1),RNA_rpoE(type~RBS,up!4,dw!3),RNA_rpoE(type~CDS,up,dw!4),DNA_rpoE(type~CDS) @ 'sliding_rnap_terrpoe_fwd'
+'falloff_rnap_terrpoe' RNAP(dna!1,prot,rna!3),DNA_rpoE(type~T1!1),RNA_rpoE(type~RBS,up!4,dw!3),RNA_rpoE(type~CDS,up,dw!4) -> RNAP(dna,prot,rna),DNA_rpoE(type~T1),RNA_rpoE(type~RBS,up!4,dw),RNA_rpoE(type~CDS,up,dw!4) @ 'falloff_rnap_terrpoe_fwd'
+'docking_rnap70_p1rpoh' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoH(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoH(type~P1!1) @ 'docking_rnap70_p1rpoh_fwd'
+'docking_rnap70_p1rpoh_rev' RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoH(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoH(type~P1) @ 'docking_rnap70_p1rpoh_rvs'
+'sliding_rnap70_rbsrpoh' RNAP(dna!1,prot!2,rna),DNA_rpoH(type~P1!1),Prot_rpoD(prot!2),DNA_rpoH(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoH(type~RBS!1),RNA_rpoH(type~RBS,up,dw!3),DNA_rpoH(type~P1),Prot_rpoD(prot) @ 'sliding_rnap70_rbsrpoh_fwd'
+'docking_rnap24_p1rpoh' RNAP(dna,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoH(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoH(type~P1!1) @ 'docking_rnap24_p1rpoh_fwd'
+'docking_rnap24_p1rpoh_rev' RNAP(dna!1,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoH(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoH(type~P1) @ 'docking_rnap24_p1rpoh_rvs'
+'sliding_rnap24_rbsrpoh' RNAP(dna!1,prot!2,rna),DNA_rpoH(type~P1!1),Prot_rpoE(prot!2),DNA_rpoH(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoH(type~RBS!1),RNA_rpoH(type~RBS,up,dw!3),DNA_rpoH(type~P1),Prot_rpoE(prot) @ 'sliding_rnap24_rbsrpoh_fwd'
+'docking_rnap54_p1rpoh' RNAP(dna,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoH(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoH(type~P1!1) @ 'docking_rnap54_p1rpoh_fwd'
+'docking_rnap54_p1rpoh_rev' RNAP(dna!1,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoH(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoN(prot!2),DNA_rpoH(type~P1) @ 'docking_rnap54_p1rpoh_rvs'
+'sliding_rnap54_rbsrpoh' RNAP(dna!1,prot!2,rna),DNA_rpoH(type~P1!1),Prot_rpoN(prot!2),DNA_rpoH(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoH(type~RBS!1),RNA_rpoH(type~RBS,up,dw!3),DNA_rpoH(type~P1),Prot_rpoN(prot) @ 'sliding_rnap54_rbsrpoh_fwd'
+'docking_rnap38_p1rpoh' RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoH(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoH(type~P1!1) @ 'docking_rnap38_p1rpoh_fwd'
+'docking_rnap38_p1rpoh_rev' RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoH(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoH(type~P1) @ 'docking_rnap38_p1rpoh_rvs'
+'sliding_rnap38_rbsrpoh' RNAP(dna!1,prot!2,rna),DNA_rpoH(type~P1!1),Prot_rpoS(prot!2),DNA_rpoH(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoH(type~RBS!1),RNA_rpoH(type~RBS,up,dw!3),DNA_rpoH(type~P1),Prot_rpoS(prot) @ 'sliding_rnap38_rbsrpoh_fwd'
+'sliding_rnap_cdsrpoh' RNAP(dna!1,prot,rna!3),DNA_rpoH(type~RBS!1),RNA_rpoH(type~RBS,up,dw!3),DNA_rpoH(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_rpoH(type~CDS!1),RNA_rpoH(type~RBS,up!4,dw!3),RNA_rpoH(type~CDS,up,dw!4),DNA_rpoH(type~RBS) @ 'sliding_rnap_cdsrpoh_fwd'
+'sliding_rnap_terrpoh' RNAP(dna!1,prot,rna!3),DNA_rpoH(type~CDS!1),RNA_rpoH(type~RBS,up!4,dw!3),RNA_rpoH(type~CDS,up,dw!4),DNA_rpoH(type~T1) -> RNAP(dna!1,prot,rna!3),DNA_rpoH(type~T1!1),RNA_rpoH(type~RBS,up!4,dw!3),RNA_rpoH(type~CDS,up,dw!4),DNA_rpoH(type~CDS) @ 'sliding_rnap_terrpoh_fwd'
+'falloff_rnap_terrpoh' RNAP(dna!1,prot,rna!3),DNA_rpoH(type~T1!1),RNA_rpoH(type~RBS,up!4,dw!3),RNA_rpoH(type~CDS,up,dw!4) -> RNAP(dna,prot,rna),DNA_rpoH(type~T1),RNA_rpoH(type~RBS,up!4,dw),RNA_rpoH(type~CDS,up,dw!4) @ 'falloff_rnap_terrpoh_fwd'
+'docking_rnap70_p1rpon' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoN(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoN(type~P1!1) @ 'docking_rnap70_p1rpon_fwd'
+'docking_rnap70_p1rpon_rev' RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoN(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoN(type~P1) @ 'docking_rnap70_p1rpon_rvs'
+'sliding_rnap70_rbsrpon' RNAP(dna!1,prot!2,rna),DNA_rpoN(type~P1!1),Prot_rpoD(prot!2),DNA_rpoN(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoN(type~RBS!1),RNA_rpoN(type~RBS,up,dw!3),DNA_rpoN(type~P1),Prot_rpoD(prot) @ 'sliding_rnap70_rbsrpon_fwd'
+'docking_rnap24_p1rpon' RNAP(dna,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoN(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoN(type~P1!1) @ 'docking_rnap24_p1rpon_fwd'
+'docking_rnap24_p1rpon_rev' RNAP(dna!1,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoN(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoE(prot!2),DNA_rpoN(type~P1) @ 'docking_rnap24_p1rpon_rvs'
+'sliding_rnap24_rbsrpon' RNAP(dna!1,prot!2,rna),DNA_rpoN(type~P1!1),Prot_rpoE(prot!2),DNA_rpoN(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoN(type~RBS!1),RNA_rpoN(type~RBS,up,dw!3),DNA_rpoN(type~P1),Prot_rpoE(prot) @ 'sliding_rnap24_rbsrpon_fwd'
+'docking_rnap28_p1rpon' RNAP(dna,prot!2,rna),Prot_fliA(prot!2),DNA_rpoN(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_fliA(prot!2),DNA_rpoN(type~P1!1) @ 'docking_rnap28_p1rpon_fwd'
+'docking_rnap28_p1rpon_rev' RNAP(dna!1,prot!2,rna),Prot_fliA(prot!2),DNA_rpoN(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_fliA(prot!2),DNA_rpoN(type~P1) @ 'docking_rnap28_p1rpon_rvs'
+'sliding_rnap28_rbsrpon' RNAP(dna!1,prot!2,rna),DNA_rpoN(type~P1!1),Prot_fliA(prot!2),DNA_rpoN(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoN(type~RBS!1),RNA_rpoN(type~RBS,up,dw!3),DNA_rpoN(type~P1),Prot_fliA(prot) @ 'sliding_rnap28_rbsrpon_fwd'
+'docking_rnap38_p1rpon' RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoN(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoN(type~P1!1) @ 'docking_rnap38_p1rpon_fwd'
+'docking_rnap38_p1rpon_rev' RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoN(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_rpoN(type~P1) @ 'docking_rnap38_p1rpon_rvs'
+'sliding_rnap38_rbsrpon' RNAP(dna!1,prot!2,rna),DNA_rpoN(type~P1!1),Prot_rpoS(prot!2),DNA_rpoN(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoN(type~RBS!1),RNA_rpoN(type~RBS,up,dw!3),DNA_rpoN(type~P1),Prot_rpoS(prot) @ 'sliding_rnap38_rbsrpon_fwd'
+'sliding_rnap_cdsrpon' RNAP(dna!1,prot,rna!3),DNA_rpoN(type~RBS!1),RNA_rpoN(type~RBS,up,dw!3),DNA_rpoN(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_rpoN(type~CDS!1),RNA_rpoN(type~RBS,up!4,dw!3),RNA_rpoN(type~CDS,up,dw!4),DNA_rpoN(type~RBS) @ 'sliding_rnap_cdsrpon_fwd'
+'sliding_rnap_terrpon' RNAP(dna!1,prot,rna!3),DNA_rpoN(type~CDS!1),RNA_rpoN(type~RBS,up!4,dw!3),RNA_rpoN(type~CDS,up,dw!4),DNA_rpoN(type~T1) -> RNAP(dna!1,prot,rna!3),DNA_rpoN(type~T1!1),RNA_rpoN(type~RBS,up!4,dw!3),RNA_rpoN(type~CDS,up,dw!4),DNA_rpoN(type~CDS) @ 'sliding_rnap_terrpon_fwd'
+'falloff_rnap_terrpon' RNAP(dna!1,prot,rna!3),DNA_rpoN(type~T1!1),RNA_rpoN(type~RBS,up!4,dw!3),RNA_rpoN(type~CDS,up,dw!4) -> RNAP(dna,prot,rna),DNA_rpoN(type~T1),RNA_rpoN(type~RBS,up!4,dw),RNA_rpoN(type~CDS,up,dw!4) @ 'falloff_rnap_terrpon_fwd'
+'docking_rnap70_p1rpos' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoS(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoS(type~P1!1) @ 'docking_rnap70_p1rpos_fwd'
+'docking_rnap70_p1rpos_rev' RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoS(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_rpoS(type~P1) @ 'docking_rnap70_p1rpos_rvs'
+'sliding_rnap70_rbsrpos' RNAP(dna!1,prot!2,rna),DNA_rpoS(type~P1!1),Prot_rpoD(prot!2),DNA_rpoS(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_rpoS(type~RBS!1),RNA_rpoS(type~RBS,up,dw!3),DNA_rpoS(type~P1),Prot_rpoD(prot) @ 'sliding_rnap70_rbsrpos_fwd'
+'sliding_rnap_cdsrpos' RNAP(dna!1,prot,rna!3),DNA_rpoS(type~RBS!1),RNA_rpoS(type~RBS,up,dw!3),DNA_rpoS(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_rpoS(type~CDS!1),RNA_rpoS(type~RBS,up!4,dw!3),RNA_rpoS(type~CDS,up,dw!4),DNA_rpoS(type~RBS) @ 'sliding_rnap_cdsrpos_fwd'
+'sliding_rnap_terrpos' RNAP(dna!1,prot,rna!3),DNA_rpoS(type~CDS!1),RNA_rpoS(type~RBS,up!4,dw!3),RNA_rpoS(type~CDS,up,dw!4),DNA_rpoS(type~T1) -> RNAP(dna!1,prot,rna!3),DNA_rpoS(type~T1!1),RNA_rpoS(type~RBS,up!4,dw!3),RNA_rpoS(type~CDS,up,dw!4),DNA_rpoS(type~CDS) @ 'sliding_rnap_terrpos_fwd'
+'falloff_rnap_terrpos' RNAP(dna!1,prot,rna!3),DNA_rpoS(type~T1!1),RNA_rpoS(type~RBS,up!4,dw!3),RNA_rpoS(type~CDS,up,dw!4) -> RNAP(dna,prot,rna),DNA_rpoS(type~T1),RNA_rpoS(type~RBS,up!4,dw),RNA_rpoS(type~CDS,up,dw!4) @ 'falloff_rnap_terrpos_fwd'
+'docking_rnap70_p1feci' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_fecI(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_fecI(type~P1!1) @ 'docking_rnap70_p1feci_fwd'
+'docking_rnap70_p1feci_rev' RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_fecI(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_fecI(type~P1) @ 'docking_rnap70_p1feci_rvs'
+'sliding_rnap70_rbsfeci' RNAP(dna!1,prot!2,rna),DNA_fecI(type~P1!1),Prot_rpoD(prot!2),DNA_fecI(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_fecI(type~RBS!1),RNA_fecI(type~RBS,up,dw!3),DNA_fecI(type~P1),Prot_rpoD(prot) @ 'sliding_rnap70_rbsfeci_fwd'
+'docking_rnap38_p1feci' RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_fecI(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_fecI(type~P1!1) @ 'docking_rnap38_p1feci_fwd'
+'docking_rnap38_p1feci_rev' RNAP(dna!1,prot!2,rna),Prot_rpoS(prot!2),DNA_fecI(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoS(prot!2),DNA_fecI(type~P1) @ 'docking_rnap38_p1feci_rvs'
+'sliding_rnap38_rbsfeci' RNAP(dna!1,prot!2,rna),DNA_fecI(type~P1!1),Prot_rpoS(prot!2),DNA_fecI(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_fecI(type~RBS!1),RNA_fecI(type~RBS,up,dw!3),DNA_fecI(type~P1),Prot_rpoS(prot) @ 'sliding_rnap38_rbsfeci_fwd'
+'sliding_rnap_cdsfeci' RNAP(dna!1,prot,rna!3),DNA_fecI(type~RBS!1),RNA_fecI(type~RBS,up,dw!3),DNA_fecI(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_fecI(type~CDS!1),RNA_fecI(type~RBS,up!4,dw!3),RNA_fecI(type~CDS,up,dw!4),DNA_fecI(type~RBS) @ 'sliding_rnap_cdsfeci_fwd'
+'sliding_rnap_terfeci' RNAP(dna!1,prot,rna!3),DNA_fecI(type~CDS!1),RNA_fecI(type~RBS,up!4,dw!3),RNA_fecI(type~CDS,up,dw!4),DNA_fecI(type~T1) -> RNAP(dna!1,prot,rna!3),DNA_fecI(type~T1!1),RNA_fecI(type~RBS,up!4,dw!3),RNA_fecI(type~CDS,up,dw!4),DNA_fecI(type~CDS) @ 'sliding_rnap_terfeci_fwd'
+'falloff_rnap_terfeci' RNAP(dna!1,prot,rna!3),DNA_fecI(type~T1!1),RNA_fecI(type~RBS,up!4,dw!3),RNA_fecI(type~CDS,up,dw!4) -> RNAP(dna,prot,rna),DNA_fecI(type~T1),RNA_fecI(type~RBS,up!4,dw),RNA_fecI(type~CDS,up,dw!4) @ 'falloff_rnap_terfeci_fwd'
+'docking_rnap70_p1flia' RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_fliA(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_fliA(type~P1!1) @ 'docking_rnap70_p1flia_fwd'
+'docking_rnap70_p1flia_rev' RNAP(dna!1,prot!2,rna),Prot_rpoD(prot!2),DNA_fliA(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_rpoD(prot!2),DNA_fliA(type~P1) @ 'docking_rnap70_p1flia_rvs'
+'sliding_rnap70_rbsflia' RNAP(dna!1,prot!2,rna),DNA_fliA(type~P1!1),Prot_rpoD(prot!2),DNA_fliA(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_fliA(type~RBS!1),RNA_fliA(type~RBS,up,dw!3),DNA_fliA(type~P1),Prot_rpoD(prot) @ 'sliding_rnap70_rbsflia_fwd'
+'docking_rnap28_p1flia' RNAP(dna,prot!2,rna),Prot_fliA(prot!2),DNA_fliA(type~P1) -> RNAP(dna!1,prot!2,rna),Prot_fliA(prot!2),DNA_fliA(type~P1!1) @ 'docking_rnap28_p1flia_fwd'
+'docking_rnap28_p1flia_rev' RNAP(dna!1,prot!2,rna),Prot_fliA(prot!2),DNA_fliA(type~P1!1) -> RNAP(dna,prot!2,rna),Prot_fliA(prot!2),DNA_fliA(type~P1) @ 'docking_rnap28_p1flia_rvs'
+'sliding_rnap28_rbsflia' RNAP(dna!1,prot!2,rna),DNA_fliA(type~P1!1),Prot_fliA(prot!2),DNA_fliA(type~RBS) -> RNAP(dna!1,prot,rna!3),DNA_fliA(type~RBS!1),RNA_fliA(type~RBS,up,dw!3),DNA_fliA(type~P1),Prot_fliA(prot) @ 'sliding_rnap28_rbsflia_fwd'
+'sliding_rnap_cdsflia' RNAP(dna!1,prot,rna!3),DNA_fliA(type~RBS!1),RNA_fliA(type~RBS,up,dw!3),DNA_fliA(type~CDS) -> RNAP(dna!1,prot,rna!3),DNA_fliA(type~CDS!1),RNA_fliA(type~RBS,up!4,dw!3),RNA_fliA(type~CDS,up,dw!4),DNA_fliA(type~RBS) @ 'sliding_rnap_cdsflia_fwd'
+'sliding_rnap_terflia' RNAP(dna!1,prot,rna!3),DNA_fliA(type~CDS!1),RNA_fliA(type~RBS,up!4,dw!3),RNA_fliA(type~CDS,up,dw!4),DNA_fliA(type~T1) -> RNAP(dna!1,prot,rna!3),DNA_fliA(type~T1!1),RNA_fliA(type~RBS,up!4,dw!3),RNA_fliA(type~CDS,up,dw!4),DNA_fliA(type~CDS) @ 'sliding_rnap_terflia_fwd'
+'falloff_rnap_terflia' RNAP(dna!1,prot,rna!3),DNA_fliA(type~T1!1),RNA_fliA(type~RBS,up!4,dw!3),RNA_fliA(type~CDS,up,dw!4) -> RNAP(dna,prot,rna),DNA_fliA(type~T1),RNA_fliA(type~RBS,up!4,dw),RNA_fliA(type~CDS,up,dw!4) @ 'falloff_rnap_terflia_fwd'
+'degrade_RNA_rpoARBSRNA_rpoACDS' RNA_rpoA(type~RBS,up!4,dw),RNA_rpoA(type~CDS,up,dw!4) ->  @ 'degrade_RNA_rpoARBSRNA_rpoACDS_k'
+'degrade_RNA_rpoBRBSRNA_rpoBCDSRNA_rpoCRBSRNA_rpoCCDS' RNA_rpoB(type~RBS,up!4,dw),RNA_rpoB(type~CDS,up!5,dw!4),RNA_rpoC(type~RBS,up!6,dw!5),RNA_rpoC(type~CDS,up,dw!6) ->  @ 'degrade_RNA_rpoBRBSRNA_rpoBCDSRNA_rpoCRBSRNA_rpoCCDS_k'
+'degrade_RNA_rpoDRBSRNA_rpoDCDS' RNA_rpoD(type~RBS,up!4,dw),RNA_rpoD(type~CDS,up,dw!4) ->  @ 'degrade_RNA_rpoDRBSRNA_rpoDCDS_k'
+'degrade_RNA_rpoERBSRNA_rpoECDS' RNA_rpoE(type~RBS,up!4,dw),RNA_rpoE(type~CDS,up,dw!4) ->  @ 'degrade_RNA_rpoERBSRNA_rpoECDS_k'
+'degrade_RNA_rpoHRBSRNA_rpoHCDS' RNA_rpoH(type~RBS,up!4,dw),RNA_rpoH(type~CDS,up,dw!4) ->  @ 'degrade_RNA_rpoHRBSRNA_rpoHCDS_k'
+'degrade_RNA_rpoNRBSRNA_rpoNCDS' RNA_rpoN(type~RBS,up!4,dw),RNA_rpoN(type~CDS,up,dw!4) ->  @ 'degrade_RNA_rpoNRBSRNA_rpoNCDS_k'
+'degrade_RNA_rpoSRBSRNA_rpoSCDS' RNA_rpoS(type~RBS,up!4,dw),RNA_rpoS(type~CDS,up,dw!4) ->  @ 'degrade_RNA_rpoSRBSRNA_rpoSCDS_k'
+'degrade_RNA_fecIRBSRNA_fecICDS' RNA_fecI(type~RBS,up!4,dw),RNA_fecI(type~CDS,up,dw!4) ->  @ 'degrade_RNA_fecIRBSRNA_fecICDS_k'
+'degrade_RNA_fliARBSRNA_fliACDS' RNA_fliA(type~RBS,up!4,dw),RNA_fliA(type~CDS,up,dw!4) ->  @ 'degrade_RNA_fliARBSRNA_fliACDS_k'
+
+%obs: 'rpoA_RNA' RNA_rpoA(type~CDS,up?,dw?)
+%obs: 'rpoB_RNA' RNA_rpoB(type~CDS,up?,dw?)
+%obs: 'rpoC_RNA' RNA_rpoC(type~CDS,up?,dw?)
+%obs: 'rpoD_RNA' RNA_rpoD(type~CDS,up?,dw?)
+%obs: 'rpoE_RNA' RNA_rpoE(type~CDS,up?,dw?)
+%obs: 'rpoH_RNA' RNA_rpoH(type~CDS,up?,dw?)
+%obs: 'fliA_RNA' RNA_fliA(type~CDS,up?,dw?)
+%obs: 'rpoN_RNA' RNA_rpoN(type~CDS,up?,dw?)
+%obs: 'rpoS_RNA' RNA_rpoS(type~CDS,up?,dw?)
+%obs: 'fecI_RNA' RNA_fecI(type~CDS?,up?,dw?)
+%obs: 'rpoA_Prot' Prot_rpoA(prot?,PBD_02?)
+%obs: 'rpoB_Prot' Prot_rpoB(prot?,PBD_02?)
+%obs: 'rpoC_Prot' Prot_rpoC(prot?,PBD_02?)
+%obs: 'rpoD_Prot' Prot_rpoD(prot)
+%obs: 'rpoE_Prot' Prot_rpoE(prot)
+%obs: 'rpoH_Prot' Prot_rpoH(prot)
+%obs: 'fliA_Prot' Prot_fliA(prot)
+%obs: 'rpoN_Prot' Prot_rpoN(prot)
+%obs: 'rpoS_Prot' Prot_rpoS(prot)
+%obs: 'fecI_Prot' Prot_fecI(prot)
+%obs: 'RNAP_cplx' RNAP(dna,prot!_,rna)
+
+%init: 't0_DNA_rpoA_P1' DNA_rpoA(type~P1)
+%init: 't0_DNA_rpoA_RBS' DNA_rpoA(type~RBS)
+%init: 't0_DNA_rpoA_CDS' DNA_rpoA(type~CDS)
+%init: 't0_DNA_rpoA_T1' DNA_rpoA(type~T1)
+%init: 't0_DNA_rpoB_P1' DNA_rpoB(type~P1)
+%init: 't0_DNA_rpoB_RBS' DNA_rpoB(type~RBS)
+%init: 't0_DNA_rpoB_CDS' DNA_rpoB(type~CDS)
+%init: 't0_DNA_rpoC_RBS' DNA_rpoC(type~RBS)
+%init: 't0_DNA_rpoC_CDS' DNA_rpoC(type~CDS)
+%init: 't0_DNA_rpoC_T1' DNA_rpoC(type~T1)
+%init: 't0_DNA_rpoD_P1' DNA_rpoD(type~P1)
+%init: 't0_DNA_rpoD_RBS' DNA_rpoD(type~RBS)
+%init: 't0_DNA_rpoD_CDS' DNA_rpoD(type~CDS)
+%init: 't0_DNA_rpoD_T1' DNA_rpoD(type~T1)
+%init: 't0_DNA_rpoE_P1' DNA_rpoE(type~P1)
+%init: 't0_DNA_rpoE_RBS' DNA_rpoE(type~RBS)
+%init: 't0_DNA_rpoE_CDS' DNA_rpoE(type~CDS)
+%init: 't0_DNA_rpoE_T1' DNA_rpoE(type~T1)
+%init: 't0_DNA_rpoH_P1' DNA_rpoH(type~P1)
+%init: 't0_DNA_rpoH_RBS' DNA_rpoH(type~RBS)
+%init: 't0_DNA_rpoH_CDS' DNA_rpoH(type~CDS)
+%init: 't0_DNA_rpoH_T1' DNA_rpoH(type~T1)
+%init: 't0_DNA_fliA_P1' DNA_fliA(type~P1)
+%init: 't0_DNA_fliA_RBS' DNA_fliA(type~RBS)
+%init: 't0_DNA_fliA_CDS' DNA_fliA(type~CDS)
+%init: 't0_DNA_fliA_T1' DNA_fliA(type~T1)
+%init: 't0_DNA_rpoN_P1' DNA_rpoN(type~P1)
+%init: 't0_DNA_rpoN_RBS' DNA_rpoN(type~RBS)
+%init: 't0_DNA_rpoN_CDS' DNA_rpoN(type~CDS)
+%init: 't0_DNA_rpoN_T1' DNA_rpoN(type~T1)
+%init: 't0_DNA_rpoS_P1' DNA_rpoS(type~P1)
+%init: 't0_DNA_rpoS_RBS' DNA_rpoS(type~RBS)
+%init: 't0_DNA_rpoS_CDS' DNA_rpoS(type~CDS)
+%init: 't0_DNA_rpoS_T1' DNA_rpoS(type~T1)
+%init: 't0_DNA_fecI_P1' DNA_fecI(type~P1)
+%init: 't0_DNA_fecI_RBS' DNA_fecI(type~RBS)
+%init: 't0_DNA_fecI_CDS' DNA_fecI(type~CDS)
+%init: 't0_DNA_fecI_T1' DNA_fecI(type~T1)
+%init: 't0_RNA_rpoA_RBS' RNA_rpoA(type~RBS,up,dw)
+%init: 't0_RNA_rpoA_CDS' RNA_rpoA(type~CDS,up,dw)
+%init: 't0_RNA_rpoB_RBS' RNA_rpoB(type~RBS,up,dw)
+%init: 't0_RNA_rpoB_CDS' RNA_rpoB(type~CDS,up,dw)
+%init: 't0_RNA_rpoC_RBS' RNA_rpoC(type~RBS,up,dw)
+%init: 't0_RNA_rpoC_CDS' RNA_rpoC(type~CDS,up,dw)
+%init: 't0_RNA_rpoD_RBS' RNA_rpoD(type~RBS,up,dw)
+%init: 't0_RNA_rpoD_CDS' RNA_rpoD(type~CDS,up,dw)
+%init: 't0_RNA_rpoE_RBS' RNA_rpoE(type~RBS,up,dw)
+%init: 't0_RNA_rpoE_CDS' RNA_rpoE(type~CDS,up,dw)
+%init: 't0_RNA_rpoH_RBS' RNA_rpoH(type~RBS,up,dw)
+%init: 't0_RNA_rpoH_CDS' RNA_rpoH(type~CDS,up,dw)
+%init: 't0_RNA_fliA_RBS' RNA_fliA(type~RBS,up,dw)
+%init: 't0_RNA_fliA_CDS' RNA_fliA(type~CDS,up,dw)
+%init: 't0_RNA_rpoN_RBS' RNA_rpoN(type~RBS,up,dw)
+%init: 't0_RNA_rpoN_CDS' RNA_rpoN(type~CDS,up,dw)
+%init: 't0_RNA_rpoS_RBS' RNA_rpoS(type~RBS,up,dw)
+%init: 't0_RNA_rpoS_CDS' RNA_rpoS(type~CDS,up,dw)
+%init: 't0_RNA_fecI_RBS' RNA_fecI(type~RBS,up,dw)
+%init: 't0_RNA_fecI_CDS' RNA_fecI(type~CDS,up,dw)
+%init: 't0_Prot_rpoA' Prot_rpoA(prot,PBD_02)
+%init: 't0_Prot_rpoB' Prot_rpoB(prot,PBD_02)
+%init: 't0_Prot_rpoC' Prot_rpoC(prot,PBD_02)
+%init: 't0_Prot_rpoD' Prot_rpoD(prot)
+%init: 't0_Prot_rpoE' Prot_rpoE(prot)
+%init: 't0_Prot_rpoH' Prot_rpoH(prot)
+%init: 't0_Prot_fliA' Prot_fliA(prot)
+%init: 't0_Prot_rpoN' Prot_rpoN(prot)
+%init: 't0_Prot_rpoS' Prot_rpoS(prot)
+%init: 't0_Prot_fecI' Prot_fecI(prot)
+%init: 't0_RNAP' RNAP(dna,prot,rna)
+
+
