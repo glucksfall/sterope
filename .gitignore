@@ -19,3 +19,4 @@
 # reports
 *.json
 *.out.txt
+/reports_*
