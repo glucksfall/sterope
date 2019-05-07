@@ -20,3 +20,4 @@
 *.json
 *.out.txt
 /reports_*
+.ipynb_checkpoints
