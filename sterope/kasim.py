@@ -73,11 +73,15 @@ def parallelize(cmd):
 def argsparser():
 	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Morris sequence.')
 
-	# required arguments
+	# required arguments to simulate models
 	parser.add_argument('--model'  , metavar = 'str'  , type = str  , required = True , default = 'model.kappa'   , help = 'RBM with tagged variables to analyze')
 	parser.add_argument('--final'  , metavar = 'float', type = str  , required = True , default = '100'           , help = 'limit time to simulate')
 	parser.add_argument('--steps'  , metavar = 'float', type = str  , required = True , default = '1'             , help = 'time interval to simulate')
-	# choose one or more evaluation functions
+	# not required arguments to simulate models
+	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , help = 'initial time to calculate the Dynamical Influence Network')
+	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None            , help = 'final time to calculate the Dynamical Influence Network')
+	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'            , help = 'precision and format of parameter values, default 7g')
+	parser.add_argument('--syntax' , metavar = 'str'  , type = str  , required = False, default = '4'             , help = 'KaSim syntax, default 4')
 
 	# useful paths
 	#parser.add_argument('--bng2'   , metavar = 'path' , type = str  , required = False, default = '~/bin/bng2'    , help = 'BioNetGen path, default ~/bin/bng2')
@@ -88,60 +92,67 @@ def argsparser():
 
 	# distribute computation with SLURM, otherwise with python multiprocessing API
 	parser.add_argument('--slurm'  , metavar = 'str'  , type = str  , required = False, default = None            , help = 'SLURM partition to use, default None')
-	parser.add_argument('--sbatch' , metavar = 'str'  , type = str  , required = False, default = ''              , help = 'explicit configuration for sbatch, e.g. --mem-per-cpu 5G')
+	parser.add_argument('--sbatch' , metavar = 'str'  , type = str  , required = False, default = ''              , help = 'explicit configuration for sbatch subprocesses, e.g. --mem-per-cpu 5G')
 
-	# general options
+	# general options for sensitivity analysis
+	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None            , help = 'seed for the Saltelli\' extension of the Sobol sequence')
+	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , help = 'N, default 10, to define the number of samples N * (2D + 2), with D the number of parameters')
+	# WARNING local sensitivity analysis options
 	parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'global'        , help = 'global or local sensitivity analysis')
-	parser.add_argument('--tick'   , metavar = 'int'  , type = str  , required = False, default = '0'             , help = 'local sensitivity ...')
-	parser.add_argument('--size'   , metavar = 'int'  , type = str  , required = False, default = '1'             , help = 'local sensitivity ...')
+	parser.add_argument('--tick'   , metavar = 'int'  , type = str  , required = False, default = '0.0'           , help = 'local sensitivity ...')
+	parser.add_argument('--size'   , metavar = 'int'  , type = str  , required = False, default = '1.0'           , help = 'local sensitivity ...')
 	parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'           , help = 'local sensitivity time step to calculate DIN')
-	# more general options
-	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , help = 'Initial time to calculate the Dynamical Influence Network')
-	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None            , help = 'Final time to calculate the Dynamical Influence Network')
-	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'            , help = 'precision and format of parameter values, default 7g')
-	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , help = 'number of samples N * (2D + 2), default N = 10, D = number of parameters')
 
 	# other options
-	parser.add_argument('--syntax' , metavar = 'str'  , type = str  , required = False, default = '4'             , help = 'KaSim syntax, default 4')
-	parser.add_argument('--binary' , metavar = 'str'  , type = str  , required = False, default = 'model'         , help = 'KaSim binary prefix, default model')
-	parser.add_argument('--results', metavar = 'str'  , type = str  , required = False, default = 'results'       , help = 'output folder where to move the results, default results')
-	parser.add_argument('--samples', metavar = 'str'  , type = str  , required = False, default = 'samples'       , help = 'folder to save the generated models, default samples')
-	parser.add_argument('--rawdata', metavar = 'str'  , type = str  , required = False, default = 'simulations'   , help = 'folder to save the simulations, default simulations')
-	parser.add_argument('--figures', metavar = 'str'  , type = str  , required = False, default = 'figures'       , help = 'folder to save the figures in eps, default figures')
-	parser.add_argument('--reports', metavar = 'str'  , type = str  , required = False, default = 'reports'       , help = 'folder to save the calculated sensitivity, default reports')
+	parser.add_argument('--results', metavar = 'str'  , type = str  , required = False, default = 'results'       , help = 'output folder where to move the results, default results (Sterope appends UNIX time string)')
+	parser.add_argument('--samples', metavar = 'str'  , type = str  , required = False, default = 'samples'       , help = 'subfolder to save the generated models, default samples')
+	parser.add_argument('--rawdata', metavar = 'str'  , type = str  , required = False, default = 'simulations'   , help = 'subfolder to save the simulations, default simulations')
+	parser.add_argument('--figures', metavar = 'str'  , type = str  , required = False, default = 'figures'       , help = 'subfolder to save the figures in eps, default figures')
+	parser.add_argument('--reports', metavar = 'str'  , type = str  , required = False, default = 'reports'       , help = 'subfolder to save the calculated sensitivity, default reports')
 
 	args = parser.parse_args()
 
 	if args.tmax is None:
 		args.tmax = args.final
 
+	if args.seed is None:
+		if sys.platform.startswith('linux'):
+			args.seed = int.from_bytes(os.urandom(4), byteorder = 'big')
+		else:
+			parser.error('pleione requires --seed integer')
+
 	return args
 
 def ga_opts():
 	return {
 		# user defined options
+		# simulate models
 		'model'     : args.model,
 		'final'     : args.final, # not bng2
 		'steps'     : args.steps, # not bng2
+		# optional to simulate models
+		'tmin'      : args.tmin,
+		'tmax'      : args.tmax,
+		'par_prec'  : args.prec,
+		'syntax'    : args.syntax, # kasim4 only
+		# paths to software
 		#'bng2'      : os.path.expanduser(args.bng2), # bng2, nfsim only
 		'kasim'     : os.path.expanduser(args.kasim), # kasim4 only
 		#'piskas'    : os.path.expanduser(args.piskas), # piskas only
 		#'nfsim'     : os.path.expanduser(args.nfsim), # nfsim only
 		'python'    : os.path.expanduser(args.python),
+		# SLURM
 		'slurm'     : args.slurm,
 		'others'    : args.sbatch,
-		'p_levels'  : int(args.grid),
+		# global SA options
+		'seed'      : args.seed,
+		'p_levels'  : args.grid,
+		# local SA options
 		'type'      : args.type,
 		'size'      : args.size,
 		'tick'      : args.tick,
 		'beat'      : args.beat,
-		'tmin'      : args.tmin,
-		'tmax'      : args.tmax,
-		'par_prec'  : args.prec,
-		'syntax'    : args.syntax, # kasim4 only
-		#'binary'    : args.binary, # kasim4 beta only
-		#'equil'     : args.equil, # nfsim only
-		#'sync'      : args.sync, # piskas only
+		# saving to
 		'results'   : args.results,
 		'samples'   : args.samples,
 		'rawdata'   : args.rawdata,
@@ -151,10 +162,8 @@ def ga_opts():
 		'home'      : os.getcwd(),
 		'null'      : '/dev/null',
 		'max_error' : numpy.nan,
-		#'bin_file'  : args.model[0].split('.')[0] + '.bin', # kasim4 beta only
 		'systime'   : str(time.time()).split('.')[0],
 		# useful data
-		#'num_pars'  : 0,
 		'par_name'  : [],
 		}
 
@@ -171,7 +180,6 @@ def configurate():
 		'(\w+)\[([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\s+' \
 		'([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\]\n'
 
-	#num_pars = 0
 	parameters = {}
 
 	for line in range(len(data)):
@@ -198,7 +206,7 @@ def configurate():
 	return parameters
 
 def populate():
-	# 'parameters' dictionary stores everything in the model, particularly the parameters to analyze
+	# 'parameters' dictionary stores each line in the model
 	par_keys = list(parameters.keys())
 
 	problem = {
@@ -207,15 +215,19 @@ def populate():
 		'bounds': [],
 		}
 
+	# define bounds following the model configuration
 	for line in range(len(par_keys)):
 		if parameters[line][0] == 'par':
 			lower = float(parameters[par_keys[line]][4])
 			upper = float(parameters[par_keys[line]][5])
-
 			problem['bounds'].append([lower, upper])
 
-	models = saltelli.sample(problem, int(opts['p_levels']))
+	# add models samples to population (used later)
+	population['problem', 'definition'] = problem
 
+	models = saltelli.sample(problem = problem, N = int(opts['p_levels']), calc_second_order = True, seed = int(opts['seed']))
+
+	# write new models following the Saltelli's samples
 	population = {}
 	model_string = 'level{:0' + str(len(str(len(models)))) + 'd}'
 
@@ -224,9 +236,6 @@ def populate():
 		population[model_key, 'model'] = model_key
 		for par_index, par_name in enumerate(opts['par_name']):
 			population[model_key, par_name] = models[model_index][par_index]
-
-	# add models sampling to population
-	population['problem', 'definition'] = problem
 
 	return population
 
@@ -287,7 +296,6 @@ def simulate():
 
 	# submit simulations to the queue
 	squeue = []
-	samples = opts['p_levels'] * (2 * len(opts['par_name']) + 2) # we are using saltelli sampling
 
 	for model in sorted(population.keys()):
 		if model[1] == 'model':
