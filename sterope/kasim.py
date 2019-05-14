@@ -119,7 +119,7 @@ def argsparser():
 		if sys.platform.startswith('linux'):
 			args.seed = int.from_bytes(os.urandom(4), byteorder = 'big')
 		else:
-			parser.error('pleione requires --seed integer')
+			parser.error('sterope requires --seed integer (to supply SALib.saltelli)')
 
 	return args
 
