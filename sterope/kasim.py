@@ -222,9 +222,6 @@ def populate():
 			upper = float(parameters[par_keys[line]][5])
 			problem['bounds'].append([lower, upper])
 
-	# add models samples to population (used later)
-	population['problem', 'definition'] = problem
-
 	models = saltelli.sample(problem = problem, N = int(opts['p_levels']), calc_second_order = True, seed = int(opts['seed']))
 
 	# write new models following the Saltelli's samples
@@ -236,6 +233,9 @@ def populate():
 		population[model_key, 'model'] = model_key
 		for par_index, par_name in enumerate(opts['par_name']):
 			population[model_key, par_name] = models[model_index][par_index]
+
+	# add models samples to population (used later)
+	population['problem', 'definition'] = problem
 
 	return population
 
