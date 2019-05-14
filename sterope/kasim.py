@@ -18,9 +18,9 @@ from SALib.analyze import sobol
 
 def safe_checks():
 	error_msg = ''
-	if shutil.which(opts['python']) is None:
-		error_msg += 'python3 (at {:s}) can\'t be called to perform error calculation.\n' \
-			'You could use --python {:s}\n'.format(opts['python'], shutil.which('python3'))
+	#if shutil.which(opts['python']) is None:
+		#error_msg += 'python3 (at {:s}) can\'t be called to perform error calculation.\n' \
+			#'You could use --python {:s}\n'.format(opts['python'], shutil.which('python3'))
 
 	# check for simulators
 	#if shutil.which(opts['bng2']) is None:
@@ -88,7 +88,7 @@ def argsparser():
 	parser.add_argument('--kasim'  , metavar = 'path' , type = str  , required = False, default = '~/bin/kasim4'  , help = 'KaSim path, default ~/bin/kasim4')
 	#parser.add_argument('--nfsim'  , metavar = 'path' , type = str  , required = False, default = '~/bin/nfsim'   , help = 'NFsim path, default ~/bin/nfsim')
 	#parser.add_argument('--piskas' , metavar = 'path' , type = str  , required = False, default = '~/bin/piskas'  , help = 'PISKaS path, default ~/bin/piskas')
-	parser.add_argument('--python' , metavar = 'path' , type = str  , required = False, default = '~/bin/python3' , help = 'python path, default ~/bin/python3')
+	#parser.add_argument('--python' , metavar = 'path' , type = str  , required = False, default = '~/bin/python3' , help = 'python path, default ~/bin/python3')
 
 	# distribute computation with SLURM, otherwise with python multiprocessing API
 	parser.add_argument('--slurm'  , metavar = 'str'  , type = str  , required = False, default = None            , help = 'SLURM partition to use, default None')
@@ -140,7 +140,7 @@ def ga_opts():
 		'kasim'     : os.path.expanduser(args.kasim), # kasim4 only
 		#'piskas'    : os.path.expanduser(args.piskas), # piskas only
 		#'nfsim'     : os.path.expanduser(args.nfsim), # nfsim only
-		'python'    : os.path.expanduser(args.python),
+		#'python'    : os.path.expanduser(args.python),
 		# SLURM
 		'slurm'     : args.slurm,
 		'others'    : args.sbatch,
