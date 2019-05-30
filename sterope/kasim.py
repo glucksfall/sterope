@@ -71,7 +71,7 @@ def parallelize(cmd):
 	return 0
 
 def argsparser():
-	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Morris sequence.')
+	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Sobol sequence.')
 
 	# required arguments to simulate models
 	parser.add_argument('--model'  , metavar = 'str'  , type = str  , required = True , default = 'model.kappa'   , help = 'RBM with tagged variables to analyze')
