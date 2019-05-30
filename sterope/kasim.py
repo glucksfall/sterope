@@ -410,14 +410,14 @@ def ranking():
 
 			seaborn.despine()
 			plt.tight_layout()
-			fig.savefig('./figure_DINhits_{key}+95%_over_{rule}.eps'.format(key, rule), format = 'eps', bbox_inches = 'tight', dpi = 300)
+			fig.savefig('./figure_DINhits_{:s}+95%_over_{:s}.eps'.format(key, rule), format = 'eps', bbox_inches = 'tight', dpi = 300)
 			plt.close()
 
 	for key in ['S2', 'S2_conf']:
 		tmp = [pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys()]
 		reports['DINhits'][key] = pandas.DataFrame(tmp, index = lst['din_rules'][1:]).rename_axis('rules')
 
-		with open('./report_DINhits_{key}.txt'.format(key), 'w') as file:
+		with open('./report_DINhits_{:s}.txt'.format(key), 'w') as file:
 			reports['DINhits'][key].to_csv(file, sep = '\t')
 
 	# plot second order sensitivities.
