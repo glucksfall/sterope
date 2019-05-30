@@ -472,7 +472,7 @@ def ranking():
 
 				seaborn.despine()
 				plt.tight_layout()
-				fig.savefig('./figure_DINfluxes_{:s}+95%_over_{:s}_vs_{:S}.eps'.format(key, rule_1st, rule_2nd), format = 'eps', bbox_inches = 'tight', dpi = 300)
+				fig.savefig('./figure_DINfluxes_{:s}+95%_over_{:s}_vs_{:s}.eps'.format(key, rule_1st, rule_2nd), format = 'eps', bbox_inches = 'tight', dpi = 300)
 				plt.close()
 
 	for key in ['S2', 'S2_conf']:
