@@ -468,7 +468,7 @@ def ranking():
 				if rule_1st == rule_2nd:
 					ax.set_xlabel('Influence {:s} over itself'.format(rule_1st))
 				else:
-					ax.set_xlabel('Influence {:s} over {:s}'.format(rule_2nd))
+					ax.set_xlabel('Influence {:s} over {:s}'.format(rule_1st, rule_2nd))
 
 				seaborn.despine()
 				plt.tight_layout()
