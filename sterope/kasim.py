@@ -552,7 +552,7 @@ def backup():
 	# archive a log file
 	log_file = 'log_{:s}.txt'.format(opts['systime'])
 	with open(log_file, 'w') as file:
-		file.write('# Output of {:s} {:s}\n'.format(opts['python'], subprocess.list2cmdline(sys.argv[0:])))
+		file.write('# Output of python3 {:s}\n'.format(subprocess.list2cmdline(sys.argv[0:])))
 	shutil.move(log_file, results)
 	shutil.copy2(opts['model'], results)
 
