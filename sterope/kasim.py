@@ -71,7 +71,7 @@ def parallelize(cmd):
 	return 0
 
 def argsparser():
-	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Sobol sequence.')
+	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Saltelli\'s extension for the Sobol method.')
 
 	# required arguments to simulate models
 	parser.add_argument('--model'  , metavar = 'str'  , type = str  , required = True , default = 'model.kappa'   , help = 'RBM with tagged variables to analyze')
@@ -97,6 +97,8 @@ def argsparser():
 	# general options for sensitivity analysis
 	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None            , help = 'seed for the Saltelli\' extension of the Sobol sequence')
 	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , help = 'N, default 10, to define the number of samples N * (2D + 2), with D the number of parameters')
+	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'             , help = 'perform calculations in parallel. WARNING, subprocess will be outside SLURM queue')
+
 	# WARNING local sensitivity analysis options
 	parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'global'        , help = 'global or local sensitivity analysis')
 	parser.add_argument('--tick'   , metavar = 'int'  , type = str  , required = False, default = '0.0'           , help = 'local sensitivity ...')
@@ -147,6 +149,7 @@ def ga_opts():
 		# global SA options
 		'seed'      : args.seed,
 		'p_levels'  : args.grid,
+		'ntasks'    : int(args.nprocs)
 		# local SA options
 		'type'      : args.type,
 		'size'      : args.size,
@@ -360,13 +363,15 @@ def evaluate():
 	# DIN hits are easy to evaluate recursively
 	din_hits = pandas.DataFrame(data = din_hits)
 	for rule in din_hits.columns:
-		sensitivity['din_hits'][rule] = sobol.analyze(population['problem', 'definition'], din_hits[rule].values, print_to_console = False)
+		sensitivity['din_hits'][rule] = sobol.analyze(
+			population['problem', 'definition'], din_hits[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
 	din_fluxes = pandas.DataFrame(data = [x[0] for x in [numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes]])
 	for rule in din_fluxes.columns:
-		sensitivity['din_fluxes'][rule] = sobol.analyze(population['problem', 'definition'], din_fluxes[rule].values, print_to_console = False)
+		sensitivity['din_fluxes'][rule] = sobol.analyze(
+			population['problem', 'definition'], din_fluxes[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
 
 	return sensitivity
 
