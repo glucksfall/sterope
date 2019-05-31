@@ -149,7 +149,7 @@ def ga_opts():
 		# global SA options
 		'seed'      : args.seed,
 		'p_levels'  : args.grid,
-		'ntasks'    : int(args.nprocs)
+		'ntasks'    : int(args.nprocs),
 		# local SA options
 		'type'      : args.type,
 		'size'      : args.size,
