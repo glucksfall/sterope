@@ -390,7 +390,7 @@ def evaluate():
 
 	din_fluxes = [ numpy.asarray(x) for x in din_fluxes.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-		sensitivity['din_fluxes'] = pool.map(parallelize, din_fluxes.values, chunksize = opts['ntasks'])
+		sensitivity['din_fluxes'] = pool.map(parallelize, din_fluxes, chunksize = opts['ntasks'])
 
 	return sensitivity
 
