@@ -64,13 +64,13 @@ def safe_checks():
 
 	return 0
 
-#def parallelize(cmd):
-	#proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-	#out, err = proc.communicate()
-	#proc.wait()
-	#return 0
+def parallelize(cmd):
+	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+	out, err = proc.communicate()
+	proc.wait()
+	return 0
 
-def parallelize(data):
+def _parallelsa(data):
     return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
 
 def argsparser():
@@ -379,7 +379,7 @@ def evaluate():
 	columns = din_hits.columns
 	din_hits = [ numpy.asarray(x) for x in din_hits.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-		sensitivity['din_hits'] = pool.map(parallelize, din_hits, chunksize = opts['ntasks'])
+		sensitivity['din_hits'] = pool.map(_parallelsa, din_hits, chunksize = opts['ntasks'])
 	sensitivity['din_hits'] = { k:v for k, v in zip(columns, sensitivity['din_hits']) }
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
@@ -393,7 +393,7 @@ def evaluate():
 	columns = din_fluxes.columns
 	din_fluxes = [ numpy.asarray(x) for x in din_fluxes.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-		sensitivity['din_fluxes'] = pool.map(parallelize, din_fluxes, chunksize = opts['ntasks'])
+		sensitivity['din_fluxes'] = pool.map(_parallelsa, din_fluxes, chunksize = opts['ntasks'])
 	sensitivity['din_fluxes'] = { k:v for k, v in zip(columns, sensitivity['din_fluxes']) }
 
 	return sensitivity
