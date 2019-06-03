@@ -604,9 +604,9 @@ if __name__ == '__main__':
 
 	# Sterope Main Algorithm
 	# generate an omega grid of N(2k + k) samples
-	population = populate()
+	#population = populate()
 	# simulate levels
-	population = simulate()
+	#population = simulate()
 	# evaluate sensitivity
 	sensitivity = evaluate()
 	# plot and rank
