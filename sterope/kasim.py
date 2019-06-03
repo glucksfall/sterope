@@ -63,14 +63,17 @@ def safe_checks():
 
 	return 0
 
-def parallelize(cmd):
+def _parallel_popen(cmd):
 	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	out, err = proc.communicate()
 	proc.wait()
 	return 0
 
-def _parallelsa(data):
+def _parallel_analyze(data):
     return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
+
+def _parallel_plots():
+	return 0
 
 def argsparser():
 	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Saltelli\'s extension for the Sobol method.')
@@ -344,7 +347,7 @@ def simulate():
 	#simulate with multiprocessing.Pool
 	else:
 		with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-			pool.map(parallelize, sorted(squeue), chunksize = 1)
+			pool.map(_parallel_popen, sorted(squeue), chunksize = 1)
 
 	return population
 
@@ -408,8 +411,7 @@ def ranking():
 		'DINfluxes' : {},
 		}
 
-	# DIN hits
-	# reorder sensitivities for DIN hits
+	# write reports for DIN hits
 	x = sensitivity['din_hits']
 	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
 		reports['DINhits'][key] = pandas.DataFrame([x[k][key] for k in x.keys()],
@@ -417,6 +419,46 @@ def ranking():
 
 		with open('./report_DINhits_{:s}.txt'.format(key), 'w') as file:
 			reports['DINhits'][key].to_csv(file, sep = '\t')
+
+	for key in ['S2', 'S2_conf']:
+		tmp = [pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys()]
+		reports['DINhits'][key] = pandas.DataFrame(tmp, index = lst['din_rules'][1:]).rename_axis('rules')
+
+		with open('./report_DINhits_{:s}.txt'.format(key), 'w') as file:
+			reports['DINhits'][key].to_csv(file, sep = '\t')
+
+	# write reports for DIN fluxes
+	x = sensitivity['din_fluxes']
+	# name index: parameter sensitivities over the influence of a rule over a 2nd rule
+	rules_names = list(lst['din_rules'][1:])
+	first = [y for x in [[x]*len(rules_names) for x in rules_names] for y in x]
+	second = rules_names * len(rules_names)
+
+	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
+		reports['DINfluxes'][key] = pandas.DataFrame([x[k][key] for k in x.keys()], columns = opts['par_name']).fillna(0)
+		reports['DINfluxes'][key]['1st'] = first
+		reports['DINfluxes'][key]['2nd'] = second
+		reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
+
+		with open('./report_DINfluxes_{:s}.txt'.format(key), 'w') as file:
+			reports['DINfluxes'][key].to_csv(file, sep = '\t')
+
+	for key in ['S2', 'S2_conf']:
+		tmp = [pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys()]
+		reports['DINfluxes'][key] = pandas.DataFrame(tmp).fillna(0)
+		reports['DINfluxes'][key]['1st'] = first
+		reports['DINfluxes'][key]['2nd'] = second
+		reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
+
+		with open('./report_DINfluxes_{:s}.txt'.format(key), 'w') as file:
+			reports['DINfluxes'][key].to_csv(file, sep = '\t')
+
+	# DIN hits
+	# plot reports: reorder sensitivities for DIN hits
+	x = sensitivity['din_hits']
+	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
+		reports['DINhits'][key] = pandas.DataFrame([x[k][key] for k in x.keys()],
+			columns = opts['par_name'], index = lst['din_rules'][1:]).rename_axis('rules')
 
 		# plot sensitivities and half of the 95% confidence interval, separately
 		for rule in reports['DINhits'][key].index:
@@ -440,18 +482,11 @@ def ranking():
 			fig.savefig('./figure_DINhits_{:s}+95%_over_{:s}.eps'.format(key, rule), format = 'eps', bbox_inches = 'tight', dpi = 300)
 			plt.close()
 
-	for key in ['S2', 'S2_conf']:
-		tmp = [pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys()]
-		reports['DINhits'][key] = pandas.DataFrame(tmp, index = lst['din_rules'][1:]).rename_axis('rules')
-
-		with open('./report_DINhits_{:s}.txt'.format(key), 'w') as file:
-			reports['DINhits'][key].to_csv(file, sep = '\t')
-
 	# plot second order sensitivities.
 	# TODO
 	# use a heatmap?
 
-	# DIN fluxes
+"""	# DIN fluxes
 	# reorder sensitivities for DIN fluxes
 	x = sensitivity['din_fluxes']
 	# name index: parameter sensitivities over the influence of a 1st rule over a 2nd rule
@@ -464,9 +499,6 @@ def ranking():
 		reports['DINfluxes'][key]['1st'] = first
 		reports['DINfluxes'][key]['2nd'] = second
 		reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
-
-		with open('./report_DINfluxes_{:s}.txt'.format(key), 'w') as file:
-			reports['DINfluxes'][key].to_csv(file, sep = '\t')
 
 		# plot sensitivities and half of the 95% confidence interval, separately
 		for rule_1st in reports['DINfluxes'][key].index.levels[0]:
@@ -500,17 +532,7 @@ def ranking():
 				seaborn.despine()
 				plt.tight_layout()
 				fig.savefig('./figure_DINfluxes_{:s}+95%_over_{:s}_vs_{:s}.eps'.format(key, rule_1st, rule_2nd), format = 'eps', bbox_inches = 'tight', dpi = 300)
-				plt.close()
-
-	for key in ['S2', 'S2_conf']:
-		tmp = [pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys()]
-		reports['DINfluxes'][key] = pandas.DataFrame(tmp).fillna(0)
-		reports['DINfluxes'][key]['1st'] = first
-		reports['DINfluxes'][key]['2nd'] = second
-		reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
-
-		with open('./report_DINfluxes_{:s}.txt'.format(key), 'w') as file:
-			reports['DINfluxes'][key].to_csv(file, sep = '\t')
+				plt.close()"""
 
 	# plot second order sensitivities.
 	# TODO
