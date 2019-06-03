@@ -215,6 +215,7 @@ def populate():
 	# 'parameters' dictionary stores each line in the model
 	par_keys = list(parameters.keys())
 
+	# init problem definiton
 	problem = {
 		'names': opts['par_name'],
 		'num_vars': len(opts['par_name']),
@@ -228,6 +229,7 @@ def populate():
 			upper = float(parameters[par_keys[line]][5])
 			problem['bounds'].append([lower, upper])
 
+	# create samples to simulate
 	models = saltelli.sample(problem = problem, N = int(opts['p_levels']), calc_second_order = True, seed = int(opts['seed']))
 
 	# write new models following the Saltelli's samples
@@ -240,7 +242,7 @@ def populate():
 		for par_index, par_name in enumerate(opts['par_name']):
 			population[model_key, par_name] = models[model_index][par_index]
 
-	# add problem definition to population (used later)
+	# add problem definition to population (used later by saltelli.analyze)
 	population['problem', 'definition'] = problem
 
 	return population
@@ -267,27 +269,28 @@ def simulate():
 			model_key = model[0]
 			model_name = population[model_key, 'model']
 
+			# define pertubation to the kappa model that indicates KaSim calculates the DIN
 			if opts['type'] == 'global':
 				if opts['syntax'] == '4':
-					flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [true];'.format(opts['tmin'], model_key) + \
-						'%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [false];'.format(opts['tmax'], model_key)
+					flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [true];\n'.format(opts['tmin'], model_key)
+					flux += '%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [false];'.format(opts['tmax'], model_key)
 				else: # kappa3.5 uses $FLUX instead of $DIN
-					flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [true]\n'.format(opts['tmin'], model_key) + \
-						'%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [false]'.format(opts['tmax'], model_key)
+					flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [true]\n'.format(opts['tmin'], model_key)
+					flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [false]'.format(opts['tmax'], model_key)
 			else: # local sensitivity analysis
 				if opts['syntax'] == '4':
 					flux = '%mod: repeat (([T] > DIM_clock) && (DIM_tick > (DIM_length - 1))) do $DIN "flux_".(DIM_tick - DIM_length).".json" [false] until [false];'
 				else: # kappa3.5 uses $FLUX instead of $DIN
-					flux = '\n# Added to calculate a local sensitivity analysis\n' + \
-						'%var: \'DIN_beat\' {:s}\n'.format(opts['beat']) + \
-						'%var: \'DIN_length\' {:s}\n'.format(opts['size']) + \
-						'%var: \'DIN_tick\' {:s}\n'.format(opts['tick']) + \
-						'%var: \'DIN_clock\' {:s}\n'.format(opts['tmin']) + \
-						'%mod: repeat (([T] > DIN_clock) && (DIN_tick > (DIN_length - 1))) do ' + \
-							'$FLUX \"flux_{:s}\".(DIN_tick - DIN_length).\".json\" [false] until [false]\n'.format(model_key) + \
-						'%mod: repeat ([T] > DIN_clock) do ' + \
-							'$FLUX "flux_{:s}".DIN_tick.".json" "probability" [true] until ((((DIN_tick + DIN_length) + 1) * DIN_beat) > [Tmax])\n'.format(model_key) + \
-						'%mod: repeat ([T] > DIN_clock) do $UPDATE DIN_clock (DIN_clock + DIN_beat); $UPDATE DIN_tick (DIN_tick + 1) until [false]'
+					flux = '\n# Added to calculate a local sensitivity analysis\n'
+					flux += '%var: \'DIN_beat\' {:s}\n'.format(opts['beat'])
+					flux += '%var: \'DIN_length\' {:s}\n'.format(opts['size'])
+					flux += '%var: \'DIN_tick\' {:s}\n'.format(opts['tick'])
+					flux += '%var: \'DIN_clock\' {:s}\n'.format(opts['tmin'])
+					flux += '%mod: repeat (([T] > DIN_clock) && (DIN_tick > (DIN_length - 1))) do '
+					flux += '$FLUX \"flux_{:s}\".(DIN_tick - DIN_length).\".json\" [false] until [false]\n'.format(model_key)
+					flux += '%mod: repeat ([T] > DIN_clock) do '
+					flux += '$FLUX "flux_{:s}".DIN_tick.".json" "probability" [true] until ((((DIN_tick + DIN_length) + 1) * DIN_beat) > [Tmax])\n'.format(model_key)
+					flux += '%mod: repeat ([T] > DIN_clock) do $UPDATE DIN_clock (DIN_clock + DIN_beat); $UPDATE DIN_tick (DIN_tick + 1) until [false]'
 
 			model_path = './model_' + model_name + '.kappa'
 			if not os.path.exists(model_path):
@@ -310,8 +313,8 @@ def simulate():
 			output = 'model_{:s}.out.txt'.format(model_name)
 
 			if not os.path.exists(output):
-				job_desc['exec_kasim'] = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log'.format( \
-					opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
+				job_desc['exec_kasim'] = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
+					.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
 
 				# use SLURM Workload Manager
 				if opts['slurm'] is not None:
@@ -353,30 +356,40 @@ def evaluate():
 		}
 
 	din_hits = [] # list of column vector, one value per rule
-	din_fluxes = [] # list of squeare numpy arrays, not symmetric
+	din_fluxes = [] # list of square numpy arrays, but there are not symmetric arrays
 	files = sorted(glob.glob('./flux*json'))
 
+	# read observations
 	for fluxes in files:
 		with open(fluxes, 'r') as file:
 			data = pandas.read_json(file)
-		din_hits.append(data['din_hits'].iloc[1:].values) # vector column of values
-		tmp = [x for x in data['din_fluxs']] # vector column of list of values
+
+		# vector column of values
+		din_hits.append(data['din_hits'].iloc[1:].values)
+		# vector column of list of values
+		tmp = [x for x in data['din_fluxs']]
 		din_fluxes.append(pandas.DataFrame(tmp).values)
 
 	# DIN hits are easy to evaluate recursively
-	din_hits = pandas.DataFrame(data = din_hits)
+	#din_hits = pandas.DataFrame(data = din_hits)
 	#for rule in din_hits.columns:
 		#sensitivity['din_hits'][rule] = sobol.analyze(
 			#population['problem', 'definition'], din_hits[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
+
+	print(din_hits.values)
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-		sensitivity = pool.map(parallelize, din_hits.columns, chunksize = 1)
+		sensitivity['din_hits'] = pool.map(parallelize, din_hits.values, chunksize = opts['ntasks'])
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
-	din_fluxes = pandas.DataFrame(data = [x[0] for x in [numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes]])
+	din_fluxes = [x[0] for x in [numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes]]
+	#din_fluxes = pandas.DataFrame(data = din_fluxes)
 	#for rule in din_fluxes.columns:
 		#sensitivity['din_fluxes'][rule] = sobol.analyze(
 			#population['problem', 'definition'], din_fluxes[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
+
+	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
+		sensitivity['din_fluxes'] = pool.map(parallelize, din_fluxes.values, chunksize = opts['ntasks'])
 
 	return sensitivity
 
@@ -584,7 +597,7 @@ if __name__ == '__main__':
 	safe_checks()
 
 	# clean the working directory
-	clean()
+	#clean()
 
 	# read model configuration
 	parameters = configurate()
