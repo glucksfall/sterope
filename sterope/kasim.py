@@ -64,11 +64,14 @@ def safe_checks():
 
 	return 0
 
-def parallelize(cmd):
-	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
-	out, err = proc.communicate()
-	proc.wait()
-	return 0
+#def parallelize(cmd):
+	#proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
+	#out, err = proc.communicate()
+	#proc.wait()
+	#return 0
+
+def parallelize(data):
+    return sobol.analyze(population['problem', 'definition'], data, print_to_console = False)
 
 def argsparser():
 	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Saltelli\'s extension for the Sobol method.')
@@ -237,7 +240,7 @@ def populate():
 		for par_index, par_name in enumerate(opts['par_name']):
 			population[model_key, par_name] = models[model_index][par_index]
 
-	# add models samples to population (used later)
+	# add problem definition to population (used later)
 	population['problem', 'definition'] = problem
 
 	return population
@@ -362,16 +365,18 @@ def evaluate():
 
 	# DIN hits are easy to evaluate recursively
 	din_hits = pandas.DataFrame(data = din_hits)
-	for rule in din_hits.columns:
-		sensitivity['din_hits'][rule] = sobol.analyze(
-			population['problem', 'definition'], din_hits[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
+	#for rule in din_hits.columns:
+		#sensitivity['din_hits'][rule] = sobol.analyze(
+			#population['problem', 'definition'], din_hits[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
+	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
+		sensitivity = pool.map(parallelize, din_hits.columns, chunksize = 1)
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
 	din_fluxes = pandas.DataFrame(data = [x[0] for x in [numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes]])
-	for rule in din_fluxes.columns:
-		sensitivity['din_fluxes'][rule] = sobol.analyze(
-			population['problem', 'definition'], din_fluxes[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
+	#for rule in din_fluxes.columns:
+		#sensitivity['din_fluxes'][rule] = sobol.analyze(
+			#population['problem', 'definition'], din_fluxes[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
 
 	return sensitivity
 
