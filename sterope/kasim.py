@@ -381,7 +381,7 @@ def evaluate():
 	columns = din_hits.columns
 	din_hits = [ numpy.asarray(x) for x in din_hits.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-		sensitivity['din_hits'] = pool.map(_parallelsa, din_hits, chunksize = opts['ntasks'])
+		sensitivity['din_hits'] = pool.map(_parallel_analyze, din_hits, chunksize = opts['ntasks'])
 	sensitivity['din_hits'] = { k:v for k, v in zip(columns, sensitivity['din_hits']) }
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
@@ -395,7 +395,7 @@ def evaluate():
 	columns = din_fluxes.columns
 	din_fluxes = [ numpy.asarray(x) for x in din_fluxes.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-		sensitivity['din_fluxes'] = pool.map(_parallelsa, din_fluxes, chunksize = opts['ntasks'])
+		sensitivity['din_fluxes'] = pool.map(_parallel_analyze, din_fluxes, chunksize = opts['ntasks'])
 	sensitivity['din_fluxes'] = { k:v for k, v in zip(columns, sensitivity['din_fluxes']) }
 
 	return sensitivity
@@ -486,7 +486,8 @@ def ranking():
 	# TODO
 	# use a heatmap?
 
-"""	# DIN fluxes
+	"""
+	# DIN fluxes
 	# reorder sensitivities for DIN fluxes
 	x = sensitivity['din_fluxes']
 	# name index: parameter sensitivities over the influence of a 1st rule over a 2nd rule
@@ -532,7 +533,8 @@ def ranking():
 				seaborn.despine()
 				plt.tight_layout()
 				fig.savefig('./figure_DINfluxes_{:s}+95%_over_{:s}_vs_{:s}.eps'.format(key, rule_1st, rule_2nd), format = 'eps', bbox_inches = 'tight', dpi = 300)
-				plt.close()"""
+				plt.close()
+	"""
 
 	# plot second order sensitivities.
 	# TODO
