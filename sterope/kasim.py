@@ -2,7 +2,6 @@
 
 '''
 Project "Sensitivity Analysis of Rule-Based Models", Rodrigo Santibáñez, 2019
-To be used with KaSim. Please refer to other subprojects for other stochastic simulators support
 Citation:
 '''
 
