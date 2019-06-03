@@ -71,7 +71,7 @@ def safe_checks():
 	#return 0
 
 def parallelize(data):
-    return sobol.analyze(population['problem', 'definition'], data, print_to_console = False)
+    return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
 
 def argsparser():
 	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Saltelli\'s extension for the Sobol method.')
@@ -371,23 +371,24 @@ def evaluate():
 		din_fluxes.append(pandas.DataFrame(tmp).values)
 
 	# DIN hits are easy to evaluate recursively
-	#din_hits = pandas.DataFrame(data = din_hits)
+	din_hits = pandas.DataFrame(data = din_hits)
 	#for rule in din_hits.columns:
 		#sensitivity['din_hits'][rule] = sobol.analyze(
 			#population['problem', 'definition'], din_hits[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
 
-	print(din_hits.values)
+	din_hits = [ numpy.asarray(x) for x in din_hits.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
 		sensitivity['din_hits'] = pool.map(parallelize, din_hits.values, chunksize = opts['ntasks'])
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
 	din_fluxes = [x[0] for x in [numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes]]
-	#din_fluxes = pandas.DataFrame(data = din_fluxes)
+	din_fluxes = pandas.DataFrame(data = din_fluxes)
 	#for rule in din_fluxes.columns:
 		#sensitivity['din_fluxes'][rule] = sobol.analyze(
 			#population['problem', 'definition'], din_fluxes[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
 
+	din_fluxes = [ numpy.asarray(x) for x in din_fluxes.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
 		sensitivity['din_fluxes'] = pool.map(parallelize, din_fluxes.values, chunksize = opts['ntasks'])
 
@@ -604,7 +605,7 @@ if __name__ == '__main__':
 
 	# Sterope Main Algorithm
 	# generate an omega grid of N(2k + k) samples
-	#population = populate()
+	population = populate()
 	# simulate levels
 	#population = simulate()
 	# evaluate sensitivity
