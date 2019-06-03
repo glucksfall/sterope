@@ -376,9 +376,11 @@ def evaluate():
 		#sensitivity['din_hits'][rule] = sobol.analyze(
 			#population['problem', 'definition'], din_hits[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
 
+	columns = din_hits.columns
 	din_hits = [ numpy.asarray(x) for x in din_hits.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
 		sensitivity['din_hits'] = pool.map(parallelize, din_hits, chunksize = opts['ntasks'])
+	sensitivity['din_hits'] = { k:v for k, v in zip(columns, sensitivity['din_hits']) }
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
@@ -388,9 +390,11 @@ def evaluate():
 		#sensitivity['din_fluxes'][rule] = sobol.analyze(
 			#population['problem', 'definition'], din_fluxes[rule].values, print_to_console = False, parallel = True, n_processors = opts['ntasks'])
 
+	columns = din_fluxes.columns
 	din_fluxes = [ numpy.asarray(x) for x in din_fluxes.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
 		sensitivity['din_fluxes'] = pool.map(parallelize, din_fluxes, chunksize = opts['ntasks'])
+	sensitivity['din_fluxes'] = { k:v for k, v in zip(columns, sensitivity['din_fluxes']) }
 
 	return sensitivity
 
@@ -598,7 +602,7 @@ if __name__ == '__main__':
 	safe_checks()
 
 	# clean the working directory
-	#clean()
+	clean()
 
 	# read model configuration
 	parameters = configurate()
@@ -607,7 +611,7 @@ if __name__ == '__main__':
 	# generate an omega grid of N(2k + k) samples
 	population = populate()
 	# simulate levels
-	#population = simulate()
+	population = simulate()
 	# evaluate sensitivity
 	sensitivity = evaluate()
 	# plot and rank
