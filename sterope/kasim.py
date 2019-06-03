@@ -378,7 +378,7 @@ def evaluate():
 
 	din_hits = [ numpy.asarray(x) for x in din_hits.T.values ]
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-		sensitivity['din_hits'] = pool.map(parallelize, din_hits.values, chunksize = opts['ntasks'])
+		sensitivity['din_hits'] = pool.map(parallelize, din_hits, chunksize = opts['ntasks'])
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
