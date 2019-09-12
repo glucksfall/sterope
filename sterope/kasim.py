@@ -101,10 +101,10 @@ def argsparser():
 
 	# general options for sensitivity analysis
 	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None            , help = 'seed for the Saltelli\' extension of the Sobol sequence')
-	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , help = 'N, default 10, to define the number of samples N * (2D + 2), with D the number of parameters')
+	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , help = 'N, default 10, to define the number of samples N * (2k + 2), with k the number of parameters')
 	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'             , help = 'perform calculations in parallel. WARNING, subprocess will be outside SLURM queue')
 
-	# WARNING local sensitivity analysis options
+	# WARNING slice the simulation and perform global sensitivity analysis
 	parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'global'        , help = 'global or local sensitivity analysis')
 	parser.add_argument('--tick'   , metavar = 'int'  , type = str  , required = False, default = '0.0'           , help = 'local sensitivity ...')
 	parser.add_argument('--size'   , metavar = 'int'  , type = str  , required = False, default = '1.0'           , help = 'local sensitivity ...')
@@ -155,7 +155,7 @@ def ga_opts():
 		'seed'      : args.seed,
 		'p_levels'  : args.grid,
 		'ntasks'    : int(args.nprocs),
-		# local SA options
+		# sliced global SA options
 		'type'      : args.type,
 		'size'      : args.size,
 		'tick'      : args.tick,
@@ -182,7 +182,7 @@ def configurate():
 		for line in infile:
 			data.append(line)
 
-	# find variables to analyze
+	# find parameters to analyze
 	regex = '%\w+: \'(\w+)\' ' \
 		'([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\s+(?:\/\/|#)\s+' \
 		'(\w+)\[([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\s+' \
@@ -227,8 +227,12 @@ def populate():
 	# define bounds following the model configuration
 	for line in range(len(par_keys)):
 		if parameters[line][0] == 'par':
-			lower = float(parameters[par_keys[line]][4])
-			upper = float(parameters[par_keys[line]][5])
+			if parameters[line][3] == 'range':
+				lower = float(parameters[par_keys[line]][4])
+				upper = float(parameters[par_keys[line]][5])
+			if parameters[line][3] == 'factor':
+				lower = float(parameters[line][2]) * (1 - float(parameters[par_keys[line]][4]))
+				upper = float(parameters[line][2]) * (1 + float(parameters[par_keys[line]][5]))
 			problem['bounds'].append([lower, upper])
 
 	# create samples to simulate
