@@ -313,17 +313,17 @@ def simulate():
 	squeue = []
 
 	for model in sorted(population.keys()):
-		#if model[1] == 'model':
-		model_key = model[0]
-		model_name = population[model_key, 'model']
-		output = 'model_{:s}.out.txt'.format(model_name)
+		if model[1] == 'model':
+			model_key = model[0]
+			model_name = population[model_key, 'model']
+			output = 'model_{:s}.out.txt'.format(model_name)
 
-		job_desc['exec_kasim'] = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
-			.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
+			job_desc['exec_kasim'] = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
+				.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
 
-		cmd = os.path.expanduser(job_desc['exec_kasim'])
-		cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
-		squeue.append(cmd)
+			cmd = os.path.expanduser(job_desc['exec_kasim'])
+			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
+			squeue.append(cmd)
 
 	#simulate with multiprocessing.Pool
 	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
