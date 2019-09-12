@@ -283,8 +283,15 @@ def simulate():
 			squeue.append(cmd)
 
 	# simulate the queue with multiprocessing.Pool (SLURM define how many processors to use)
-	with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
-		pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
+	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
+		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
+
+	results = []
+	for x in sorted(squeue):
+		y = dask.delayed(_parallel_analyze)(x)
+		results.append(y)
+
+	dask.compute(*results)
 
 	return 0
 
@@ -322,7 +329,7 @@ def evaluate():
 		results.append(y)
 
 	# compute and reorder results
-	sensitivity['din_hits'] = results.compute(*results)
+	sensitivity['din_hits'] = dask.compute(*results)
 	sensitivity['din_hits'] = { k : v for k, v in zip(din_hits.columns, sensitivity['din_hits']) }
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
@@ -340,7 +347,7 @@ def evaluate():
 		results.append(y)
 
 	# compute and reorder results
-	sensitivity['din_fluxes'] = results.compute(*results)
+	sensitivity['din_fluxes'] = dask.compute(*results)
 	sensitivity['din_fluxes'] = { k:v for k, v in zip(din_fluxes.columns, sensitivity['din_fluxes']) }
 
 	return sensitivity
