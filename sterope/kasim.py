@@ -283,7 +283,7 @@ def simulate():
 				else: # kappa3.5 uses $FLUX instead of $DIN
 					flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [true]\n'.format(opts['tmin'], model_key)
 					flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [false]'.format(opts['tmax'], model_key)
-			else: # local sensitivity analysis
+			else: # sliced global sensitivity analysis
 				if opts['syntax'] == '4':
 					flux = '%mod: repeat (([T] > DIM_clock) && (DIM_tick > (DIM_length - 1))) do $DIN "flux_".(DIM_tick - DIM_length).".json" [false] until [false];'
 				else: # kappa3.5 uses $FLUX instead of $DIN
@@ -313,45 +313,21 @@ def simulate():
 	squeue = []
 
 	for model in sorted(population.keys()):
-		if model[1] == 'model':
-			model_key = model[0]
-			model_name = population[model_key, 'model']
-			output = 'model_{:s}.out.txt'.format(model_name)
+		#if model[1] == 'model':
+		model_key = model[0]
+		model_name = population[model_key, 'model']
+		output = 'model_{:s}.out.txt'.format(model_name)
 
-			if not os.path.exists(output):
-				job_desc['exec_kasim'] = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
-					.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
+		job_desc['exec_kasim'] = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
+			.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
 
-				# use SLURM Workload Manager
-				if opts['slurm'] is not None:
-					cmd = os.path.expanduser('sbatch --no-requeue -p {partition} -N {nodes} -c {ncpus} -n {ntasks} -o {null} -e {null} -J {job_name} \
-						--wrap ""{exec_kasim}"" {others}'.format(**job_desc))
-					cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
-					out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
-					while err == sbatch_error:
-						out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
-					squeue.append(out.decode('utf-8')[20:-1])
-
-				# use multiprocessing.Pool
-				else:
-					cmd = os.path.expanduser(job_desc['exec_kasim'])
-					cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
-					squeue.append(cmd)
-
-	# check if squeued jobs have finished
-	if opts['slurm'] is not None:
-		for job_id in range(len(squeue)):
-			cmd = 'squeue --noheader -j{:s}'.format(squeue[job_id])
-			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
-			out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
-			while out.count(b'child') > 0 or err == squeue_error:
-				time.sleep(1)
-				out, err = subprocess.Popen(cmd, shell = False, stdout = subprocess.PIPE, stderr = subprocess.PIPE).communicate()
+		cmd = os.path.expanduser(job_desc['exec_kasim'])
+		cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
+		squeue.append(cmd)
 
 	#simulate with multiprocessing.Pool
-	else:
-		with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
-			pool.map(_parallel_popen, sorted(squeue), chunksize = 1)
+	with multiprocessing.Pool(multiprocessing.cpu_count() - 1) as pool:
+		pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'])
 
 	return population
 
