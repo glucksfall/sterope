@@ -285,7 +285,7 @@ def simulate():
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
 	results = []
-	for x in sorted(squeue):
+	for x in numpy.asarray(sorted(squeue)):
 		y = dask.delayed(_parallel_analyze)(x)
 		results.append(y)
 
