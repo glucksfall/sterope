@@ -135,7 +135,6 @@ def ga_opts():
 		'results'   : args.results,
 		'samples'   : args.samples,
 		'rawdata'   : args.rawdata,
-		'figures'   : args.figures,
 		'reports'   : args.reports,
 		# non-user defined options
 		'home'      : os.getcwd(),
