@@ -328,8 +328,7 @@ def evaluate():
 
 	# compute and reorder results
 	sensitivity['din_hits'] = dask.compute(*results)
-	print(dask.compute(*results))
-	sensitivity['din_hits'] = { k : v for k, v in zip(din_hits.columns, sensitivity['din_hits']) }
+	sensitivity['din_hits'] = { k : v for k, v in zip(data['din_hits'].columns, sensitivity['din_hits']) }
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
@@ -347,7 +346,7 @@ def evaluate():
 
 	# compute and reorder results
 	sensitivity['din_fluxes'] = dask.compute(*results)
-	sensitivity['din_fluxes'] = { k:v for k, v in zip(din_fluxes.columns, sensitivity['din_fluxes']) }
+	sensitivity['din_fluxes'] = { k:v for k, v in zip(data['din_fluxs'].columns, sensitivity['din_fluxes']) }
 
 	return sensitivity
 
