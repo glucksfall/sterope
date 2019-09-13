@@ -51,7 +51,7 @@ def argsparser():
 	parser.add_argument('--final'  , metavar = 'float', type = str  , required = True , default = '100'           , \
 		help = 'limit time to simulate')
 	parser.add_argument('--steps'  , metavar = 'float', type = str  , required = True , default = '1'             , \
-		help = 'time step to simulate')(cmd)
+		help = 'time step to simulate')
 
 	# not required arguments to simulate models
 	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , \
