@@ -384,11 +384,12 @@ def ranking():
 	x = sensitivity['din_fluxes']
 	# name index: parameter sensitivities over the influence of a rule over a 2nd rule
 	rules_names = list(lst['din_rules'][1:])
-	first = [y for x in [[x]*len(rules_names) for x in rules_names] for y in x]
+	first = [ y for x in [ [x]*len(rules_names) for x in rules_names ] for y in x ]
+	print(first)
 	second = rules_names * len(rules_names)
 
 	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
-		reports['DINfluxes'][key] = pandas.DataFrame([x[k][key] for k in x.keys()], columns = opts['par_name']).fillna(0)
+		reports['DINfluxes'][key] = pandas.DataFrame([ x[k][key] for k in x.keys() ], columns = opts['par_name']).fillna(0)
 		reports['DINfluxes'][key]['1st'] = first
 		reports['DINfluxes'][key]['2nd'] = second
 		reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
