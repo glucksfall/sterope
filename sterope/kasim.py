@@ -315,8 +315,8 @@ def evaluate():
 		din_fluxes.append(pandas.DataFrame(tmp).values)
 
 	# DIN hits are easy to evaluate recursively or parallelized
-	#din_hits = pandas.DataFrame(data = din_hits)
-	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
+	din_hits = pandas.DataFrame(data = din_hits)
+	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits.values) ]
 
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#sensitivity['din_hits'] = pool.map(_parallel_analyze, din_hits, chunksize = opts['ntasks'] - 1)
@@ -333,8 +333,8 @@ def evaluate():
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
 	din_fluxes = [ x[0] for x in [ numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes ] ]
-	#din_fluxes = pandas.DataFrame(data = din_fluxes)
-	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
+	din_fluxes = pandas.DataFrame(data = din_fluxes)
+	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes.values) ]
 
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#sensitivity['din_fluxes'] = pool.map(_parallel_analyze, din_fluxes, chunksize = opts['ntasks'])
