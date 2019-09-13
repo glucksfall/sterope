@@ -315,7 +315,7 @@ def evaluate():
 		din_fluxes.append(pandas.DataFrame(tmp).values)
 
 	# parameters
-	pars = data['din_hits'][0].columns
+	pars = data['din_hits'].columns
 
 	# DIN hits are easy to evaluate recursively or parallelized
 	#din_hits = pandas.DataFrame(data = din_hits)
