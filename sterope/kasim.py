@@ -37,7 +37,7 @@ def _parallel_popen(cmd):
 	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	out, err = proc.communicate()
 	proc.wait()
-	return 0
+	return proc
 
 def _parallel_analyze(data):
     return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
@@ -51,7 +51,7 @@ def argsparser():
 	parser.add_argument('--final'  , metavar = 'float', type = str  , required = True , default = '100'           , \
 		help = 'limit time to simulate')
 	parser.add_argument('--steps'  , metavar = 'float', type = str  , required = True , default = '1'             , \
-		help = 'time step to simulate')
+		help = 'time step to simulate')(cmd)
 
 	# not required arguments to simulate models
 	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , \
@@ -300,7 +300,7 @@ def evaluate():
 		}
 
 	din_hits = [] # list of column vectors, one vector per rule
-	din_fluxes = [] # list of square numpy arrays, but not symmetric
+	din_fluxes = [] # list of square numpy arrays, but not sym(cmd)metric
 
 	# read observations
 	files = sorted(glob.glob('./flux*json'))
