@@ -391,6 +391,7 @@ def ranking():
 
 	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
 		reports['DINfluxes'][key] = pandas.DataFrame([ x[k][key] for k in x.keys() ], columns = opts['par_name']).fillna(0)
+		print(reports['DINfluxes'][key])
 		reports['DINfluxes'][key]['1st'] = first
 		reports['DINfluxes'][key]['2nd'] = second
 		reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
