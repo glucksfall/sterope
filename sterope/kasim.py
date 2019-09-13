@@ -494,7 +494,7 @@ if __name__ == '__main__':
 	# simulate levels
 	simulate()
 	# evaluate sensitivity
-	evaluate()
+	sensitivity = evaluate()
 	# write reports
 	ranking()
 
