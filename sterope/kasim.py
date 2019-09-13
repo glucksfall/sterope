@@ -226,7 +226,7 @@ def populate():
 			model_name = population[model_key, 'model']
 
 			# define pertubation to the kappa model that indicates KaSim to calculates the Dinamic Influence Network
-			if opts['type'] == 'global':
+			if opts['type'] == 'total':
 				if opts['syntax'] == '4':
 					flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [true];\n'.format(opts['tmin'], model_key)
 					flux += '%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [false];'.format(opts['tmax'], model_key)
