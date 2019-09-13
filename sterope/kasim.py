@@ -308,15 +308,15 @@ def evaluate():
 		with open(file, 'r') as infile:
 			data = pandas.read_json(infile)
 
-		# vector column
+		# vector column of lists
 		din_hits.append(data['din_hits'].iloc[1:].values)
-		# reshape fluxes into a vector column of list of values
+		# reshape fluxes into a vector column of lists
 		tmp = [ x for x in data['din_fluxs'] ]
 		din_fluxes.append(pandas.DataFrame(tmp).values)
 
 	# DIN hits are easy to evaluate recursively or parallelized
-	din_hits = pandas.DataFrame(data = din_hits)
-	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits.values) ]
+	#din_hits = pandas.DataFrame(data = din_hits)
+	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
 
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#sensitivity['din_hits'] = pool.map(_parallel_analyze, din_hits, chunksize = opts['ntasks'] - 1)
