@@ -314,6 +314,9 @@ def evaluate():
 		tmp = [ x for x in data['din_fluxs'] ]
 		din_fluxes.append(pandas.DataFrame(tmp).values)
 
+	# parameters
+	pars = din_hits[0].columns
+
 	# DIN hits are easy to evaluate recursively or parallelized
 	#din_hits = pandas.DataFrame(data = din_hits)
 	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
@@ -328,7 +331,7 @@ def evaluate():
 
 	# compute and reorder results
 	sensitivity['din_hits'] = dask.compute(*results)
-	sensitivity['din_hits'] = { k : v for k, v in zip(data['din_hits'].columns, sensitivity['din_hits']) }
+	sensitivity['din_hits'] = { k : v for k, v in zip(pars, sensitivity['din_hits']) }
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
@@ -346,7 +349,7 @@ def evaluate():
 
 	# compute and reorder results
 	sensitivity['din_fluxes'] = dask.compute(*results)
-	sensitivity['din_fluxes'] = { k:v for k, v in zip(data['din_fluxs'].columns, sensitivity['din_fluxes']) }
+	sensitivity['din_fluxes'] = { k:v for k, v in zip(pars, sensitivity['din_fluxes']) }
 
 	return sensitivity
 
