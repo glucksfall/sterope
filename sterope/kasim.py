@@ -387,6 +387,7 @@ def ranking():
 	first = [ y for x in [ [x]*len(rules_names) for x in rules_names ] for y in x ]
 	print(first)
 	second = rules_names * len(rules_names)
+	print(second)
 
 	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
 		reports['DINfluxes'][key] = pandas.DataFrame([ x[k][key] for k in x.keys() ], columns = opts['par_name']).fillna(0)
