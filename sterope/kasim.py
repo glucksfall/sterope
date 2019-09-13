@@ -308,10 +308,10 @@ def evaluate():
 		with open(file, 'r') as infile:
 			data = pandas.read_json(infile)
 
-		# vector column of values
+		# vector column
 		din_hits.append(data['din_hits'].iloc[1:].values)
-		# vector column of list of values
-		tmp = [x for x in data['din_fluxs']]
+		# reshape fluxes into a vector column of list of values
+		tmp = [ x for x in data['din_fluxs'] ]
 		din_fluxes.append(pandas.DataFrame(tmp).values)
 
 	# DIN hits are easy to evaluate recursively or parallelized
@@ -328,6 +328,7 @@ def evaluate():
 
 	# compute and reorder results
 	sensitivity['din_hits'] = dask.compute(*results)
+	print(sensitivity)
 	sensitivity['din_hits'] = { k : v for k, v in zip(din_hits.columns, sensitivity['din_hits']) }
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
