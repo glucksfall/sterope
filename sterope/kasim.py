@@ -286,6 +286,8 @@ def simulate():
 
 	try:
 		dask_jobqueue.SLURMCluster(queue = 'spica', cores = 1, memory = '1 GB').start_workers(100)
+	except:
+		pass
 
 	results = []
 	for cmd in numpy.asarray(sorted(squeue)):
