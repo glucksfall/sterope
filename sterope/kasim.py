@@ -35,11 +35,11 @@ def safe_checks():
 	return 0
 
 def _parallel_popen(cmd):
-	print(os.environ['HOSTNAME'])
+	host = os.environ['HOSTNAME']
 	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	out, err = proc.communicate()
 	proc.wait()
-	return out, err
+	return host, out, err
 
 def _parallel_analyze(data):
     return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
@@ -291,7 +291,7 @@ def simulate():
 		y = dask.delayed(_parallel_popen)(cmd)
 		results.append(y)
 
-	dask.compute(*results)
+	print(dask.compute(*results))
 
 	return 0
 
@@ -435,7 +435,6 @@ def backup():
 	folders = {
 		'samples' : results + '/' + opts['samples'],
 		'rawdata' : results + '/' + opts['rawdata'],
-		'figures' : results + '/' + opts['figures'],
 		'reports' : results + '/' + opts['reports'],
 	}
 
@@ -457,11 +456,6 @@ def backup():
 	filelist = glob.glob('model_*.out.txt')
 	for filename in filelist:
 		shutil.move(filename, folders['rawdata'])
-
-	# archive figures
-	filelist = glob.glob('figure_*.eps')
-	for filename in filelist:
-		shutil.move(filename, folders['figures'])
 
 	# archive reports
 	filelist = glob.glob('report_*.txt')
