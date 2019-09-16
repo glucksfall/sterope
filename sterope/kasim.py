@@ -275,10 +275,9 @@ def simulate():
 			model_name = population[model[0], 'model']
 			output = 'model_{:s}.out.txt'.format(model_name)
 
-			cmd = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
+			cmd = 'hostname && {:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
 				.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
 			cmd = os.path.expanduser(cmd)
-			cmd = 'hostname'
 			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
 			squeue.append(cmd)
 
