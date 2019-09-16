@@ -485,7 +485,7 @@ if __name__ == '__main__':
 	except:
 		slurm = None
 
-	if not slurm:
+	if slurm:
 		cluster = dask_jobqueue.SLURMCluster(queue = os.environ['SLURM_JOB_PARTITION'], cores = 1, memory = '1 GB')
 		client = Client(cluster)
 		cluster.start_workers(50)
