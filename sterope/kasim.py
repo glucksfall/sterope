@@ -480,10 +480,15 @@ if __name__ == '__main__':
 	clean()
 
 	# create SLURM Cluster if available
-	if os.environ['SLURM_JOB_PARTITION']:
+	try:
+		slurm = os.environ['SLURM_JOB_PARTITION']
+	except:
+		slurm = None
+
+	if not slurm:
 		cluster = dask_jobqueue.SLURMCluster(queue = os.environ['SLURM_JOB_PARTITION'], cores = 1, memory = '1 GB')
 		client = Client(cluster)
-		cluster.start_workers(1000)
+		cluster.start_workers(50)
 
 	# read model configuration
 	parameters = configurate()
