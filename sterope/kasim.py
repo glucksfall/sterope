@@ -10,7 +10,7 @@ __license__ = 'gpl-3.0'
 __software__ = 'kasim-v4.0'
 
 import argparse, glob, multiprocessing, os, re, shutil, subprocess, sys, time
-import pandas, numpy, dask
+import pandas, numpy, dask, dask_jobqueue
 import matplotlib.pyplot as plt
 from SALib.sample import saltelli
 from SALib.analyze import sobol
@@ -284,6 +284,9 @@ def simulate():
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
+	try:
+		dask_jobqueue.SLURMCluster(queue = 'spica', cores = 1, memory = '1 GB').start_workers(100)
+
 	results = []
 	for cmd in numpy.asarray(sorted(squeue)):
 		y = dask.delayed(_parallel_popen)(cmd)
@@ -314,9 +317,6 @@ def evaluate():
 		tmp = [ x for x in data['din_fluxs'] ]
 		din_fluxes.append(pandas.DataFrame(tmp).values)
 
-	# parameters
-	pars = data['din_rules']
-
 	# DIN hits are easy to evaluate recursively or parallelized
 	#din_hits = pandas.DataFrame(data = din_hits)
 	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
@@ -331,7 +331,7 @@ def evaluate():
 
 	# compute and reorder results
 	sensitivity['din_hits'] = dask.compute(*results)
-	sensitivity['din_hits'] = { k : v for k, v in zip(pars, sensitivity['din_hits']) }
+	sensitivity['din_hits'] = { k : v for k, v in zip(data['din_rules'][1:], sensitivity['din_hits']) }
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:,1:])
@@ -349,7 +349,7 @@ def evaluate():
 
 	# compute and reorder results
 	sensitivity['din_fluxes'] = dask.compute(*results)
-	sensitivity['din_fluxes'] = { k : v for k, v in zip(pars, sensitivity['din_fluxes']) }
+	sensitivity['din_fluxes'] = { k : v for k, v in zip(data['din_rules'][1:], sensitivity['din_fluxes']) }
 
 	return sensitivity
 
