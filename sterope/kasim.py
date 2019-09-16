@@ -312,43 +312,41 @@ def evaluate():
 
 		# vector column of lists
 		din_hits.append(data['din_hits'].iloc[1:].values)
-		# reshape fluxes into a vector column of lists
+		# reshape matrix of fluxes into a vector column of lists
 		tmp = [ x for x in data['din_fluxs'] ]
-		din_fluxes.append(pandas.DataFrame(tmp).values)
+		din_fluxes.append(pandas.DataFrame(tmp).values) # easy conversion of a list of lists into a numpy array
 
-	# DIN hits are easy to evaluate recursively or parallelized
-	#din_hits = pandas.DataFrame(data = din_hits)
+	# DIN hits are easy to evaluate recursively (for-loop), parallelized (multiprocessing) or distributed (dask)
 	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
 
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#sensitivity['din_hits'] = pool.map(_parallel_analyze, din_hits, chunksize = opts['ntasks'] - 1)
 
+	# queue to dask.delayed
 	results = []
 	for x in din_hits:
 		y = dask.delayed(_parallel_analyze)(x)
 		results.append(y)
 
-	# compute and reorder results
+	# compute results
 	sensitivity['din_hits'] = dask.compute(*results)
-	sensitivity['din_hits'] = { k : v for k, v in zip(data['din_rules'][1:], sensitivity['din_hits']) }
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
-	a, b = numpy.shape(din_fluxes[0][1:,1:])
+	a, b = numpy.shape(din_fluxes[0][1:, 1:])
 	din_fluxes = [ x[0] for x in [ numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes ] ]
-	din_fluxes = pandas.DataFrame(data = din_fluxes)
-	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes.values) ]
+	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
 
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#sensitivity['din_fluxes'] = pool.map(_parallel_analyze, din_fluxes, chunksize = opts['ntasks'])
 
+	# queue to dask.delayed
 	results = []
 	for x in din_fluxes:
 		y = dask.delayed(_parallel_analyze)(x)
 		results.append(y)
 
-	# compute and reorder results
+	# compute results
 	sensitivity['din_fluxes'] = dask.compute(*results)
-	sensitivity['din_fluxes'] = { k : v for k, v in zip(data['din_rules'][1:], sensitivity['din_fluxes']) }
 
 	return sensitivity
 
@@ -365,6 +363,7 @@ def report():
 
 	# write reports for DIN hits
 	x = sensitivity['din_hits']
+	x = { k : v for k, v in zip(lst['din_rules'][1:], x) }
 	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
 		reports['DINhits'][key] = pandas.DataFrame([ x[k][key] for k in x.keys() ],
 			columns = opts['par_name'], index = lst['din_rules'][1:]).rename_axis('rules')
@@ -379,15 +378,14 @@ def report():
 		with open('./report_DINhits_{:s}.txt'.format(key), 'w') as file:
 			reports['DINhits'][key].to_csv(file, sep = '\t')
 
-	# write reports for DIN fluxes
-	x = sensitivity['din_fluxes']
+	# write reports for DIN fluxes; data need to be reshaped
 	# name index: parameter sensitivities over the influence of a rule over a 2nd rule
 	rules_names = list(lst['din_rules'][1:])
 	first = [ y for x in [ [x]*len(rules_names) for x in rules_names ] for y in x ]
-	print(first)
 	second = rules_names * len(rules_names)
-	print(second)
 
+	x = sensitivity['din_fluxes']
+	x = { (k1, k2) : v for k1, k2, v in zip(first, second, x) }
 	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
 		reports['DINfluxes'][key] = pandas.DataFrame([ x[k][key] for k in x.keys() ], columns = opts['par_name']).fillna(0)
 		print(reports['DINfluxes'][key])
@@ -497,9 +495,9 @@ if __name__ == '__main__':
 	# simulate levels
 	simulate()
 	# evaluate sensitivity
-	#sensitivity = evaluate()
+	sensitivity = evaluate()
 	# write reports
-	#report()
+	report()
 
 	# move and organize results
 	backup()
