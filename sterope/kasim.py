@@ -10,8 +10,9 @@ __license__ = 'gpl-3.0'
 __software__ = 'kasim-v4.0'
 
 import argparse, glob, multiprocessing, os, re, shutil, subprocess, sys, time
-import pandas, numpy, dask, dask_jobqueue
-import matplotlib.pyplot as plt
+import pandas, numpy
+import dask, dask_jobqueue
+from dask.distributed import Client
 from SALib.sample import saltelli
 from SALib.analyze import sobol
 
@@ -286,7 +287,7 @@ def simulate():
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
 	cluster = dask_jobqueue.SLURMCluster(queue = 'slim', cores = 1, memory = '1 GB')
-	client = dask.distributed.Client(cluster)
+	client = Client(cluster)
 	cluster.start_workers(100)
 
 	results = []
