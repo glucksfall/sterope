@@ -284,10 +284,8 @@ def simulate():
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
-	try:
-		dask_jobqueue.SLURMCluster(queue = 'cpu', cores = 1, memory = '1 GB').start_workers(100)
-	except:
-		pass
+	cluster = dask_jobqueue.SLURMCluster(queue = 'cpu', cores = 1, memory = '1 GB')
+	cluster.start_workers(100)
 
 	results = []
 	for cmd in numpy.asarray(sorted(squeue)):
