@@ -291,7 +291,7 @@ def simulate():
 		y = dask.delayed(_parallel_popen)(cmd)
 		results.append(y)
 
-	print(dask.compute(*results))
+	host, out, err = dask.compute(*results)
 
 	return 0
 
