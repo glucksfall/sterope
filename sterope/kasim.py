@@ -416,6 +416,7 @@ def ranking():
 def clean():
 	filelist = []
 	fileregex = [
+		'slurm*',     # slurm log files
 		'flux*.json', # DIN files
 		'log*.txt',   # log file
 		'*.kappa',    # kasim model files.
