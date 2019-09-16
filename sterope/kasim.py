@@ -285,7 +285,7 @@ def simulate():
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
 	try:
-		dask_jobqueue.SLURMCluster(queue = 'spica', cores = 1, memory = '1 GB').start_workers(100)
+		dask_jobqueue.SLURMCluster(queue = 'cpu', cores = 1, memory = '1 GB').start_workers(100)
 	except:
 		pass
 
