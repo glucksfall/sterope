@@ -286,6 +286,7 @@ def simulate():
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
 	cluster = dask_jobqueue.SLURMCluster(queue = 'slim', cores = 1, memory = '1 GB')
+	client = dask.distributed.Client(cluster)
 	cluster.start_workers(100)
 
 	results = []
