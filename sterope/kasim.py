@@ -38,7 +38,7 @@ def _parallel_popen(cmd):
 	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	out, err = proc.communicate()
 	proc.wait()
-	return out
+	return out, err
 
 def _parallel_analyze(data):
     return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
@@ -285,7 +285,7 @@ def simulate():
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
-	cluster = dask_jobqueue.SLURMCluster(queue = 'slim', cores = 1, memory = '1 GB')
+	cluster = dask_jobqueue.SLURMCluster(queue = os.environ['SLURM_CLUSTER_NAME'], cores = 1, memory = '1 GB')
 	client = Client(cluster)
 	cluster.start_workers(100)
 
@@ -294,7 +294,7 @@ def simulate():
 		y = dask.delayed(_parallel_popen)(cmd)
 		results.append(y)
 
-	print(dask.compute(*results))
+	dask.compute(*results)
 
 	return 0
 
