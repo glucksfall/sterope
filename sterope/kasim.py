@@ -284,7 +284,7 @@ def simulate():
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
-	cluster = dask_jobqueue.SLURMCluster(queue = 'cpu', cores = 1, memory = '1 GB')
+	cluster = dask_jobqueue.SLURMCluster(queue = 'slim', cores = 1, memory = '1 GB')
 	cluster.start_workers(100)
 
 	results = []
