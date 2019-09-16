@@ -286,11 +286,6 @@ def simulate():
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
-	if os.environ['SLURM_JOB_PARTITION']:
-		cluster = dask_jobqueue.SLURMCluster(queue = os.environ['SLURM_JOB_PARTITION'], cores = 1, memory = '1 GB')
-		client = Client(cluster)
-		cluster.start_workers(1000)
-
 	results = []
 	for cmd in numpy.asarray(sorted(squeue)):
 		y = dask.delayed(_parallel_popen)(cmd)
@@ -357,7 +352,7 @@ def evaluate():
 
 	return sensitivity
 
-def ranking():
+def report():
 	# get rule names from one DIN file
 	files = sorted(glob.glob('./flux*json'))
 	with open(files[0], 'r') as file:
@@ -493,6 +488,12 @@ if __name__ == '__main__':
 	# clean the working directory
 	clean()
 
+	# create SLURM Cluster if available
+	if os.environ['SLURM_JOB_PARTITION']:
+		cluster = dask_jobqueue.SLURMCluster(queue = os.environ['SLURM_JOB_PARTITION'], cores = 1, memory = '1 GB')
+		client = Client(cluster)
+		cluster.start_workers(1000)
+
 	# read model configuration
 	parameters = configurate()
 
@@ -504,7 +505,7 @@ if __name__ == '__main__':
 	# evaluate sensitivity
 	sensitivity = evaluate()
 	# write reports
-	ranking()
+	report()
 
 	# move and organize results
 	backup()
