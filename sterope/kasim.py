@@ -35,11 +35,10 @@ def safe_checks():
 	return 0
 
 def _parallel_popen(cmd):
-	host = os.environ['HOSTNAME']
 	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	out, err = proc.communicate()
 	proc.wait()
-	return host, out, err
+	return out, err
 
 def _parallel_analyze(data):
     return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
