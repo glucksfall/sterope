@@ -277,6 +277,7 @@ def simulate():
 
 			cmd = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
 				.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
+			cmd = 'hostname'
 			cmd = os.path.expanduser(cmd)
 			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
 			squeue.append(cmd)
@@ -295,7 +296,7 @@ def simulate():
 		y = dask.delayed(_parallel_popen)(cmd)
 		results.append(y)
 
-	dask.compute(*results)
+	print(dask.compute(*results))
 
 	return 0
 
