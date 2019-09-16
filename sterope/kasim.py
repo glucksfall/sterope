@@ -503,9 +503,9 @@ if __name__ == '__main__':
 	# simulate levels
 	simulate()
 	# evaluate sensitivity
-	sensitivity = evaluate()
+	#sensitivity = evaluate()
 	# write reports
-	report()
+	#report()
 
 	# move and organize results
 	backup()
