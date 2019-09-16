@@ -290,6 +290,7 @@ def simulate():
 		cluster = dask_jobqueue.SLURMCluster(queue = os.environ['SLURM_JOB_PARTITION'], cores = 1, memory = '1 GB')
 		client = Client(cluster)
 		cluster.start_workers(100)
+		print('ok')
 
 	results = []
 	for cmd in numpy.asarray(sorted(squeue)):
