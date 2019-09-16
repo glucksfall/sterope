@@ -35,7 +35,7 @@ def safe_checks():
 	return 0
 
 def _parallel_popen(cmd):
-	print(os.environ['host'])
+	print(os.environ['HOSTNAME'])
 	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	out, err = proc.communicate()
 	proc.wait()
