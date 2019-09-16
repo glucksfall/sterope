@@ -35,6 +35,7 @@ def safe_checks():
 	return 0
 
 def _parallel_popen(cmd):
+	print(os.environ['host'])
 	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	out, err = proc.communicate()
 	proc.wait()
@@ -277,7 +278,6 @@ def simulate():
 
 			cmd = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
 				.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
-			cmd = 'hostname'
 			cmd = os.path.expanduser(cmd)
 			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
 			squeue.append(cmd)
