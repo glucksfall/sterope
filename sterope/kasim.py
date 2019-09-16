@@ -37,7 +37,7 @@ def _parallel_popen(cmd):
 	proc = subprocess.Popen(cmd, stdout = subprocess.PIPE, stderr = subprocess.PIPE)
 	out, err = proc.communicate()
 	proc.wait()
-	return proc
+	return out
 
 def _parallel_analyze(data):
     return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
@@ -277,6 +277,7 @@ def simulate():
 			cmd = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
 				.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
 			cmd = os.path.expanduser(cmd)
+			cmd = 'hostname'
 			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
 			squeue.append(cmd)
 
