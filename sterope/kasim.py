@@ -13,8 +13,8 @@ import argparse, glob, multiprocessing, os, re, shutil, subprocess, sys, time
 import pandas, numpy
 import dask, dask_jobqueue
 from dask.distributed import Client
-from SALib.sample import saltelli
-from SALib.analyze import sobol
+from SALib.sample import saltelli, fast_sampler
+from SALib.analyze import sobol, fast
 
 def safe_checks():
 	error_msg = ''
@@ -41,7 +41,10 @@ def _parallel_popen(cmd):
 	return out, err
 
 def _parallel_analyze(data):
-    return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
+	if args.method.lower() == 'sobol':
+		return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
+	if args.method.lower() == 'fast':
+		return fast.analyze(population['problem', 'definition'], data, print_to_console = False) # return dict with S1 and ST keys
 
 def argsparser():
 	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Saltelli\'s extension of the Sobol sequence.')
@@ -69,6 +72,8 @@ def argsparser():
 		help = 'KaSim path, default ~/bin/kasim4')
 
 	# general options for sensitivity analysis
+	parser.add_argument('--method' , metavar = 'str'  , type = str  , required = False, default = 'Sobol'         , \
+		help = 'global sensitivity analysis method: Sobol, Fourier Amplitude Sensitivity Test (FAST)')
 	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None            , \
 		help = 'seed for the Saltelli\' extension of the Sobol sequence')
 	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , \
@@ -124,6 +129,7 @@ def ga_opts():
 		# path to software
 		'kasim'     : os.path.expanduser(args.kasim), # kasim4 only
 		# global SA options
+		'method'    : args.method,
 		'seed'      : args.seed,
 		'p_levels'  : args.grid,
 		'ntasks'    : int(args.nprocs),
@@ -206,7 +212,10 @@ def populate():
 			problem['bounds'].append([lower, upper])
 
 	# create samples to simulate
-	models = saltelli.sample(problem = problem, N = int(opts['p_levels']), calc_second_order = True, seed = int(opts['seed']))
+	if args.method.lower() == 'sobol':
+		models = saltelli.sample(problem = problem, N = int(opts['p_levels']), calc_second_order = True, seed = int(opts['seed']))
+	if args.method.lower() == 'fast':
+		models = fast_sampler.sample(problem = problem, N = int(opts['p_levels']), seed = int(opts['seed']))
 
 	# write models following the Saltelli's samples
 	population = {}
