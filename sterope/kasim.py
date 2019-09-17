@@ -372,19 +372,26 @@ def report():
 	# write reports for DIN hits
 	x = sensitivity['din_hits']
 	x = { k : v for k, v in zip(lst['din_rules'][1:], x) }
-	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
+
+	if args.method.lower() == 'sobol':
+		indexes = ['S1', 'S1_conf', 'ST', 'ST_conf']
+	if args.method.lower() == 'fast':
+		indexes = ['S1', 'ST']
+
+	for key in indexes:
 		reports['DINhits'][key] = pandas.DataFrame([ x[k][key] for k in x.keys() ],
 			columns = opts['par_name'], index = lst['din_rules'][1:]).rename_axis('rules')
 
 		with open('./report_DINhits_{:s}.txt'.format(key), 'w') as file:
 			reports['DINhits'][key].to_csv(file, sep = '\t')
 
-	for key in ['S2', 'S2_conf']:
-		tmp = [ pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys() ]
-		reports['DINhits'][key] = pandas.DataFrame(tmp, index = lst['din_rules'][1:]).rename_axis('rules')
+	if args.method.lower() == 'sobol':
+		for key in ['S2', 'S2_conf']:
+			tmp = [ pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys() ]
+			reports['DINhits'][key] = pandas.DataFrame(tmp, index = lst['din_rules'][1:]).rename_axis('rules')
 
-		with open('./report_DINhits_{:s}.txt'.format(key), 'w') as file:
-			reports['DINhits'][key].to_csv(file, sep = '\t')
+			with open('./report_DINhits_{:s}.txt'.format(key), 'w') as file:
+				reports['DINhits'][key].to_csv(file, sep = '\t')
 
 	# write reports for DIN fluxes; data need to be reshaped
 	# name index: parameter sensitivities over the influence of a rule over a 2nd rule
@@ -394,7 +401,7 @@ def report():
 
 	x = sensitivity['din_fluxes']
 	x = { (k1, k2) : v for k1, k2, v in zip(first, second, x) }
-	for key in ['S1', 'S1_conf', 'ST', 'ST_conf']:
+	for key in indexes:
 		reports['DINfluxes'][key] = pandas.DataFrame([ x[k][key] for k in x.keys() ], columns = opts['par_name']).fillna(0)
 		reports['DINfluxes'][key]['1st'] = first
 		reports['DINfluxes'][key]['2nd'] = second
@@ -403,15 +410,16 @@ def report():
 		with open('./report_DINfluxes_{:s}.txt'.format(key), 'w') as file:
 			reports['DINfluxes'][key].to_csv(file, sep = '\t')
 
-	for key in ['S2', 'S2_conf']:
-		tmp = [pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys()]
-		reports['DINfluxes'][key] = pandas.DataFrame(tmp).fillna(0)
-		reports['DINfluxes'][key]['1st'] = first
-		reports['DINfluxes'][key]['2nd'] = second
-		reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
+	if args.method.lower() == 'sobol':
+		for key in ['S2', 'S2_conf']:
+			tmp = [pandas.DataFrame(x[k][key], columns = opts['par_name'], index = opts['par_name']).stack() for k in x.keys()]
+			reports['DINfluxes'][key] = pandas.DataFrame(tmp).fillna(0)
+			reports['DINfluxes'][key]['1st'] = first
+			reports['DINfluxes'][key]['2nd'] = second
+			reports['DINfluxes'][key].set_index(['1st', '2nd'], inplace = True)
 
-		with open('./report_DINfluxes_{:s}.txt'.format(key), 'w') as file:
-			reports['DINfluxes'][key].to_csv(file, sep = '\t')
+			with open('./report_DINfluxes_{:s}.txt'.format(key), 'w') as file:
+				reports['DINfluxes'][key].to_csv(file, sep = '\t')
 
 	return sensitivity
 
