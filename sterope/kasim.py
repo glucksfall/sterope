@@ -248,7 +248,7 @@ def populate():
 	elif opts['method'] == 'rbd-fast' or opts['method'] == 'delta' or opts['method'] == 'dgsm':
 		models = latin.sample(problem = problem, N = levels, seed = seed)
 	elif opts['method'] == 'morris':
-		models = morris_sample(problem = problem, N = levels, seed = seed)
+		models = morris_sample(problem = problem, N = levels)
 	elif opts['method'] == 'frac':
 		models = ff_sample(problem, seed = seed)
 	else:
