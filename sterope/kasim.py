@@ -257,10 +257,10 @@ def populate():
 		raise ValueError(error_msg)
 
 	# add samples to population dict
+	population = {}
 	population['problem', 'samples'] = models
 
 	# write models
-	population = {}
 	model_string = 'level{:0' + str(len(str(len(models)))) + 'd}'
 
 	for model_index, model in enumerate(models):
