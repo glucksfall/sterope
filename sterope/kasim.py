@@ -11,10 +11,18 @@ __software__ = 'kasim-v4.0'
 
 import argparse, glob, multiprocessing, os, re, shutil, subprocess, sys, time
 import pandas, numpy
+
+# import dask for distributed calculation
 import dask, dask_jobqueue
 from dask.distributed import Client
-from SALib.sample import saltelli, fast_sampler
-from SALib.analyze import sobol, fast
+
+# import sensitivity samplers and methods
+from SALib.sample.morris import sample as morris_sample
+from SALib.analyze.morris import analyze as morris_analyze
+from SALib.sample.ff import sample as ff_sample
+from SALib.analyze.ff import analyze as ff_analyze
+from SALib.sample import fast_sampler, latin, saltelli
+from SALib.analyze import delta, dgsm, fast, rbd_fast, sobol
 
 def safe_checks():
 	error_msg = ''
@@ -41,13 +49,32 @@ def _parallel_popen(cmd):
 	return out, err
 
 def _parallel_analyze(data):
-	if args.method.lower() == 'sobol':
-		return sobol.analyze(population['problem', 'definition'], data, calc_second_order = True, print_to_console = False)
-	if args.method.lower() == 'fast':
-		return fast.analyze(population['problem', 'definition'], data, print_to_console = False) # return dict with S1 and ST keys
+	seed = int(opts['seed'])
+	samples = population['problem', 'samples']
+	problem = population['problem', 'definition']
+
+	if opts['method'] == 'sobol':
+		return sobol.analyze(problem, data, calc_second_order = True, print_to_console = False)
+	elif opts['method'] == 'fast':
+		return fast.analyze(problem, data, print_to_console = False, seed = seed)
+	elif opts['method'] == 'rbd-fast':
+		return rbd_fast.analyze(problem, data, print_to_console = False, seed = seed)
+	elif opts['method'] == 'morris':
+		return morris_analyze(problem, samples, data, print_to_console = False, seed = seed)
+	elif opts['method'] == 'delta':
+		return delta.analyze(problem, samples, data, print_to_console = False, seed = seed)
+	elif opts['method'] == 'dgsm':
+		return dgsm.analyze(problem, samples, data, print_to_console = False, seed = seed)
+	elif opts['method'] == 'frac':
+		return ff_analyze(problem, samples, data, second_order = True, print_to_console = False, seed = seed)
+	else:
+		return 0
 
 def argsparser():
-	parser = argparse.ArgumentParser(description = 'Perform a sensitivity analysis of RBM parameters employing the Saltelli\'s extension of the Sobol sequence.')
+	parser = argparse.ArgumentParser(description = 'Perform a global sensitivity analysis of RBM parameters over the Dynamic Influence Network.', \
+		epilog = 'Method shortnames are FAST, RBD-FAST, Morris, Sobol, Delta, DGSM, Frac\n' \
+			'See https://salib.readthedocs.io/en/latest/api.html for more information',
+		formatter_class = argparse.RawTextHelpFormatter)
 
 	# required arguments to simulate models
 	parser.add_argument('--model'  , metavar = 'str'  , type = str  , required = True , default = 'model.kappa'   , \
@@ -59,9 +86,9 @@ def argsparser():
 
 	# not required arguments to simulate models
 	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , \
-		help = 'initial time to calculate the Dynamical Influence Network')
+		help = 'initial time to calculate the Dynamic Influence Network')
 	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None            , \
-		help = 'final time to calculate the Dynamical Influence Network')
+		help = 'final time to calculate the Dynamic Influence Network')
 	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'            , \
 		help = 'precision and format of parameter values, default 7g')
 	parser.add_argument('--syntax' , metavar = 'str'  , type = str  , required = False, default = '4'             , \
@@ -73,11 +100,11 @@ def argsparser():
 
 	# general options for sensitivity analysis
 	parser.add_argument('--method' , metavar = 'str'  , type = str  , required = False, default = 'Sobol'         , \
-		help = 'global sensitivity analysis method: Sobol, Fourier Amplitude Sensitivity Test (FAST)')
+		help = 'methods supported by SALib')
 	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None            , \
-		help = 'seed for the Saltelli\' extension of the Sobol sequence')
+		help = 'seed for the sampler')
 	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , \
-		help = 'N, default 10, to define the number of samples: N * (2k + 2) with k the number of parameters')
+		help = 'define the number of samples, default 10')
 	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'             , \
 		help = 'perform calculations in parallel')
 
@@ -110,7 +137,7 @@ def argsparser():
 		if sys.platform.startswith('linux'):
 			args.seed = int.from_bytes(os.urandom(4), byteorder = 'big')
 		else:
-			parser.error('sterope requires --seed integer (to supply SALib.saltelli)')
+			parser.error('sterope requires --seed integer (to supply the samplers)')
 
 	return args
 
@@ -129,7 +156,7 @@ def ga_opts():
 		# path to software
 		'kasim'     : os.path.expanduser(args.kasim), # kasim4 only
 		# global SA options
-		'method'    : args.method,
+		'method'    : args.method.lower(),
 		'seed'      : args.seed,
 		'p_levels'  : args.grid,
 		'ntasks'    : int(args.nprocs),
@@ -194,6 +221,8 @@ def populate():
 	par_keys = list(parameters.keys())
 
 	# init problem definiton
+	seed = int(opts['seed'])
+	levels = int(opts['p_levels'])
 	problem = {
 		'names': opts['par_name'],
 		'num_vars': len(opts['par_name']),
@@ -212,12 +241,25 @@ def populate():
 			problem['bounds'].append([lower, upper])
 
 	# create samples to simulate
-	if args.method.lower() == 'sobol':
-		models = saltelli.sample(problem = problem, N = int(opts['p_levels']), calc_second_order = True, seed = int(opts['seed']))
-	if args.method.lower() == 'fast':
-		models = fast_sampler.sample(problem = problem, N = int(opts['p_levels']), seed = int(opts['seed']))
+	if opts['method'] == 'sobol':
+		models = saltelli.sample(problem = problem, N = levels, calc_second_order = True, seed = seed)
+	elif opts['method'] == 'fast':
+		models = fast_sampler.sample(problem = problem, N = levels, seed = seed)
+	elif opts['method'] == 'rbd-fast' or opts['method'] == 'delta' or opts['method'] == 'dgsm':
+		models = latin.sample(problem = problem, N = levels, seed = seed)
+	elif opts['method'] == 'morris':
+		models = morris_sample(problem = problem, N = levels, seed = seed)
+	elif opts['method'] == 'frac':
+		models = ff_sample(problem, seed = seed)
+	else:
+		error_msg = 'Wrong method name.'
+		print(error_msg)
+		raise ValueError(error_msg)
 
-	# write models following the Saltelli's samples
+	# add samples to population dict
+	population['problem', 'samples'] = models
+
+	# write models
 	population = {}
 	model_string = 'level{:0' + str(len(str(len(models)))) + 'd}'
 
@@ -270,7 +312,7 @@ def populate():
 					# add the DIN perturbation at the end of the kappa file
 					file.write(flux)
 
-	# add problem definition to population (used later by saltelli.analyze)
+	# add problem definition to population dict
 	population['problem', 'definition'] = problem
 
 	return population
@@ -504,7 +546,7 @@ if __name__ == '__main__':
 	if slurm:
 		cluster = dask_jobqueue.SLURMCluster(queue = os.environ['SLURM_JOB_PARTITION'], cores = 1, memory = '1 GB')
 		client = Client(cluster)
-		cluster.start_workers(50)
+		cluster.start_workers(opts['ntasks'])
 
 	# read model configuration
 	parameters = configurate()
