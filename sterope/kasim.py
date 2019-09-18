@@ -58,7 +58,7 @@ def _parallel_analyze(data):
 	elif opts['method'] == 'fast':
 		return fast.analyze(problem, data, print_to_console = False, seed = seed)
 	elif opts['method'] == 'rbd-fast':
-		return rbd_fast.analyze(problem, data, print_to_console = False, seed = seed)
+		return rbd_fast.analyze(problem, samples, data, print_to_console = False, seed = seed)
 	elif opts['method'] == 'morris':
 		return morris_analyze(problem, samples, data, print_to_console = False, seed = seed)
 	elif opts['method'] == 'delta':
