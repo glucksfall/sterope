@@ -9,7 +9,7 @@ __author__  = 'Rodrigo Santibáñez'
 __license__ = 'gpl-3.0'
 __software__ = 'kasim-v4.0'
 
-import argparse, glob, multiprocessing, os, re, shutil, subprocess, sys, time
+import argparse, glob, multiprocessing, os, re, shutil, subprocess, sys, time, zipfile
 import pandas, numpy
 
 # import dask for distributed calculation
@@ -542,6 +542,12 @@ def backup():
 		file.write('# Output of python3 {:s}\n'.format(subprocess.list2cmdline(sys.argv[0:])))
 	shutil.move(log_file, results)
 	shutil.copy2(opts['model'], results)
+
+	# compress the results folder
+	with zipfile.ZipFile(results + '.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
+		for root, dirs, files in os.walk(results):
+			for file in files:
+				zipf.write(os.path.join(root, file))
 
 	return 0
 
