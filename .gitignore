@@ -10,14 +10,10 @@
 /*.egg-info
 
 # others
-/Makefile
-/MANIFEST.in
-/setup.cfg
-/setup.py
-/versioneer.py
+Makefile
 
 # reports
 *.json
 *.out.txt
-/reports_*
+reports_*
 .ipynb_checkpoints
