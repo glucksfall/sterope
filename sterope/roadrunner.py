@@ -26,9 +26,9 @@ from SALib.analyze import delta, dgsm, fast, rbd_fast, sobol
 
 def safe_checks():
 	error_msg = ''
-	if shutil.which(opts['kasim']) is None:
-		error_msg += 'KaSim (at {:s}) can\'t be called to perform simulations.\n' \
-			'Check the path to KaSim.'.format(opts['kasim'])
+	if shutil.which(opts['kade']) is None:
+		error_msg += 'KaDE (at {:s}) can\'t be called to perform simulations.\n' \
+			'Check the path to KaDE.'.format(opts['kasim'])
 
 	# check if model file exists
 	if not os.path.isfile(opts['model']):
