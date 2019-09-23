@@ -393,6 +393,7 @@ def backup():
 	log_file = 'log_{:s}.txt'.format(opts['systime'])
 	with open(log_file, 'w') as file:
 		file.write('# Output of python3 {:s}\n'.format(subprocess.list2cmdline(sys.argv[0:])))
+		file.write('Elapsed time: {:.0f} seconds\n'.format(time.time() - float(opts['systime'])))
 	shutil.move(log_file, results)
 	shutil.copy2(opts['model'], results)
 	shutil.copy2(opts['model'].split('.')[0] + '.xml', results)
