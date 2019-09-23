@@ -264,9 +264,9 @@ def simulate():
 	for sample in population['problem', 'samples']:
 		for index, par in enumerate(opts['par_name']):
 			rr[par] = sample[index]
-			population['problem', 'FluxControl'].append(
-				numpy.asarray(rr.getUnscaledFluxControlCoefficientMatrix())
-				)
+		population['problem', 'FluxControl'].append(
+			numpy.asarray(rr.getUnscaledFluxControlCoefficientMatrix())
+			)
 
 	population['problem', 'reactions'] = []
 	for key in rr.keys():
