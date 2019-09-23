@@ -395,6 +395,7 @@ def backup():
 		file.write('# Output of python3 {:s}\n'.format(subprocess.list2cmdline(sys.argv[0:])))
 	shutil.move(log_file, results)
 	shutil.copy2(opts['model'], results)
+	shutil.copy2(opts['model'].split('.') + '.xml', results)
 
 	# compress the results folder
 	with zipfile.ZipFile(results + '.zip', 'w', zipfile.ZIP_DEFLATED) as zipf:
