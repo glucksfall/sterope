@@ -1,0 +1,1 @@
+# Output of /usr/bin/python3 /home/glucksfall/opt/github-repositories/glucksfall.sterope/sterope/kasim.py --model=pysbmodel-example6-kasim.kappa --final=660 --steps=10 --grid=1 --tmin=600 --type global --syntax=3 --kasim=kasim4-rc1 --python /usr/bin/python3
