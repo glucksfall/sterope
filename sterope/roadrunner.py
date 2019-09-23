@@ -360,6 +360,7 @@ def clean():
 	filelist = []
 	fileregex = [
 		'slurm*',     # slurm log files
+		'*.xml'       # xml files
 	]
 
 	for regex in fileregex:
