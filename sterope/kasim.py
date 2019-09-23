@@ -577,7 +577,6 @@ if __name__ == '__main__':
 	parameters = configurate()
 
 	# Sterope Main Algorithm
-	# generate an omega grid of N(2k + k) samples
 	population = populate()
 	# simulate levels
 	simulate()
