@@ -28,7 +28,7 @@ def safe_checks():
 	error_msg = ''
 	if shutil.which(opts['kade']) is None:
 		error_msg += 'KaDE (at {:s}) can\'t be called to perform simulations.\n' \
-			'Check the path to KaDE.'.format(opts['kasim'])
+			'Check the path to KaDE.'.format(opts['kade'])
 
 	# check if model file exists
 	if not os.path.isfile(opts['model']):
