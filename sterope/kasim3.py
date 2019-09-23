@@ -279,8 +279,8 @@ def populate():
 
 			# define pertubation to the kappa model that indicates KaSim to calculates the Dinamic Influence Network
 			if opts['type'] == 'total':
-				flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [true]\n'.format(opts['tmin'], model_key)
-				flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [false]'.format(opts['tmax'], model_key)
+				flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}.dot\" [true]\n'.format(opts['tmin'], model_key)
+				flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}.dot\" [false]'.format(opts['tmax'], model_key)
 
 			else: # sliced global sensitivity analysis
 				flux = '\n# Added to calculate a sliced global sensitivity analysis\n'
@@ -319,8 +319,8 @@ def simulate():
 			model_name = population[model[0], 'model']
 			output = 'model_{:s}.out.txt'.format(model_name)
 
-			cmd = '{:s} -i model_{:s}.kappa -t {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
-				.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
+			cmd = '{:s} -i model_{:s}.kappa -t {:s} -p {:s} -o {:s}' \
+				.format(opts['kasim'], model_name, opts['final'], opts['steps'], output)
 			cmd = os.path.expanduser(cmd)
 			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
 			squeue.append(cmd)
