@@ -16,4 +16,5 @@ Makefile
 *.json
 *.out.txt
 reports_*
+results_*
 .ipynb_checkpoints
