@@ -144,7 +144,7 @@ def ga_opts():
 		'par_prec'  : args.prec,
 		'syntax'    : args.syntax,
 		# path to software
-		'kasim'     : os.path.expanduser(args.kasim), # kasim4 only
+		'kade'      : os.path.expanduser(args.kade), # kasim4 only
 		# global SA options
 		'method'    : args.method.lower(),
 		'seed'      : args.seed,
