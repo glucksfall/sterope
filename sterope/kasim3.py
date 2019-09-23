@@ -563,7 +563,11 @@ if __name__ == '__main__':
 		slurm = None
 
 	if slurm:
-		cluster = dask_jobqueue.SLURMCluster(queue = os.environ['SLURM_JOB_PARTITION'], cores = 1, memory = '1 GB', local_directory=os.getenv('TMPDIR', '/tmp'))
+		cluster = dask_jobqueue.SLURMCluster(
+			queue = os.environ['SLURM_JOB_PARTITION'], cores = 1,
+			memory = os.environ['SLURM_MEM_PER_CPU'],
+			local_directory=os.getenv('TMPDIR', '/tmp'))
+
 		client = Client(cluster)
 		cluster.start_workers(opts['ntasks'])
 
