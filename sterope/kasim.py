@@ -571,7 +571,8 @@ if __name__ == '__main__':
 
 	if slurm:
 		cluster = dask_jobqueue.SLURMCluster(
-			queue = os.environ['SLURM_JOB_PARTITION'], cores = 1,
+			queue = os.environ['SLURM_JOB_PARTITION'],
+			cores = 1, walltime = '0',
 			memory = os.environ['SLURM_MEM_PER_CPU'],
 			local_directory=os.getenv('TMPDIR', '/tmp'))
 
