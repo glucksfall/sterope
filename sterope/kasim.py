@@ -590,6 +590,8 @@ if __name__ == '__main__':
 	else:
 		client = Client()
 
+	print(client.current().cluster.scheduler)
+
 	# read model configuration
 	parameters = configurate()
 
