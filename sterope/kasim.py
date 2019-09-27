@@ -106,7 +106,9 @@ def argsparser():
 	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , \
 		help = 'define the number of samples, default 10')
 	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'             , \
-		help = 'perform calculations in parallel')
+		help = 'perform calculations in a cluster of nprocs')
+	parser.add_argument('--memory' , metavar = 'int'  , type = str  , required = False, default = '1GB'           , \
+		help = 'memory for independent workers. Default 1GB')
 
 	# WARNING slice the simulation and perform global sensitivity analysis
 	parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'total'         , \
@@ -160,6 +162,7 @@ def ga_opts():
 		'seed'      : args.seed,
 		'p_levels'  : args.grid,
 		'ntasks'    : int(args.nprocs),
+		'memory'    : args.memory,
 		# sliced global SA options
 		'type'      : args.type,
 		'size'      : args.size,
@@ -578,8 +581,14 @@ if __name__ == '__main__':
 
 	if slurm:
 		cluster = dask_jobqueue.SLURMCluster(
+<<<<<<< HEAD
 			queue = os.environ['SLURM_JOB_PARTITION'], cores = 1,
 			memory = os.environ['SLURM_MEM_PER_CPU'],
+=======
+			queue = os.environ['SLURM_JOB_PARTITION'],
+			cores = 1, walltime = '0',
+			memory = opts['memory'],
+>>>>>>> 9606d1d0ce7edd39bf3bf3d41b5bba5364652108
 			local_directory = os.getenv('TMPDIR', '/tmp'))
 
 		client = Client(cluster)

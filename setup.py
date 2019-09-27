@@ -23,7 +23,7 @@ def main():
 		name='sterope',
 		license='GPLv3+',
 #		version=versioneer.get_version(),
-		version='1.1',
+		version='1.2',
 		description='Sterope: Sensitivity analysis of kappa Rule-Based Models based on Dynamic Influence Networks',
 		long_description=long_description,
 		long_description_content_type='text/markdown',
@@ -64,7 +64,7 @@ def main():
 		keywords=['systems biology', 'stochastic modeling', 'parameter analysis'],
 		python_requires='>=3.0',
 		packages=find_packages(exclude=['contrib', 'docs', 'tests']),
-		install_requires=['numpy', 'pandas', 'matplotlib', 'seaborn', 'salib', 'dask', 'dask_jobqueue'],
+		install_requires=['numpy', 'pandas', 'salib', 'dask', 'dask_jobqueue', 'libroadrunner'],
 		package_data={
 			'example': ['example'],
 		},
