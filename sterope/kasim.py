@@ -14,7 +14,7 @@ import pandas, numpy
 
 # import dask for distributed calculation
 import dask, dask_jobqueue
-from dask.distributed import Client
+from dask.distributed import Client, LocalCluster
 
 # import sensitivity samplers and methods
 from SALib.sample.morris import sample as morris_sample
@@ -588,7 +588,8 @@ if __name__ == '__main__':
 		client = Client(cluster)
 		cluster.start_workers(opts['ntasks'])
 	else:
-		client = Client()
+		cluster = LocalCluster(n_workers = opts['ntasks'])
+		client = Client(cluster)
 
 	print(client.current().cluster.scheduler)
 
