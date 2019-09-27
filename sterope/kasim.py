@@ -336,12 +336,15 @@ def simulate():
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
-	results = []
-	for cmd in numpy.asarray(sorted(squeue)):
-		y = dask.delayed(_parallel_popen)(cmd)
-		results.append(y)
+	#results = []
+	#for cmd in numpy.asarray(sorted(squeue)):
+		#y = dask.delayed(_parallel_popen)(cmd)
+		#results.append(y)
 
-	dask.compute(*results)
+	#dask.compute(*results)
+
+	futures = client.map(_parallel_popen, squeue)
+	client.gather(futures)
 
 	return 0
 
@@ -373,13 +376,15 @@ def evaluate():
 		#sensitivity['din_hits'] = pool.map(_parallel_analyze, din_hits, chunksize = opts['ntasks'] - 1)
 
 	# queue to dask.delayed
-	results = []
-	for x in din_hits:
-		y = dask.delayed(_parallel_analyze)(x)
-		results.append(y)
+	#results = []
+	#for x in din_hits:
+		#y = dask.delayed(_parallel_analyze)(x)
+		#results.append(y)
+	futures = client.map(_parallel_analyze, din_hits)
 
 	# compute results
-	sensitivity['din_hits'] = dask.compute(*results)
+	#sensitivity['din_hits'] = dask.compute(*results)
+	sensitivity['din_hits'] = client.gather(futures)
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:, 1:])
@@ -390,13 +395,15 @@ def evaluate():
 		#sensitivity['din_fluxes'] = pool.map(_parallel_analyze, din_fluxes, chunksize = opts['ntasks'])
 
 	# queue to dask.delayed
-	results = []
-	for x in din_fluxes:
-		y = dask.delayed(_parallel_analyze)(x)
-		results.append(y)
+	#results = []
+	#for x in din_fluxes:
+		#y = dask.delayed(_parallel_analyze)(x)
+		#results.append(y)
+	futures = client.map(_parallel_analyze, din_fluxes)
 
 	# compute results
-	sensitivity['din_fluxes'] = dask.compute(*results)
+	#sensitivity['din_fluxes'] = dask.compute(*results)
+	sensitivity['din_fluxes'] = client.gather(futures)
 
 	return sensitivity
 
@@ -573,10 +580,12 @@ if __name__ == '__main__':
 		cluster = dask_jobqueue.SLURMCluster(
 			queue = os.environ['SLURM_JOB_PARTITION'], cores = 1,
 			memory = os.environ['SLURM_MEM_PER_CPU'],
-			local_directory=os.getenv('TMPDIR', '/tmp'))
+			local_directory = os.getenv('TMPDIR', '/tmp'))
 
 		client = Client(cluster)
 		cluster.start_workers(opts['ntasks'])
+	else:
+		client = Client()
 
 	# read model configuration
 	parameters = configurate()
