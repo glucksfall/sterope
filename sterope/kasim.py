@@ -386,18 +386,19 @@ def evaluate():
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#sensitivity['din_hits'] = pool.map(_parallel_analyze, din_hits, chunksize = opts['ntasks'] - 1)
 
-	# queue to dask.delayed
+	# queue to dask.delayed and compute
 	results = []
 	#for x in din_hits:
 	for index, x in enumerate(din_hits):
 		y = dask.delayed(_parallel_analyze)(index, x)
 		results.append(y)
+	dask.compute(*results)
+
+	# queue to dask.map and compute
 	#futures = client.map(_parallel_analyze, din_hits)
 	#client.gather(futures)
 
-	# compute results
 	#sensitivity['din_hits'] =
-	dask.compute(*results)
 	sensitivity['din_hits'] = []
 	for index, x in enumerate(din_hits):
 		with open(str(index) + '.json', 'r') as infile:
@@ -411,17 +412,18 @@ def evaluate():
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#sensitivity['din_fluxes'] = pool.map(_parallel_analyze, din_fluxes, chunksize = opts['ntasks'])
 
-	# queue to dask.delayed
+	# queue to dask.delayed and compute
 	results = []
 	#for x in din_fluxes:
 	for index, x in enumerate(din_fluxes):
 		y = dask.delayed(_parallel_analyze)(index, x)
 		results.append(y)
-	#futures = client.map(_parallel_analyze, din_fluxes)
-
-	# compute results
-	#sensitivity['din_fluxes'] =
 	dask.compute(*results)
+
+	#futures = client.map(_parallel_analyze, din_fluxes)
+	#client.gather(futures)
+
+	#sensitivity['din_fluxes'] =
 	sensitivity['din_fluxes'] = []
 	for index, x in enumerate(din_hits):
 		with open(str(index) + '.json', 'r') as infile:
