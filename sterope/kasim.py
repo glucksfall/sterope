@@ -9,7 +9,7 @@ __author__  = 'Rodrigo Santibáñez'
 __license__ = 'gpl-3.0'
 __software__ = 'kasim-v4.0'
 
-import argparse, glob, multiprocessing, os, re, shutil, subprocess, sys, time, zipfile
+import argparse, glob, json, multiprocessing, os, re, shutil, subprocess, sys, time, zipfile
 import pandas, numpy
 
 # import dask for distributed calculation
