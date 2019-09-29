@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+ # -*- coding: utf-8 -*-
 
 '''
 Project "Sensitivity Analysis of Rule-Based Models", Rodrigo Santibáñez, 2019
@@ -48,27 +48,35 @@ def _parallel_popen(cmd):
 	proc.wait()
 	return out, err
 
-def _parallel_analyze(data):
+def _parallel_analyze(index, data):
 	seed = int(opts['seed'])
 	samples = population['problem', 'samples']
 	problem = population['problem', 'definition']
 
 	if opts['method'] == 'sobol':
-		return sobol.analyze(problem, data, calc_second_order = True, print_to_console = False)
+		result = sobol.analyze(problem, data, calc_second_order = True, print_to_console = False)
 	elif opts['method'] == 'fast':
-		return fast.analyze(problem, data, print_to_console = False, seed = seed)
+		result = fast.analyze(problem, data, print_to_console = False, seed = seed)
 	elif opts['method'] == 'rbd-fast':
-		return rbd_fast.analyze(problem, samples, data, print_to_console = False, seed = seed)
+		result = rbd_fast.analyze(problem, samples, data, print_to_console = False, seed = seed)
 	elif opts['method'] == 'morris':
-		return morris_analyze(problem, samples, data, print_to_console = False, seed = seed)
+		result = morris_analyze(problem, samples, data, print_to_console = False, seed = seed)
 	elif opts['method'] == 'delta':
-		return delta.analyze(problem, samples, data, print_to_console = False, seed = seed)
+		result = delta.analyze(problem, samples, data, print_to_console = False, seed = seed)
 	elif opts['method'] == 'dgsm':
-		return dgsm.analyze(problem, samples, data, print_to_console = False, seed = seed)
+		result = dgsm.analyze(problem, samples, data, print_to_console = False, seed = seed)
 	elif opts['method'] == 'frac':
-		return ff_analyze(problem, samples, data, second_order = True, print_to_console = False, seed = seed)
+		result = ff_analyze(problem, samples, data, second_order = True, print_to_console = False, seed = seed)
 	else:
-		return 0
+		result = None
+
+	for key in result.keys():
+		result[key] = result[key].tolist()
+
+	with open(str(index) + '.json', 'w') as outfile:
+		json.dump(result, outfile)
+
+	return 0
 
 def argsparser():
 	parser = argparse.ArgumentParser(description = 'Perform a global sensitivity analysis of RBM parameters over the Dynamic Influence Network.', \
@@ -79,19 +87,19 @@ def argsparser():
 	# required arguments to simulate models
 	parser.add_argument('--model'  , metavar = 'str'  , type = str  , required = True , default = 'model.kappa'   , \
 		help = 'RBM with tagged variables to analyze')
-	parser.add_argument('--final'  , metavar = 'float', type = str  , required = True , default = '100'           , \
+	parser.add_argument('--final'  , metavar = 'float', type = str  , required = True , default = '100'		   , \
 		help = 'limit time to simulate')
-	parser.add_argument('--steps'  , metavar = 'float', type = str  , required = True , default = '1'             , \
+	parser.add_argument('--steps'  , metavar = 'float', type = str  , required = True , default = '1'			 , \
 		help = 'time step to simulate')
 
 	# not required arguments to simulate models
-	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'             , \
+	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'			 , \
 		help = 'initial time to calculate the Dynamic Influence Network')
-	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None            , \
+	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None			, \
 		help = 'final time to calculate the Dynamic Influence Network')
-	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'            , \
+	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'			, \
 		help = 'precision and format of parameter values, default 7g')
-	parser.add_argument('--syntax' , metavar = 'str'  , type = str  , required = False, default = '4'             , \
+	parser.add_argument('--syntax' , metavar = 'str'  , type = str  , required = False, default = '4'			 , \
 		help = 'KaSim syntax, default 4')
 
 	# useful paths
@@ -99,35 +107,35 @@ def argsparser():
 		help = 'KaSim path, default ~/bin/kasim4')
 
 	# general options for sensitivity analysis
-	parser.add_argument('--method' , metavar = 'str'  , type = str  , required = False, default = 'Sobol'         , \
+	parser.add_argument('--method' , metavar = 'str'  , type = str  , required = False, default = 'Sobol'		 , \
 		help = 'methods supported by SALib')
-	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None            , \
+	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None			, \
 		help = 'seed for the sampler')
-	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'            , \
+	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'			, \
 		help = 'define the number of samples, default 10')
-	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'             , \
+	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'			 , \
 		help = 'perform calculations in a cluster of nprocs')
-	parser.add_argument('--memory' , metavar = 'int'  , type = str  , required = False, default = '1GB'           , \
+	parser.add_argument('--memory' , metavar = 'int'  , type = str  , required = False, default = '1GB'		   , \
 		help = 'memory for independent workers. Default 1GB')
 
 	# WARNING slice the simulation and perform global sensitivity analysis
-	parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'total'         , \
+	parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'total'		 , \
 		help = 'total or sliced sensitivity analysis')
-	parser.add_argument('--tick'   , metavar = 'float', type = str  , required = False, default = '0.0'           , \
+	parser.add_argument('--tick'   , metavar = 'float', type = str  , required = False, default = '0.0'		   , \
 		help = 'sliced SA: ...')
-	parser.add_argument('--size'   , metavar = 'float', type = str  , required = False, default = '1.0'           , \
+	parser.add_argument('--size'   , metavar = 'float', type = str  , required = False, default = '1.0'		   , \
 		help = 'sliced SA: ...')
-	parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'           , \
+	parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'		   , \
 		help = 'sliced SA: time step to calculate DIN')
 
 	# other options
-	parser.add_argument('--results', metavar = 'path' , type = str  , required = False, default = 'results'       , \
+	parser.add_argument('--results', metavar = 'path' , type = str  , required = False, default = 'results'	   , \
 		help = 'output folder where to move the results, default results (Sterope appends UNIX time string)')
-	parser.add_argument('--samples', metavar = 'path' , type = str  , required = False, default = 'samples'       , \
+	parser.add_argument('--samples', metavar = 'path' , type = str  , required = False, default = 'samples'	   , \
 		help = 'subfolder to save the generated models, default samples')
 	parser.add_argument('--rawdata', metavar = 'path' , type = str  , required = False, default = 'simulations'   , \
 		help = 'subfolder to save the simulations, default simulations')
-	parser.add_argument('--reports', metavar = 'path' , type = str  , required = False, default = 'reports'       , \
+	parser.add_argument('--reports', metavar = 'path' , type = str  , required = False, default = 'reports'	   , \
 		help = 'subfolder to save the calculated sensitivity, default reports')
 
 	args = parser.parse_args()
@@ -147,35 +155,35 @@ def ga_opts():
 	return {
 		# user defined options
 		# simulate models
-		'model'     : args.model,
-		'final'     : args.final,
-		'steps'     : args.steps,
+		'model'	 : args.model,
+		'final'	 : args.final,
+		'steps'	 : args.steps,
 		# optional to simulate models
-		'tmin'      : args.tmin,
-		'tmax'      : args.tmax,
+		'tmin'	  : args.tmin,
+		'tmax'	  : args.tmax,
 		'par_prec'  : args.prec,
-		'syntax'    : args.syntax,
+		'syntax'	: args.syntax,
 		# path to software
-		'kasim'     : os.path.expanduser(args.kasim), # kasim4 only
+		'kasim'	 : os.path.expanduser(args.kasim), # kasim4 only
 		# global SA options
-		'method'    : args.method.lower(),
-		'seed'      : args.seed,
+		'method'	: args.method.lower(),
+		'seed'	  : args.seed,
 		'p_levels'  : args.grid,
-		'ntasks'    : int(args.nprocs),
-		'memory'    : args.memory,
+		'ntasks'	: int(args.nprocs),
+		'memory'	: args.memory,
 		# sliced global SA options
-		'type'      : args.type,
-		'size'      : args.size,
-		'tick'      : args.tick,
-		'beat'      : args.beat,
+		'type'	  : args.type,
+		'size'	  : args.size,
+		'tick'	  : args.tick,
+		'beat'	  : args.beat,
 		# saving to
 		'results'   : args.results,
 		'samples'   : args.samples,
 		'rawdata'   : args.rawdata,
 		'reports'   : args.reports,
 		# non-user defined options
-		'home'      : os.getcwd(),
-		'null'      : '/dev/null',
+		'home'	  : os.getcwd(),
+		'null'	  : '/dev/null',
 		'systime'   : str(time.time()).split('.')[0],
 		# useful data
 		'par_name'  : [],
@@ -346,8 +354,9 @@ def simulate():
 
 	#dask.compute(*results)
 
-	futures = client.map(_parallel_popen, squeue)
-	client.gather(futures)
+	#futures = client.map(_parallel_popen, squeue)
+	client.map(_parallel_popen, squeue)
+	#client.gather(futures)
 
 	return 0
 
@@ -379,15 +388,21 @@ def evaluate():
 		#sensitivity['din_hits'] = pool.map(_parallel_analyze, din_hits, chunksize = opts['ntasks'] - 1)
 
 	# queue to dask.delayed
-	#results = []
+	results = []
 	#for x in din_hits:
-		#y = dask.delayed(_parallel_analyze)(x)
-		#results.append(y)
-	futures = client.map(_parallel_analyze, din_hits)
+	for index, x in enumerate(din_hits):
+		y = dask.delayed(_parallel_analyze)(index, x)
+		results.append(y)
+	#futures = client.map(_parallel_analyze, din_hits)
+	#client.gather(futures)
 
 	# compute results
-	#sensitivity['din_hits'] = dask.compute(*results)
-	sensitivity['din_hits'] = client.gather(futures)
+	#sensitivity['din_hits'] =
+	dask.compute(*results)
+	sensitivity['din_hits'] = []
+	for index, x in enumerate(din_hits):
+		with open(str(index) + '.json', 'r') as infile:
+			sensitivity['din_hits'].append(json.load(infile))
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
 	a, b = numpy.shape(din_fluxes[0][1:, 1:])
@@ -398,15 +413,20 @@ def evaluate():
 		#sensitivity['din_fluxes'] = pool.map(_parallel_analyze, din_fluxes, chunksize = opts['ntasks'])
 
 	# queue to dask.delayed
-	#results = []
+	results = []
 	#for x in din_fluxes:
-		#y = dask.delayed(_parallel_analyze)(x)
-		#results.append(y)
-	futures = client.map(_parallel_analyze, din_fluxes)
+	for index, x in enumerate(din_fluxes):
+		y = dask.delayed(_parallel_analyze)(index, x)
+		results.append(y)
+	#futures = client.map(_parallel_analyze, din_fluxes)
 
 	# compute results
-	#sensitivity['din_fluxes'] = dask.compute(*results)
-	sensitivity['din_fluxes'] = client.gather(futures)
+	#sensitivity['din_fluxes'] =
+	dask.compute(*results)
+	sensitivity['din_fluxes'] = []
+	for index, x in enumerate(din_hits):
+		with open(str(index) + '.json', 'r') as infile:
+			sensitivity['din_fluxes'].append(json.load(infile))
 
 	return sensitivity
 
@@ -497,11 +517,11 @@ def report():
 def clean():
 	filelist = []
 	fileregex = [
-		'slurm*',     # slurm log files
-		'flux*.json', # DIN files
-		'log*.txt',   # log file
-		'*.kappa',    # kasim model files.
-		'model*.txt', # kasim simulation outputs.
+		'slurm*',	  # slurm log files
+		'*.json',	  # DIN files and sensitivity files
+		'log*.txt',	# log file
+		'*.kappa',	 # kasim model files.
+		'model_*.txt', # kasim simulation outputs.
 	]
 
 	for regex in fileregex:
@@ -587,6 +607,7 @@ if __name__ == '__main__':
 
 		client = Client(cluster)
 		cluster.start_workers(opts['ntasks'])
+
 	else:
 		cluster = LocalCluster(n_workers = opts['ntasks'])
 		client = Client(cluster)
