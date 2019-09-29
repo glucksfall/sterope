@@ -396,8 +396,9 @@ def evaluate():
 
 	# submit to client and compute
 	for index, x in enumerate(din_hits):
+		print('hits: ' + str(index))
 		results.append(client.submit(_parallel_analyze, 'hits_' + str(index), x))
-	#client.gather(results)
+	client.gather(results)
 
 	#sensitivity['din_hits'] =
 	sensitivity['din_hits'] = []
