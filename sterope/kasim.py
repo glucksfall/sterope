@@ -389,14 +389,14 @@ def evaluate():
 	# queue to dask.delayed and compute
 	results = []
 	#for x in din_hits:
-	for index, x in enumerate(din_hits):
-		y = dask.delayed(_parallel_analyze)(index, x)
-		results.append(y)
-	dask.compute(*results)
+	#for index, x in enumerate(din_hits):
+		#y = dask.delayed(_parallel_analyze)(index, x)
+		#results.append(y)
+	#dask.compute(*results)
 
 	# queue to dask.map and compute
-	#futures = client.map(_parallel_analyze, din_hits)
-	#client.gather(futures)
+	futures = client.map(_parallel_analyze, zip(range(len(din_hits)), din_hits))
+	client.gather(futures)
 
 	#sensitivity['din_hits'] =
 	sensitivity['din_hits'] = []
