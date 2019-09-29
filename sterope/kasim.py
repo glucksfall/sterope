@@ -396,13 +396,13 @@ def evaluate():
 
 	# submit to client and compute
 	for index, x in enumerate(din_hits):
-		results.append(client.submit(_parallel_analyze, index, x))
-	client.gather(results)
+		results.append(client.submit(_parallel_analyze, 'hits_' + str(index), x))
+	#client.gather(results)
 
 	#sensitivity['din_hits'] =
 	sensitivity['din_hits'] = []
 	for index, x in enumerate(din_hits):
-		with open(str(index) + '.json', 'r') as infile:
+		with open('hits_' + str(index) + '.json', 'r') as infile:
 			sensitivity['din_hits'].append(json.load(infile))
 
 	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
@@ -416,20 +416,20 @@ def evaluate():
 	# queue to dask.delayed and compute
 	results = []
 	#for x in din_fluxes:
-	for index, x in enumerate(din_fluxes):
-		y = dask.delayed(_parallel_analyze)(index, x)
-		results.append(y)
-	dask.compute(*results)
+	#for index, x in enumerate(din_fluxes):
+		#y = dask.delayed(_parallel_analyze)(index, x)
+		#results.append(y)
+	#dask.compute(*results)
 
 	# submit to client and compute
 	for index, x in enumerate(din_hits):
-		results.append(client.submit(_parallel_analyze, index, x))
+		results.append(client.submit(_parallel_analyze, 'fluxs_' + str(index), x))
 	client.gather(results)
 
 	#sensitivity['din_fluxes'] =
 	sensitivity['din_fluxes'] = []
 	for index, x in enumerate(din_hits):
-		with open(str(index) + '.json', 'r') as infile:
+		with open('fluxs_' + str(index) + '.json', 'r') as infile:
 			sensitivity['din_fluxes'].append(json.load(infile))
 
 	return sensitivity
