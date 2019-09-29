@@ -423,7 +423,8 @@ def evaluate():
 	#dask.compute(*results)
 
 	# submit to client and compute
-	for index, x in enumerate(din_hits):
+	for index, x in enumerate(din_fluxes):
+		print('fluxs: ' + str(index))
 		results.append(client.submit(_parallel_analyze, 'fluxs_' + str(index), x))
 	client.gather(results)
 
