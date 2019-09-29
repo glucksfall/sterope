@@ -394,9 +394,10 @@ def evaluate():
 		#results.append(y)
 	#dask.compute(*results)
 
-	# queue to dask.map and compute
-	futures = client.map(_parallel_analyze, zip(range(len(din_hits)), din_hits))
-	client.gather(futures)
+	# submit to client and compute
+	for index, x in enumerate(din_hits):
+		results.append(client.submit(_parallel_analyze, index, din_hits))
+	client.gather(results)
 
 	#sensitivity['din_hits'] =
 	sensitivity['din_hits'] = []
@@ -420,8 +421,10 @@ def evaluate():
 		results.append(y)
 	dask.compute(*results)
 
-	#futures = client.map(_parallel_analyze, din_fluxes)
-	#client.gather(futures)
+	# submit to client and compute
+	for index, x in enumerate(din_hits):
+		results.append(client.submit(_parallel_analyze, index, din_fluxes))
+	client.gather(results)
 
 	#sensitivity['din_fluxes'] =
 	sensitivity['din_fluxes'] = []
