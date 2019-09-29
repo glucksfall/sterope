@@ -354,9 +354,8 @@ def simulate():
 
 	#dask.compute(*results)
 
-	#futures = client.map(_parallel_popen, squeue)
-	client.map(_parallel_popen, squeue)
-	#client.gather(futures)
+	futures = client.map(_parallel_popen, squeue)
+	client.gather(futures)
 
 	return 0
 
