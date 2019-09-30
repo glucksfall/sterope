@@ -48,24 +48,20 @@ def _parallel_popen(cmd):
 	proc.wait()
 	return out, err
 
-def _parallel_analyze(index, data):
-	seed = int(opts['seed'])
-	samples = population['problem', 'samples']
-	problem = population['problem', 'definition']
-
-	if opts['method'] == 'sobol':
-		result = sobol.analyze(problem, data, calc_second_order = True, print_to_console = False)
-	elif opts['method'] == 'fast':
+def _parallel_analyze(index, method, problem, samples, data, seed):
+	if method == 'sobol':
+		result = sobol.analyze(problem, data, calc_second_order = True, print_to_console = False, seed = seed)
+	elif method == 'fast':
 		result = fast.analyze(problem, data, print_to_console = False, seed = seed)
-	elif opts['method'] == 'rbd-fast':
+	elif method == 'rbd-fast':
 		result = rbd_fast.analyze(problem, samples, data, print_to_console = False, seed = seed)
-	elif opts['method'] == 'morris':
+	elif method == 'morris':
 		result = morris_analyze(problem, samples, data, print_to_console = False, seed = seed)
-	elif opts['method'] == 'delta':
+	elif method == 'delta':
 		result = delta.analyze(problem, samples, data, print_to_console = False, seed = seed)
-	elif opts['method'] == 'dgsm':
+	elif method == 'dgsm':
 		result = dgsm.analyze(problem, samples, data, print_to_console = False, seed = seed)
-	elif opts['method'] == 'frac':
+	elif method == 'frac':
 		result = ff_analyze(problem, samples, data, second_order = True, print_to_console = False, seed = seed)
 	else:
 		result = None
@@ -401,9 +397,14 @@ def evaluate():
 	#dask.compute(*results)
 
 	# submit to client and compute
+	seed = int(opts['seed'])
+	method = opts['method']
+	samples = population['problem', 'samples']
+	problem = population['problem', 'definition']
+
 	for index, x in enumerate(din_hits):
 		print('hits: ' + str(index))
-		results.append(client.submit(_parallel_analyze, 'hits_' + str(index), x))
+		results.append(client.submit(_parallel_analyze, 'hits_' + str(index), method, problem, samples, x, seed))
 	client.gather(results)
 
 	#sensitivity['din_hits'] =
@@ -426,7 +427,7 @@ def evaluate():
 	# submit to client and compute
 	for index, x in enumerate(din_fluxes):
 		print('fluxs: ' + str(index))
-		results.append(client.submit(_parallel_analyze, 'fluxs_' + str(index), x))
+		results.append(client.submit(_parallel_analyze, 'fluxs_' + str(index), method, problem, samples, x, seed))
 	client.gather(results)
 
 	#sensitivity['din_fluxes'] =
