@@ -383,6 +383,12 @@ def evaluate():
 	# DIN hits are easy to evaluate recursively (for-loop), parallelized (multiprocessing) or distributed (dask)
 	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
 
+	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
+	a, b = numpy.shape(din_fluxes[0][1:, 1:])
+	din_fluxes = [ x[0] for x in [ numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes ] ]
+	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
+
+	# estimate sensitivities
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#sensitivity['din_hits'] = pool.map(_parallel_analyze, din_hits, chunksize = opts['ntasks'] - 1)
 
@@ -405,11 +411,6 @@ def evaluate():
 	for index, x in enumerate(din_hits):
 		with open('hits_' + str(index) + '.json', 'r') as infile:
 			sensitivity['din_hits'].append(json.load(infile))
-
-	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
-	a, b = numpy.shape(din_fluxes[0][1:, 1:])
-	din_fluxes = [ x[0] for x in [ numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes ] ]
-	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
 
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#sensitivity['din_fluxes'] = pool.map(_parallel_analyze, din_fluxes, chunksize = opts['ntasks'])
