@@ -430,7 +430,7 @@ def evaluate():
 
 	#sensitivity['din_fluxes'] =
 	sensitivity['din_fluxes'] = []
-	for index, x in enumerate(din_hits):
+	for index, x in enumerate(din_fluxes):
 		with open('fluxs_' + str(index) + '.json', 'r') as infile:
 			sensitivity['din_fluxes'].append(json.load(infile))
 
