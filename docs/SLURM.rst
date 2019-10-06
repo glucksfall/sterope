@@ -22,7 +22,8 @@ in the controlled machines.
 
 Replace ``$HOST_NAME`` with your machine name that is going to act as the
 controller. If you have multiple machines, this configuration file must be
-identical and in all machines in the queue.
+identical and in all machines in the queue. Be aware that Dask requires
+configuration of memory to be able to configure a SLURMCluster
 
 .. code-block:: vim
 
@@ -54,9 +55,10 @@ identical and in all machines in the queue.
 	Waittime=0
 
 	# SCHEDULING
+	DefMemPerCPU=18400
 	SchedulerType=sched/backfill
 	SelectType=select/cons_res
-	SelectTypeParameters=CR_Core
+	SelectTypeParameters=CR_CPU_Memory
 	FastSchedule=1
 
 	# LOGGING
@@ -68,7 +70,7 @@ identical and in all machines in the queue.
 	# COMPUTE NODES
 
 	# Here you add the machine hardware configurations
-	NodeName=$HOST_NAME Procs=8 Boards=1 SocketsPerBoard=1 CoresPerSocket=4 ThreadsPerCore=2 State=idle
+	NodeName=$HOST_NAME Procs=56 TreadsPerCore=1 State=idle RealMemory=1031755
 
 	# Here you add the machine(s) to a Partition
 	PartitionName=MyCluster Nodes=$HOST_NAME Default=yes MaxTime=INFINITE State=up
