@@ -39,6 +39,11 @@ or the following configuration if the model is written in syntax 3:
 
 2. **Configure Sterope**
 
+	Write a ``script.sh`` file with the following, configured with a number of processes
+	that will not interfere with other user's plans to lunch jobs in a cluster. Also and only
+	if the job is launched outside SLURM (see below), the number of processess could not be greater than
+	the number of cores the node (your laptop, desktop, or server) has.
+
 .. code-block:: bash
 
 	#!/bin/sh
@@ -67,7 +72,15 @@ or the following configuration if the model is written in syntax 3:
 
 3. **Execute Sterope**
 
-.. code-block::
+.. code-block:: bash
+
+	sbatch script.sh
+
+OR
+
+.. code-block:: bash
+
+	nohup sh script.sh &
 
 .. note::
 	The Dynamic Influence Network changes over the course of a simulation. To report time window
@@ -78,3 +91,7 @@ or the following configuration if the model is written in syntax 3:
 	**Sensitivity methods** type ``python3 -m sterope.kasim --help`` to find out the
 	available methods. Sobol is the default and we implemented all the available in the SALib
 	python package.
+
+.. note::
+	``--memory`` is not necessary when running sterope without SLURM. Also, the ``#SBATCH`` directives
+	are omited when executing the script wiht ``sh`` so they are safe to leave.
