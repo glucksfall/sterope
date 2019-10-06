@@ -23,7 +23,8 @@ in the controlled machines.
 Replace ``$HOST_NAME`` with your machine name that is going to act as the
 controller. If you have multiple machines, this configuration file must be
 identical and in all machines in the queue. Be aware that Dask requires
-configuration of memory to be able to configure a SLURMCluster
+configuration of memory to be able to configure a SLURMCluster (More info in
+https://jobqueue.dask.org/en/latest/examples.html)
 
 .. code-block:: vim
 
