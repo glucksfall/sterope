@@ -8,7 +8,7 @@ kappa (https://kappalanguage.org/)
 
 Sterope creates models samples and analyze the Dynamic Influence Network employing
 the Sobol method included in the SALib library (`SALibpaper`_). After samples are
-created, Sterope simulates them in parallel employing SLURM (`SLURM`_) or the 
+created, Sterope simulates them in parallel employing SLURM (`SLURM`_) or the
 python multiprocessing API.
 
 The plan to add methods into Pleiades (https://github.com/glucksfall/pleiades)
@@ -22,9 +22,9 @@ the development of them.
    :maxdepth: 3
 
    Installation
-..    ParameterEstimation
-..    Python3
-..    SLURM
+   sensitivity
+   Python3
+   SLURM
 
 
 Indices and tables
@@ -52,4 +52,4 @@ Indices and tables
 .. _29175206: https://www.ncbi.nlm.nih.gov/pubmed/29175206
 .. _26556387: https://www.ncbi.nlm.nih.gov/pubmed/26556387
 
-.. _SALibpaper: https://joss.theoj.org/papers/431262803744581c1d4b6a95892d3343
+.. _SALibpaper: https://joss.theoj.org/papers/10.21105/joss.00097
