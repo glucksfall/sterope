@@ -13,7 +13,7 @@ Global Sensitivity Analysis
 
    For instace, the Thomas' model was configured as:
 
-.. code-block:: bash
+.. code-block:: perl
 
 	%var: 'KD1__FREE__' 1.000000e+00 // range[0.01 100]
 	%var: 'km1__FREE__' 1.000000e+00 // range[0.01 100]
@@ -24,7 +24,7 @@ Global Sensitivity Analysis
 
 or the following configuration if the model is written in syntax 3:
 
-.. code-block:: bash
+.. code-block:: perl
 
 	%var: 'KD1__FREE__' 1.000000e+00 # range[0.01 100]
 	%var: 'km1__FREE__' 1.000000e+00 # range[0.01 100]
@@ -39,7 +39,7 @@ or the following configuration if the model is written in syntax 3:
 
 2. **Configure Sterope**
 
-.. code-block:: c
+.. code-block:: bash
 
 	#!/bin/sh
 
