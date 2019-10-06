@@ -20,7 +20,7 @@
 # -- Project information -----------------------------------------------------
 
 project = u'sterope'
-copyright = u'2018, Rodrigo Santibáñez'
+copyright = u'2019, Rodrigo Santibáñez'
 author = u'Rodrigo Santibáñez'
 
 # The short X.Y version
