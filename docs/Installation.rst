@@ -30,13 +30,13 @@ the package from `python package index <https://pypi.org/project/sterope/>`_.
 
    .. code-block:: bash
 
-	pip3 install -i https://test.pypi.org/simple/ sterope --user
+	pip3 install sterope --user
 
    If you have system rights, you could install sterope for all users with
 
    .. code-block:: bash
 
-	sudo -H pip3 install -i https://test.pypi.org/simple/ sterope
+	sudo -H pip3 install sterope
 
 2. **Download from python package index**
 
@@ -45,15 +45,14 @@ the package from `python package index <https://pypi.org/project/sterope/>`_.
 
    .. code-block:: bash
 
-	pip3 install -i https://test.pypi.org/simple/ sterope --user
+	wget https://files.pythonhosted.org/packages/01/db/582f9d3c34c840117e8fd19c9de4d9745508718765e48a808427005f16dd/sterope-1.5-py3-none-any.whl
+	pip3 install sterope-1.5-py3-none-any.whl --user
 
    .. note::
 	**Why Python3?**:
 	Pleione is intended to be used with python3, despite the lack of
 	incompatible functions with python2, because the latter won't receive
-	further development past 2020. Although, the code could be optimize with
-	specific python3 functions over dictionaries, therefore making incompatible
-	with python2.
+	further development past 2020.
 
    .. note::
 	**pip, Python and Anaconda**:
@@ -61,12 +60,12 @@ the package from `python package index <https://pypi.org/project/sterope/>`_.
 	``sudo apt-get install python3-pip`` if you have system rights, or
 	install python3 from source, and adding ``<python3 path>/bin/pip3`` to the
 	path, or linking it in a directory like ``$HOME/bin`` which is commonly
-	added to the path at system login. Please be aware that, if you installed
+	added to the path at login. Also be aware that, if you installed
 	Anaconda, pip could be linked to the Anaconda specific version of pip, which
-	will install sterope into Anaconda's installation folder.
+	will install pleione into Anaconda's installation folder.
 	Type ``which pip`` or ``which pip3`` to find out the source of pip, and type
 	``python -m site`` or ``python3 -m site`` to find out where is more likely
-	sterope would be installed.
+	pleione will be installed.
 
 Option 2: Clone the Github repository
 -------------------------------------
@@ -87,7 +86,9 @@ Option 2: Clone the Github repository
 	Adding the path to ``$HOME/.profile`` allows python to find the package
 	installation folder after each user login. Similarly, adding the path to
 	``$HOME/.bashrc`` allows python to find the package after each terminal
-	invocation.
+	invocation. Other options include setting the ``PYTHONPATH`` environmental
+	variable in a sh file (see the example folder) or invoke ``python3 setup.py clean build install``
+	to install Pleione as it was downloaded from the PyPI server.
 
 .. refs
 .. _KaSim: https://github.com/Kappa-Dev/KaSim

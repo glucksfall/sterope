@@ -23,7 +23,7 @@ def main():
 		name='sterope',
 		license='GPLv3+',
 #		version=versioneer.get_version(),
-		version='1.2',
+		version='1.5',
 		description='Sterope: Sensitivity analysis of kappa Rule-Based Models based on Dynamic Influence Networks',
 		long_description=long_description,
 		long_description_content_type='text/markdown',
