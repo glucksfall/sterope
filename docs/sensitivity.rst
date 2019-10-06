@@ -39,7 +39,7 @@ or the following configuration if the model is written in syntax 3:
 
 2. **Configure Sterope**
 
-.. code-block:: bash
+.. code-block:: perl
 
 	#!/bin/sh
 
