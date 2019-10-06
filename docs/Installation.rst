@@ -75,7 +75,7 @@ Option 2: Clone the Github repository
    The source code is uploaded and maintained through Github at
    `<https://github.com/glucksfall/sterope>`_. Therefore, you could clone the
    repository locally, and then add the folder to the ``PYTHONPATH``. Beware
-   that you should install the *pandas* package (`pandas`_) by any means.
+   that you should install the *salib*, *pandas*, *dask*, and *dask-jobqueue* packages by any means.
 
    .. code-block:: bash
 
