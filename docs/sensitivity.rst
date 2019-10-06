@@ -35,11 +35,11 @@ or the following configuration if the model is written in syntax 3:
 
 .. note::
 	Sterope is compatible with KaSim4 only. The software could simulate
-	*kappa* models written in syntax 3 (See below).
+	*kappa* models written in syntax 3 (See below option ``syntax``).
 
 2. **Configure Sterope**
 
-.. code-block:: perl
+.. code-block:: c
 
 	#!/bin/sh
 
@@ -64,6 +64,10 @@ or the following configuration if the model is written in syntax 3:
 
 	python3 -m sterope.kasim --model=$MODEL --final=$FINAL --tmin=600 --steps=$STEPS \
 	--grid=$NUM_LEVELS --kasim=kasim4 --syntax 3 --method sobol --nprocs 250 --memory 2000MB
+
+3. **Execute Sterope**
+
+.. code-block::
 
 .. note::
 	The Dynamic Influence Network changes over the course of a simulation. To report time window
