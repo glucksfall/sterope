@@ -13,7 +13,7 @@ Global Sensitivity Analysis
 
    For instace, the Thomas' model was configured as:
 
-.. code-block:: perl
+.. code-block:: c
 
 	%var: 'KD1__FREE__' 1.000000e+00 // range[0.01 100]
 	%var: 'km1__FREE__' 1.000000e+00 // range[0.01 100]
