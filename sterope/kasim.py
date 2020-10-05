@@ -27,13 +27,11 @@ from SALib.analyze import delta, dgsm, fast, rbd_fast, sobol
 def safe_checks():
 	error_msg = ''
 	if shutil.which(opts['kasim']) is None:
-		error_msg += 'KaSim (at {:s}) can\'t be called to perform simulations.\n' \
-			'Check the path to KaSim.'.format(opts['kasim'])
+		error_msg += 'KaSim (at {:s}) can\'t be called to perform simulations.\n' 	'Check the path to KaSim.'.format(opts['kasim'])
 
 	# check if model file exists
 	if not os.path.isfile(opts['model']):
-		error_msg += 'The "{:s}" file cannot be opened.\n' \
-			'Please, check the path to the model file.\n'.format(opts['model'])
+		error_msg += 'The "{:s}" file cannot be opened.\n' 	'Please, check the path to the model file.\n'.format(opts['model'])
 
 	# print error
 	if error_msg != '':
@@ -75,64 +73,45 @@ def _parallel_analyze(index, method, problem, samples, data, seed):
 	return 0
 
 def argsparser():
-	parser = argparse.ArgumentParser(description = 'Perform a global sensitivity analysis of RBM parameters over the Dynamic Influence Network.', \
-		epilog = 'Method shortnames are FAST, RBD-FAST, Morris, Sobol, Delta, DGSM, Frac\n' \
+	parser = argparse.ArgumentParser(description = 'Perform a global sensitivity analysis of RBM parameters over the Dynamic Influence Network.',
+			epilog = 'Method shortnames are FAST, RBD-FAST, Morris, Sobol, Delta, DGSM, and Frac\n' \
 			'See https://salib.readthedocs.io/en/latest/api.html for more information',
 		formatter_class = argparse.RawTextHelpFormatter)
 
 	# required arguments to simulate models
-	parser.add_argument('--model'  , metavar = 'str'  , type = str  , required = True , default = 'model.kappa'   , \
-		help = 'RBM with tagged variables to analyze')
-	parser.add_argument('--final'  , metavar = 'float', type = str  , required = True , default = '100'		   , \
-		help = 'limit time to simulate')
-	parser.add_argument('--steps'  , metavar = 'float', type = str  , required = True , default = '1'			 , \
-		help = 'time step to simulate')
+	parser.add_argument('--model'  , metavar = 'str'  , type = str  , required = True , default = 'model.kappa', help = 'RBM with tagged variables to analyze. Default model.kappa.')
+	parser.add_argument('--final'  , metavar = 'float', type = str  , required = True , default = '100'        , help = 'Limit time to simulate. Default 100.')
+	parser.add_argument('--steps'  , metavar = 'float', type = str  , required = True , default = '1.0'        , help = 'Time step to simulate. Default 1.0.')
 
 	# not required arguments to simulate models
-	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'			 , \
-		help = 'initial time to calculate the Dynamic Influence Network')
-	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None			, \
-		help = 'final time to calculate the Dynamic Influence Network')
-	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'			, \
-		help = 'precision and format of parameter values, default 7g')
-	parser.add_argument('--syntax' , metavar = 'str'  , type = str  , required = False, default = '4'			 , \
-		help = 'KaSim syntax, default 4')
+	parser.add_argument('--tmin'   , metavar = 'float', type = str  , required = False, default = '0'          , help = 'Initial time to calculate the Dynamic Influence Network. Default 0.')
+	parser.add_argument('--tmax'   , metavar = 'float', type = str  , required = False, default = None         , help = 'Final time to calculate the Dynamic Influence Network. Default --final.')
+	parser.add_argument('--prec'   , metavar = 'str'  , type = str  , required = False, default = '7g'         , help = 'Precision and format of parameter values. Default 7g.')
+	parser.add_argument('--syntax' , metavar = 'str'  , type = str  , required = False, default = '4'          , help = 'KaSim syntax. Default 4.')
 
 	# useful paths
-	parser.add_argument('--kasim'  , metavar = 'path' , type = str  , required = False, default = '~/bin/kasim4'  , \
-		help = 'KaSim path, default ~/bin/kasim4')
+	parser.add_argument('--kasim'  , metavar = 'path' , type = str  , required = False, default = 'kasim4'     , help = 'KaSim path. Default kasim4')
 
 	# general options for sensitivity analysis
-	parser.add_argument('--method' , metavar = 'str'  , type = str  , required = False, default = 'Sobol'		 , \
-		help = 'methods supported by SALib')
-	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None			, \
-		help = 'seed for the sampler')
-	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'			, \
-		help = 'define the number of samples, default 10')
-	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'			 , \
-		help = 'perform calculations in a cluster of nprocs')
-	parser.add_argument('--memory' , metavar = 'int'  , type = str  , required = False, default = '1GB'		   , \
-		help = 'memory for independent workers. Default 1GB')
+	parser.add_argument('--method' , metavar = 'str'  , type = str  , required = False, default = 'Sobol'      , help = 'Methods supported by SALib. Default Sobol.')
+	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None         , help = 'Seed for the sampler. Default None.')
+	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'         , help = 'Number of parameter levels. Default 10.')
+	parser.add_argument('--sims'   , metavar = 'int'  , type = str  , required = False, default = '10'         , help = 'Number of simulations per parameter sample. Default 10.')
+	parser.add_argument('--boots'  , metavar = 'int'  , type = str  , required = False, default = '100'        , help = 'Number of bootstraps to obtain a representative simulation. Default 100.')
+	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Perform calculations in a cluster of nprocs. Default 1.')
+	parser.add_argument('--memory' , metavar = 'int'  , type = str  , required = False, default = '1GB'        , help = 'Memory for independent workers. Default 1GB.')
 
-	# WARNING slice the simulation and perform global sensitivity analysis
-	parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'total'		 , \
-		help = 'total or sliced sensitivity analysis')
-	parser.add_argument('--tick'   , metavar = 'float', type = str  , required = False, default = '0.0'		   , \
-		help = 'sliced SA: ...')
-	parser.add_argument('--size'   , metavar = 'float', type = str  , required = False, default = '1.0'		   , \
-		help = 'sliced SA: ...')
-	parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'		   , \
-		help = 'sliced SA: time step to calculate DIN')
+	# TODO slice the simulation and perform global sensitivity analysis for each slice (generalization of tmin-tmax)
+	#parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'total'		 , help = 'total or sliced sensitivity analysis')
+	#parser.add_argument('--tick'   , metavar = 'float', type = str  , required = False, default = '0.0'		   , help = 'sliced SA: ...')
+	#parser.add_argument('--size'   , metavar = 'float', type = str  , required = False, default = '1.0'		   , help = 'sliced SA: ...')
+	#parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'		   , help = 'sliced SA: time step to calculate DIN')
 
 	# other options
-	parser.add_argument('--results', metavar = 'path' , type = str  , required = False, default = 'results'	   , \
-		help = 'output folder where to move the results, default results (Sterope appends UNIX time string)')
-	parser.add_argument('--samples', metavar = 'path' , type = str  , required = False, default = 'samples'	   , \
-		help = 'subfolder to save the generated models, default samples')
-	parser.add_argument('--rawdata', metavar = 'path' , type = str  , required = False, default = 'simulations'   , \
-		help = 'subfolder to save the simulations, default simulations')
-	parser.add_argument('--reports', metavar = 'path' , type = str  , required = False, default = 'reports'	   , \
-		help = 'subfolder to save the calculated sensitivity, default reports')
+	parser.add_argument('--results', metavar = 'path' , type = str  , required = False, default = 'results'    , help = 'Output folder where to move the results. Default results.')
+	parser.add_argument('--samples', metavar = 'path' , type = str  , required = False, default = 'samples'    , help = 'Subfolder to save the generated models. Default samples.')
+	parser.add_argument('--rawdata', metavar = 'path' , type = str  , required = False, default = 'simulations', help = 'Subfolder to save the simulations. Default simulations.')
+	parser.add_argument('--reports', metavar = 'path' , type = str  , required = False, default = 'reports'    , help = 'Subfolder to save the calculated sensitivity. Default reports.')
 
 	args = parser.parse_args()
 
@@ -143,7 +122,7 @@ def argsparser():
 		if sys.platform.startswith('linux'):
 			args.seed = int.from_bytes(os.urandom(4), byteorder = 'big')
 		else:
-			parser.error('sterope requires --seed integer (to supply the samplers)')
+			parser.error('sterope requires --seed int (to supply the samplers)')
 
 	return args
 
@@ -151,35 +130,37 @@ def ga_opts():
 	return {
 		# user defined options
 		# simulate models
-		'model'	 : args.model,
-		'final'	 : args.final,
-		'steps'	 : args.steps,
+		'model'     : args.model,
+		'final'     : args.final,
+		'steps'     : args.steps,
 		# optional to simulate models
-		'tmin'	  : args.tmin,
-		'tmax'	  : args.tmax,
+		'tmin'      : args.tmin,
+		'tmax'      : args.tmax,
 		'par_prec'  : args.prec,
-		'syntax'	: args.syntax,
+		'syntax'    : args.syntax,
 		# path to software
-		'kasim'	 : os.path.expanduser(args.kasim), # kasim4 only
+		'kasim'     : os.path.expanduser(args.kasim), # kasim4 only
 		# global SA options
-		'method'	: args.method.lower(),
-		'seed'	  : args.seed,
+		'method'    : args.method.lower(),
+		'seed'      : args.seed,
 		'p_levels'  : args.grid,
-		'ntasks'	: int(args.nprocs),
-		'memory'	: args.memory,
+		'ntasks'    : int(args.nprocs),
+		'nsims'     : int(args.nsims),
+		'resamples' : int(args.boots),
+		'memory'    : args.memory,
 		# sliced global SA options
-		'type'	  : args.type,
-		'size'	  : args.size,
-		'tick'	  : args.tick,
-		'beat'	  : args.beat,
+		#'type'  : args.type,
+		#'size'  : args.size,
+		#'tick'  : args.tick,
+		#'beat'  : args.beat,
 		# saving to
 		'results'   : args.results,
 		'samples'   : args.samples,
 		'rawdata'   : args.rawdata,
 		'reports'   : args.reports,
 		# non-user defined options
-		'home'	  : os.getcwd(),
-		'null'	  : '/dev/null',
+		'home'      : os.getcwd(),
+		'null'      : '/dev/null',
 		'systime'   : str(time.time()).split('.')[0],
 		# useful data
 		'par_name'  : [],
@@ -193,10 +174,10 @@ def configurate():
 			data.append(line)
 
 	# find parameters to analyze
-	regex = '%\w+: \'(\w+)\' ' \
-		'([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\s+(?:\/\/|#)\s+' \
-		'(\w+)\[([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\s+' \
-		'([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\]\n'
+	regex = '%\w+:\s+\'(\w+)\'\s+' \
+			'([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\s+(?:\/\/|#)\s+' \
+			'(\w+)\[([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\s+' \
+			'([-+]?(?:(?:\d*\.\d+)|(?:\d+\.?))(?:[Ee][+-]?\d+)?)\]\n'
 
 	parameters = {}
 
@@ -281,43 +262,44 @@ def populate():
 
 	for model in sorted(population.keys()):
 		if model[1] == 'model':
-			model_key = model[0]
-			model_name = population[model_key, 'model']
+			for simulation in range(opts['nsims']):
+				model_key = model[0]
+				model_name = population[model_key, 'model']
 
-			# define pertubation to the kappa model that indicates KaSim to calculates the Dinamic Influence Network
-			if opts['type'] == 'total':
-				if opts['syntax'] == '4':
-					flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [true];\n'.format(opts['tmin'], model_key)
-					flux += '%mod: [T] > {:s} do $DIN \"flux_{:s}.json\" [false];'.format(opts['tmax'], model_key)
-				else: # kappa3.5 uses $FLUX instead of $DIN
-					flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [true]\n'.format(opts['tmin'], model_key)
-					flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}.json\" [false]'.format(opts['tmax'], model_key)
+				# define pertubation to the kappa model that indicates KaSim to calculates the Dinamic Influence Network
+				if opts['type'] == 'total':
+					if opts['syntax'] == '4':
+						flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [true];\n'.format(opts['tmin'], model_key, simulation)
+						flux += '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [false];'.format(opts['tmax'], model_key, simulation)
+					else: # kappa3.5 uses $FLUX instead of $DIN
+						flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [true]\n'.format(opts['tmin'], model_key, simulation)
+						flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [false]'.format(opts['tmax'], model_key, simulation)
 
-			else: # sliced global sensitivity analysis
-				if opts['syntax'] == '4':
-					flux = '%mod: repeat (([T] > DIM_clock) && (DIM_tick > (DIM_length - 1))) do $DIN "flux_".(DIM_tick - DIM_length).".json" [false] until [false];'
-				else: # kappa3.5 uses $FLUX instead of $DIN
-					flux = '\n# Added to calculate a sliced global sensitivity analysis\n'
-					flux += '%var: \'DIN_beat\' {:s}\n'.format(opts['beat'])
-					flux += '%var: \'DIN_length\' {:s}\n'.format(opts['size'])
-					flux += '%var: \'DIN_tick\' {:s}\n'.format(opts['tick'])
-					flux += '%var: \'DIN_clock\' {:s}\n'.format(opts['tmin'])
-					flux += '%mod: repeat (([T] > DIN_clock) && (DIN_tick > (DIN_length - 1))) do '
-					flux += '$FLUX \"flux_{:s}\".(DIN_tick - DIN_length).\".json\" [false] until [false]\n'.format(model_key)
-					flux += '%mod: repeat ([T] > DIN_clock) do '
-					flux += '$FLUX "flux_{:s}".DIN_tick.".json" "probability" [true] until ((((DIN_tick + DIN_length) + 1) * DIN_beat) > [Tmax])\n'.format(model_key)
-					flux += '%mod: repeat ([T] > DIN_clock) do $UPDATE DIN_clock (DIN_clock + DIN_beat); $UPDATE DIN_tick (DIN_tick + 1) until [false]'
+			#else: # sliced global sensitivity analysis
+				#if opts['syntax'] == '4':
+					#flux = '%mod: repeat (([T] > DIM_clock) && (DIM_tick > (DIM_length - 1))) do $DIN "flux_".(DIM_tick - DIM_length).".json" [false] until [false];'
+				#else: # kappa3.5 uses $FLUX instead of $DIN
+					#flux = '\n# Added to calculate a sliced global sensitivity analysis\n'
+					#flux += '%var: \'DIN_beat\' {:s}\n'.format(opts['beat'])
+					#flux += '%var: \'DIN_length\' {:s}\n'.format(opts['size'])
+					#flux += '%var: \'DIN_tick\' {:s}\n'.format(opts['tick'])
+					#flux += '%var: \'DIN_clock\' {:s}\n'.format(opts['tmin'])
+					#flux += '%mod: repeat (([T] > DIN_clock) && (DIN_tick > (DIN_length - 1))) do '
+					#flux += '$FLUX \"flux_{:s}\".(DIN_tick - DIN_length).\".json\" [false] until [false]\n'.format(model_key)
+					#flux += '%mod: repeat ([T] > DIN_clock) do '
+					#flux += '$FLUX "flux_{:s}".DIN_tick.".json" "probability" [true] until ((((DIN_tick + DIN_length) + 1) * DIN_beat) > [Tmax])\n'.format(model_key)
+					#flux += '%mod: repeat ([T] > DIN_clock) do $UPDATE DIN_clock (DIN_clock + DIN_beat); $UPDATE DIN_tick (DIN_tick + 1) until [false]'
 
-			model_path = './model_' + model_name + '.kappa'
-			if not os.path.exists(model_path):
-				with open(model_path, 'w') as file:
-					for line in par_keys:
-						if parameters[line][0] == 'par':
-							file.write(par_string.format(parameters[line][1], population[model_key, parameters[line][1]]))
-						else:
-							file.write(parameters[line])
-					# add the DIN perturbation at the end of the kappa file
-					file.write(flux)
+				model_path = './model_{:s}_{:03d}.kappa'.format(model_name, simulation)
+				if not os.path.exists(model_path):
+					with open(model_path, 'w') as file:
+						for line in par_keys:
+							if parameters[line][0] == 'par':
+								file.write(par_string.format(parameters[line][1], population[model_key, parameters[line][1]]))
+							else:
+								file.write(parameters[line])
+						# add the DIN perturbation at the end of the kappa file
+						file.write(flux)
 
 	# add problem definition to population dict
 	population['problem', 'definition'] = problem
@@ -329,17 +311,18 @@ def simulate():
 	squeue = []
 
 	for model in sorted(population.keys()):
-		if model[1] == 'model':
-			model_name = population[model[0], 'model']
-			output = 'model_{:s}.out.txt'.format(model_name)
+		for simulation in range(opts['nsims']):
+			if model[1] == 'model':
+				model_name = population[model[0], 'model']
+				output = 'model_{:s}_{:03d}.out.txt'.format(model_name, simulation)
 
-			cmd = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log' \
-				.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
-			cmd = os.path.expanduser(cmd)
-			cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
-			squeue.append(cmd)
+				cmd = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log'
+				cmd = cmd.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
+				cmd = os.path.expanduser(cmd)
+				cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
+				squeue.append(cmd)
 
-	# simulate the queue with multiprocessing.Pool (SLURM define how many processors to use)
+	# simulate the queue with multiprocessing.Pool
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
 		#pool.map(_parallel_popen, sorted(squeue), chunksize = opts['ntasks'] - 1)
 
@@ -354,6 +337,30 @@ def simulate():
 	client.gather(futures)
 
 	return 0
+
+def bootstrapping():
+	din_hits = [] # list of column vectors, one vector per rule
+	din_fluxes = [] # list of square numpy arrays, but not sym(cmd)metric
+
+	# read observations
+	files = sorted(glob.glob('./flux*json'))
+	for file in files:
+		with open(file, 'r') as infile:
+			data = pandas.read_json(infile)
+
+		# vector column of lists
+		din_hits.append(data['din_hits'].iloc[1:].values)
+		# reshape matrix of fluxes into a vector column of lists
+		tmp = [ x for x in data['din_fluxs'] ]
+		din_fluxes.append(pandas.DataFrame(tmp).values) # easy conversion of a list of lists into a numpy array
+
+	# DIN hits are easy to evaluate recursively (for-loop), parallelized (multiprocessing) or distributed (dask)
+	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
+
+	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
+	a, b = numpy.shape(din_fluxes[0][1:, 1:])
+	din_fluxes = [ x[0] for x in [ numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes ] ]
+	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
 
 def evaluate():
 	sensitivity = {
