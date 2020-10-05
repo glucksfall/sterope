@@ -16,6 +16,9 @@ import pandas, numpy
 import dask, dask_jobqueue
 from dask.distributed import Client, LocalCluster
 
+# import astropy to perform bootstrapping
+from astropy.stats import bootstrap
+
 # import sensitivity samplers and methods
 from SALib.sample.morris import sample as morris_sample
 from SALib.analyze.morris import analyze as morris_analyze
@@ -316,8 +319,8 @@ def simulate():
 				model_name = population[model[0], 'model']
 				output = 'model_{:s}_{:03d}.out.txt'.format(model_name, simulation)
 
-				cmd = '{:s} -i model_{:s}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log'
-				cmd = cmd.format(opts['kasim'], model_name, opts['final'], opts['steps'], output, opts['syntax'])
+				cmd = '{:s} -i model_{:s}_{:03d}.kappa -l {:s} -p {:s} -o {:s} -syntax {:s} --no-log'
+				cmd = cmd.format(opts['kasim'], model_name, simulation, opts['final'], opts['steps'], output, opts['syntax'])
 				cmd = os.path.expanduser(cmd)
 				cmd = re.findall(r'(?:[^\s,"]|"+(?:=|\\.|[^"])*"+)+', cmd)
 				squeue.append(cmd)
