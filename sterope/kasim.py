@@ -270,13 +270,13 @@ def populate():
 				model_name = population[model_key, 'model']
 
 				# define pertubation to the kappa model that indicates KaSim to calculates the Dinamic Influence Network
-				if opts['type'] == 'total':
-					if opts['syntax'] == '4':
-						flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [true];\n'.format(opts['tmin'], model_key, simulation)
-						flux += '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [false];'.format(opts['tmax'], model_key, simulation)
-					else: # kappa3.5 uses $FLUX instead of $DIN
-						flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [true]\n'.format(opts['tmin'], model_key, simulation)
-						flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [false]'.format(opts['tmax'], model_key, simulation)
+				#if opts['type'] == 'total':
+				if opts['syntax'] == '4':
+					flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [true];\n'.format(opts['tmin'], model_key, simulation)
+					flux += '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [false];'.format(opts['tmax'], model_key, simulation)
+				else: # kappa3.5 uses $FLUX instead of $DIN
+					flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [true]\n'.format(opts['tmin'], model_key, simulation)
+					flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [false]'.format(opts['tmax'], model_key, simulation)
 
 			#else: # sliced global sensitivity analysis
 				#if opts['syntax'] == '4':
