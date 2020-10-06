@@ -336,9 +336,8 @@ def simulate():
 
 	#dask.compute(*results)
 
-	with Client(cluster) as client:
-		futures = client.map(_parallel_popen, squeue)
-		client.gather(futures)
+	futures = client.map(_parallel_popen, squeue)
+	client.gather(futures)
 
 	return 0
 
@@ -621,6 +620,7 @@ if __name__ == '__main__':
 			cores = 1, walltime = '0', memory = opts['memory'],
 			local_directory = os.getenv('TMPDIR', '/tmp'))
 		cluster.start_workers(opts['ntasks'])
+		client = Client(cluster)
 
 	else:
 		cluster = LocalCluster(
@@ -628,6 +628,7 @@ if __name__ == '__main__':
 			processes = True,
 			threads_per_worker = 1,
 			local_directory = os.getenv('TMPDIR', '/tmp'))
+		client = Client(cluster)
 
 	# read model configuration
 	parameters = configurate()
