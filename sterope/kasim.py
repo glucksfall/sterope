@@ -340,7 +340,7 @@ def simulate():
 		if os.getenv('SLURM_JOB_PARTITION', None) != None:
 			cluster.start_workers(opts['ntasks'])
 		futures = client.map(_parallel_popen, squeue)
-		client.gather(futures)
+		client.gather(futures)~
 
 	return 0
 
@@ -614,11 +614,8 @@ if __name__ == '__main__':
 	# clean the working directory
 	clean()
 
-	# create SLURM Cluster if available
-	try:
-		slurm = os.environ['SLURM_JOB_PARTITION']
-	except:
-		slurm = None
+	# create SLURM Cluster if available; if not, use multiprocessing
+	slurm = os.getenv('SLURM_JOB_PARTITION', None)
 
 	if slurm:
 		cluster = dask_jobqueue.SLURMCluster(
