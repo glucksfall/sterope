@@ -619,7 +619,7 @@ if __name__ == '__main__':
 			queue = os.environ['SLURM_JOB_PARTITION'],
 			cores = 1, walltime = '0', memory = opts['memory'],
 			local_directory = os.getenv('TMPDIR', '/tmp'))
-		cluster.start_workers(opts['ntasks'])
+		cluster.scale(opts['ntasks'])
 		client = Client(cluster)
 
 	else:
