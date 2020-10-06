@@ -99,7 +99,7 @@ def argsparser():
 	parser.add_argument('--method' , metavar = 'str'  , type = str  , required = False, default = 'Sobol'      , help = 'Methods supported by SALib. Default Sobol.')
 	parser.add_argument('--seed'   , metavar = 'int'  , type = str  , required = False, default = None         , help = 'Seed for the sampler. Default None.')
 	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'         , help = 'Number of parameter levels. Default 10.')
-	parser.add_argument('--sims'   , metavar = 'int'  , type = str  , required = False, default = '10'         , help = 'Number of simulations per parameter sample. Default 10.')
+	parser.add_argument('--nsims'  , metavar = 'int'  , type = str  , required = False, default = '10'         , help = 'Number of simulations per parameter sample. Default 10.')
 	parser.add_argument('--boots'  , metavar = 'int'  , type = str  , required = False, default = '100'        , help = 'Number of bootstraps to obtain a representative simulation. Default 100.')
 	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Perform calculations in a cluster of nprocs. Default 1.')
 	parser.add_argument('--memory' , metavar = 'int'  , type = str  , required = False, default = '1GB'        , help = 'Memory for independent workers. Default 1GB.')
