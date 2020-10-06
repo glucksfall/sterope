@@ -65,7 +65,7 @@ def _parallel_analyze(index, method, problem, samples, data, seed):
 	elif method == 'frac':
 		result = ff_analyze(problem, samples, data, second_order = True, print_to_console = False, seed = seed)
 	else:
-		result = None
+		return 0
 
 	for key in result.keys():
 		result[key] = result[key].tolist()
@@ -343,27 +343,42 @@ def simulate():
 
 def bootstrapping():
 	din_hits = [] # list of column vectors, one vector per rule
-	din_fluxes = [] # list of square numpy arrays, but not sym(cmd)metric
+	din_fluxes = [] # list of square numpy arrays, but not symmetrics
 
 	# read observations
-	files = sorted(glob.glob('./flux*json'))
-	for file in files:
-		with open(file, 'r') as infile:
-			data = pandas.read_json(infile)
+	for model in sorted(population.keys()):
+		if model[1] == 'model':
+			model_key = model[0]
 
-		# vector column of lists
-		din_hits.append(data['din_hits'].iloc[1:].values)
-		# reshape matrix of fluxes into a vector column of lists
-		tmp = [ x for x in data['din_fluxs'] ]
-		din_fluxes.append(pandas.DataFrame(tmp).values) # easy conversion of a list of lists into a numpy array
+			files = sorted(glob.glob('./flux_{:s}_*json'.format(model_key)))
+			for file in files:
+				with open(file, 'r') as infile:
+					data = pandas.read_json(infile)
 
-	# DIN hits are easy to evaluate recursively (for-loop), parallelized (multiprocessing) or distributed (dask)
-	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
+				# vector column of lists
+				din_hits.append(data['din_hits'].iloc[1:].values)
+				# reshape matrix of fluxes into a vector column of lists
+				tmp = [ x for x in data['din_fluxs'] ]
+				din_fluxes.append(pandas.DataFrame(tmp).values) # easy conversion of a list of lists into a numpy array
 
-	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
-	a, b = numpy.shape(din_fluxes[0][1:, 1:])
-	din_fluxes = [ x[0] for x in [ numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes ] ]
-	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
+			# DIN hits are easy to evaluate recursively (for-loop), parallelized (multiprocessing) or distributed (dask)
+			din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
+
+			# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
+			a, b = numpy.shape(din_fluxes[0][1:, 1:])
+			din_fluxes = [ x[0] for x in [ numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes ] ]
+			din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
+
+			# bootstrap
+			tmp = numpy.mean(bootstrap(din_hits, opts['resamples'], numpy.mean))
+			with open('./hits_bootstrapped_{:s}.txt'.format(model_key)) as outfile:
+				pandas.DataFrame(data = tmp).to_csv(outfile, sep = '\t', index = False)
+
+			tmp = numpy.mean(bootstrap(din_fluxes, opts['resamples'], numpy.mean))
+			with open('./fluxes_bootstrapped_{:s}.txt'.format(model_key)) as outfile:
+				pandas.DataFrame(data = tmp).to_csv(outfile, sep = '\t', index = False)
+
+	return 0
 
 def evaluate():
 	sensitivity = {
@@ -619,7 +634,7 @@ if __name__ == '__main__':
 			queue = os.environ['SLURM_JOB_PARTITION'],
 			cores = 1, walltime = '0', memory = opts['memory'],
 			local_directory = os.getenv('TMPDIR', '/tmp'))
-		cluster.scale(opts['ntasks'])
+		cluster.adapt(maximum_jobs = opts['ntasks'])
 		client = Client(cluster)
 
 	else:
@@ -637,6 +652,8 @@ if __name__ == '__main__':
 	population = populate()
 	# simulate levels
 	simulate()
+	# bootstrapping
+	bootstrapping()
 	# evaluate sensitivity
 	sensitivity = evaluate()
 	# write reports
