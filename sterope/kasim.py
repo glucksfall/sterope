@@ -340,7 +340,7 @@ def simulate():
 		if os.getenv('SLURM_JOB_PARTITION', None) != None:
 			cluster.start_workers(opts['ntasks'])
 		futures = client.map(_parallel_popen, squeue)
-		client.gather(futures)~
+		client.gather(futures)
 
 	return 0
 
