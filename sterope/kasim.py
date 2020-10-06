@@ -336,8 +336,11 @@ def simulate():
 
 	#dask.compute(*results)
 
-	futures = client.map(_parallel_popen, squeue)
-	client.gather(futures)
+	with Cluster(client) as cluster:
+		if os.getenv('SLURM_JOB_PARTITION', None) != None:
+			cluster.start_workers(opts['ntasks'])
+		futures = client.map(_parallel_popen, squeue)
+		client.gather(futures)
 
 	return 0
 
@@ -623,16 +626,12 @@ if __name__ == '__main__':
 			cores = 1, walltime = '0', memory = opts['memory'],
 			local_directory = os.getenv('TMPDIR', '/tmp'))
 
-		client = Client(cluster)
-		cluster.start_workers(opts['ntasks'])
-
 	else:
 		cluster = LocalCluster(
 			n_workers = opts['ntasks'],
 			processes = True,
 			threads_per_worker = 1,
 			local_directory = os.getenv('TMPDIR', '/tmp'))
-		client = Client(cluster)
 
 	print(client.current().cluster.scheduler)
 
