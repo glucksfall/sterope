@@ -337,7 +337,7 @@ def simulate():
 	#dask.compute(*results)
 
 	with Client(cluster) as client:
-		if os.getenv('SLURM_JOB_PARTITION', None) != None:
+		if slurm != None:
 			cluster.start_workers(opts['ntasks'])
 		futures = client.map(_parallel_popen, squeue)
 		client.gather(futures)
