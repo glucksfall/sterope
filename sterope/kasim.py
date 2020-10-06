@@ -617,7 +617,7 @@ if __name__ == '__main__':
 	# create SLURM Cluster if available; if not, use multiprocessing
 	slurm = os.getenv('SLURM_JOB_PARTITION', None)
 
-	if slurm:
+	if slurm != None:
 		cluster = dask_jobqueue.SLURMCluster(
 			queue = os.environ['SLURM_JOB_PARTITION'],
 			cores = 1, walltime = '0', memory = opts['memory'],
