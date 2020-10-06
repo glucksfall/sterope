@@ -627,7 +627,11 @@ if __name__ == '__main__':
 		cluster.start_workers(opts['ntasks'])
 
 	else:
-		cluster = LocalCluster(n_workers = opts['ntasks'], threads_per_worker = 1)
+		cluster = LocalCluster(
+			n_workers = opts['ntasks'],
+			processes = True,
+			threads_per_worker = 1,
+			local_directory = os.getenv('TMPDIR', '/tmp'))
 		client = Client(cluster)
 
 	print(client.current().cluster.scheduler)
