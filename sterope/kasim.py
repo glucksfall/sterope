@@ -630,8 +630,6 @@ if __name__ == '__main__':
 			threads_per_worker = 1,
 			local_directory = os.getenv('TMPDIR', '/tmp'))
 
-	print(client.current().cluster.scheduler)
-
 	# read model configuration
 	parameters = configurate()
 
