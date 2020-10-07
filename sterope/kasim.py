@@ -398,11 +398,13 @@ def evaluate():
 	for file in files:
 		with open(file, 'r') as infile:
 			din_hits.append(pandas.read_csv(infile, header = None).values)
+	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
 
 	files = sorted(glob.glob('./fluxes_bootstrapped_*txt'))
 	for file in files:
 		with open(file, 'r') as infile:
 			din_fluxes.append(pandas.read_csv(infile, header = None).values)
+	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
 
 	# estimate sensitivities
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
@@ -422,7 +424,7 @@ def evaluate():
 	samples = population['problem', 'samples']
 	problem = population['problem', 'definition']
 
-	for index, x in enumerate(din_hits):
+	for index, x in enumerate(din_hits[0]):
 		print('hits: ' + str(index))
 		results.append(client.submit(_parallel_analyze, 'hits_' + str(index), method, problem, samples, x, seed))
 	client.gather(results)
