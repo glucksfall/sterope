@@ -342,12 +342,12 @@ def simulate():
 	return 0
 
 def bootstrapping():
-	din_hits = [] # list of column vectors, one vector per rule
-	din_fluxes = [] # list of square numpy arrays, but not symmetrics
-
-	# read observations
+	# read simulations of each model
 	for model in sorted(population.keys()):
 		if model[1] == 'model':
+			din_hits = [] # list of column vectors, one vector per rule
+			din_fluxes = [] # list of square numpy arrays, but not symmetrics
+
 			model_key = model[0]
 
 			files = sorted(glob.glob('./flux_{:s}_*json'.format(model_key)))
@@ -373,14 +373,14 @@ def bootstrapping():
 			tmp = []
 			for row in numpy.array(din_hits):
 				tmp.append(numpy.mean(bootstrap(row, opts['resamples'], bootfunc = numpy.mean)))
-			with open('./hits_bootstrapped_{:s}.txt'.format(model_key)) as outfile:
-				pandas.DataFrame(data = tmp).to_csv(outfile, sep = '\t', index = False)
+			with open('./hits_bootstrapped_{:s}.txt'.format(model_key), 'w') as outfile:
+				pandas.DataFrame(data = tmp).to_csv(outfile, sep = '\t', index = False, header = False)
 
 			tmp = []
 			for row in numpy.array(din_fluxes):
-				tmp.append(numpy.mean(bootstrap(row, opts['resamples'], bootfunc = numpy.mean))
-			with open('./fluxes_bootstrapped_{:s}.txt'.format(model_key)) as outfile:
-				pandas.DataFrame(data = tmp).to_csv(outfile, sep = '\t', index = False)
+				tmp.append(numpy.mean(bootstrap(row, opts['resamples'], bootfunc = numpy.mean)))
+			with open('./fluxes_bootstrapped_{:s}.txt'.format(model_key), 'w') as outfile:
+				pandas.DataFrame(data = tmp).to_csv(outfile, sep = '\t', index = False, header = False)
 
 	return 0
 
@@ -394,24 +394,15 @@ def evaluate():
 	din_fluxes = [] # list of square numpy arrays, but not sym(cmd)metric
 
 	# read observations
-	files = sorted(glob.glob('./flux*json'))
+	files = sorted(glob.glob('./hits_bootstrapped_*txt'))
 	for file in files:
 		with open(file, 'r') as infile:
-			data = pandas.read_json(infile)
+			din_hits.append(pandas.read_csv(infile, header = None).values)
 
-		# vector column of lists
-		din_hits.append(data['din_hits'].iloc[1:].values)
-		# reshape matrix of fluxes into a vector column of lists
-		tmp = [ x for x in data['din_fluxs'] ]
-		din_fluxes.append(pandas.DataFrame(tmp).values) # easy conversion of a list of lists into a numpy array
-
-	# DIN hits are easy to evaluate recursively (for-loop), parallelized (multiprocessing) or distributed (dask)
-	din_hits = [ numpy.asarray(x) for x in numpy.transpose(din_hits) ]
-
-	# DIN fluxes are not that easy to evaluate recursively; data needs to be reshaped
-	a, b = numpy.shape(din_fluxes[0][1:, 1:])
-	din_fluxes = [ x[0] for x in [ numpy.reshape(x[1:,1:], (1, a*b)) for x in din_fluxes ] ]
-	din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
+	files = sorted(glob.glob('./fluxes_bootstrapped_*txt'))
+	for file in files:
+		with open(file, 'r') as infile:
+			din_fluxes.append(pandas.read_csv(infile, header = None).values)
 
 	# estimate sensitivities
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
