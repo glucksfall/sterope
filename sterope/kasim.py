@@ -568,6 +568,7 @@ def backup():
 		'samples' : results + '/' + opts['samples'],
 		'rawdata' : results + '/' + opts['rawdata'],
 		'reports' : results + '/' + opts['reports'],
+		'others'  : results + '/other_files'
 	}
 
 	# make backup folders
@@ -593,6 +594,14 @@ def backup():
 	filelist = glob.glob('report_*.txt')
 	for filename in filelist:
 		shutil.move(filename, folders['reports'])
+
+	# archive others
+	filelist = glob.glob('*bootstrapped*')
+	for filename in filelist:
+		shutil.move(filename, folders['others'])
+	filelist = glob.glob('fluxs*.json')
+	for filename in filelist:
+		shutil.move(filename, folders['others'])
 
 	# archive a log file
 	log_file = 'log_{:s}.txt'.format(opts['systime'])
@@ -656,3 +665,4 @@ if __name__ == '__main__':
 
 	# move and organize results
 	backup()
+	clean()
