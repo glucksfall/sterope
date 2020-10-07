@@ -430,7 +430,7 @@ def evaluate():
 	client.gather(results)
 
 	sensitivity['din_hits'] = []
-	for index, x in enumerate(din_hits):
+	for index, x in enumerate(din_hits[0]):
 		with open('hits_' + str(index) + '.json', 'r') as infile:
 			sensitivity['din_hits'].append(json.load(infile))
 
@@ -446,13 +446,13 @@ def evaluate():
 	#dask.compute(*results)
 
 	# submit to client and compute
-	for index, x in enumerate(din_fluxes):
+	for index, x in enumerate(din_fluxes[0]):
 		print('fluxs: ' + str(index))
 		results.append(client.submit(_parallel_analyze, 'fluxs_' + str(index), method, problem, samples, x, seed))
 	client.gather(results)
 
 	sensitivity['din_fluxes'] = []
-	for index, x in enumerate(din_fluxes):
+	for index, x in enumerate(din_fluxes[0]):
 		with open('fluxs_' + str(index) + '.json', 'r') as infile:
 			sensitivity['din_fluxes'].append(json.load(infile))
 
