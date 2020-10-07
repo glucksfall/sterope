@@ -427,7 +427,6 @@ def evaluate():
 		results.append(client.submit(_parallel_analyze, 'hits_' + str(index), method, problem, samples, x, seed))
 	client.gather(results)
 
-	#sensitivity['din_hits'] =
 	sensitivity['din_hits'] = []
 	for index, x in enumerate(din_hits):
 		with open('hits_' + str(index) + '.json', 'r') as infile:
@@ -450,7 +449,6 @@ def evaluate():
 		results.append(client.submit(_parallel_analyze, 'fluxs_' + str(index), method, problem, samples, x, seed))
 	client.gather(results)
 
-	#sensitivity['din_fluxes'] =
 	sensitivity['din_fluxes'] = []
 	for index, x in enumerate(din_fluxes):
 		with open('fluxs_' + str(index) + '.json', 'r') as infile:
