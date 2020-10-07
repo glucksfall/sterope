@@ -370,11 +370,15 @@ def bootstrapping():
 			din_fluxes = [ numpy.asarray(x) for x in numpy.transpose(din_fluxes) ]
 
 			# bootstrap
-			tmp = numpy.mean(bootstrap(din_hits, opts['resamples'], numpy.mean))
+			tmp = []
+			for row in numpy.array(din_hits):
+				tmp.append(numpy.mean(bootstrap(row, opts['resamples'], bootfunc = numpy.mean)))
 			with open('./hits_bootstrapped_{:s}.txt'.format(model_key)) as outfile:
 				pandas.DataFrame(data = tmp).to_csv(outfile, sep = '\t', index = False)
 
-			tmp = numpy.mean(bootstrap(din_fluxes, opts['resamples'], numpy.mean))
+			tmp = []
+			for row in numpy.array(din_fluxes):
+				tmp.append(numpy.mean(bootstrap(row, opts['resamples'], bootfunc = numpy.mean))
 			with open('./fluxes_bootstrapped_{:s}.txt'.format(model_key)) as outfile:
 				pandas.DataFrame(data = tmp).to_csv(outfile, sep = '\t', index = False)
 
