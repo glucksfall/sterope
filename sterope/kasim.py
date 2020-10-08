@@ -645,7 +645,7 @@ if __name__ == '__main__':
 
 	else:
 		cluster = LocalCluster(
-			n_workers = opts['ntasks'],
+			n_workers = opts['max'],
 			processes = True,
 			threads_per_worker = 1,
 			local_directory = os.getenv('TMPDIR', '/tmp'))
