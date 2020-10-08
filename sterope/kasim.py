@@ -101,8 +101,9 @@ def argsparser():
 	parser.add_argument('--grid'   , metavar = 'int'  , type = str  , required = False, default = '10'         , help = 'Number of parameter levels. Default 10.')
 	parser.add_argument('--nsims'  , metavar = 'int'  , type = str  , required = False, default = '10'         , help = 'Number of simulations per parameter sample. Default 10.')
 	parser.add_argument('--boots'  , metavar = 'int'  , type = str  , required = False, default = '100'        , help = 'Number of bootstraps to obtain a representative simulation. Default 100.')
-	parser.add_argument('--nprocs' , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Perform calculations in a cluster of nprocs. Default 1.')
-	parser.add_argument('--memory' , metavar = 'int'  , type = str  , required = False, default = '1GB'        , help = 'Memory for independent workers. Default 1GB.')
+	parser.add_argument('--min'    , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Perform calculations in a cluster of min workers. Default 1.')
+	parser.add_argument('--max'    , metavar = 'int'  , type = str  , required = False, default = '8'          , help = 'Perform calculations in a cluster of max workers. Default 8.')
+	parser.add_argument('--memory' , metavar = 'int'  , type = str  , required = False, default = '1GB'        , help = 'Memory for each worker. Default 1GB.')
 
 	# TODO slice the simulation and perform global sensitivity analysis for each slice (generalization of tmin-tmax)
 	#parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'total'		 , help = 'total or sliced sensitivity analysis')
@@ -147,7 +148,8 @@ def ga_opts():
 		'method'    : args.method.lower(),
 		'seed'      : args.seed,
 		'p_levels'  : args.grid,
-		'ntasks'    : int(args.nprocs),
+		'min'       : int(args.min),
+		'max'       : int(args.max),
 		'nsims'     : int(args.nsims),
 		'resamples' : int(args.boots),
 		'memory'    : args.memory,
@@ -638,7 +640,7 @@ if __name__ == '__main__':
 			queue = os.environ['SLURM_JOB_PARTITION'],
 			cores = 1, walltime = '0', memory = opts['memory'],
 			local_directory = os.getenv('TMPDIR', '/tmp'))
-		cluster.adapt(maximum_jobs = opts['ntasks'])
+		cluster.adapt(minimum_jobs = opts['min'], maximum_jobs = opts['max'])
 		client = Client(cluster)
 
 	else:
