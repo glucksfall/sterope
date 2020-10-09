@@ -72,7 +72,7 @@ def _parallel_analyze(index, method, problem, samples, data, seed):
 	for key in result.keys():
 		result[key] = result[key].tolist()
 
-	with open('{:d}.json'.format(index), 'w') as outfile:
+	with open('{:s}.json'.format(index), 'w') as outfile:
 		json.dump(result, outfile)
 
 	return 0
@@ -436,12 +436,12 @@ def evaluate():
 
 	for index, x in enumerate(din_hits[0]):
 		print('hits: ' + str(index))
-		results.append(client.submit(_parallel_analyze, 'hits_' + str(index), method, problem, samples, x, seed))
+		results.append(client.submit(_parallel_analyze, 'sensitivity_indexes_hits_' + str(index), method, problem, samples, x, seed))
 	client.gather(results)
 
 	sensitivity['din_hits'] = []
 	for index, x in enumerate(din_hits[0]):
-		with open('hits_' + str(index) + '.json', 'r') as infile:
+		with open('sensitivity_indexes_hits_' + str(index) + '.json', 'r') as infile:
 			sensitivity['din_hits'].append(json.load(infile))
 
 	#with multiprocessing.Pool(opts['ntasks'] - 1) as pool:
@@ -458,12 +458,12 @@ def evaluate():
 	# submit to client and compute
 	for index, x in enumerate(din_fluxes[0]):
 		print('fluxs: ' + str(index))
-		results.append(client.submit(_parallel_analyze, 'fluxs_' + str(index), method, problem, samples, x, seed))
+		results.append(client.submit(_parallel_analyze, 'sensitivity_indexes_fluxs_' + str(index), method, problem, samples, x, seed))
 	client.gather(results)
 
 	sensitivity['din_fluxes'] = []
 	for index, x in enumerate(din_fluxes[0]):
-		with open('fluxs_' + str(index) + '.json', 'r') as infile:
+		with open('sensitivity_indexes_fluxs_' + str(index) + '.json', 'r') as infile:
 			sensitivity['din_fluxes'].append(json.load(infile))
 
 	return sensitivity
