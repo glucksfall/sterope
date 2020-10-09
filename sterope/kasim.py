@@ -641,25 +641,24 @@ if __name__ == '__main__':
 	if opts['continue'] == '1':
 		clean()
 
-	if opts['continue'] != '1':
-		# create SLURM Cluster if available; if not, use multiprocessing
-		slurm = os.getenv('SLURM_JOB_PARTITION', None)
+	# create SLURM Cluster if available; if not, use multiprocessing
+	slurm = os.getenv('SLURM_JOB_PARTITION', None)
 
-		if slurm != None:
-			cluster = dask_jobqueue.SLURMCluster(
-				queue = os.environ['SLURM_JOB_PARTITION'],
-				cores = 1, walltime = '0', memory = opts['memory'],
-				local_directory = os.getenv('TMPDIR', '/tmp'))
-			cluster.adapt(minimum_jobs = opts['min'], maximum_jobs = opts['max'])
-			client = Client(cluster)
+	if slurm != None:
+		cluster = dask_jobqueue.SLURMCluster(
+			queue = os.environ['SLURM_JOB_PARTITION'],
+			cores = 1, walltime = '0', memory = opts['memory'],
+			local_directory = os.getenv('TMPDIR', '/tmp'))
+		cluster.adapt(minimum_jobs = opts['min'], maximum_jobs = opts['max'])
+		client = Client(cluster)
 
-		else:
-			cluster = LocalCluster(
-				n_workers = opts['max'],
-				processes = True,
-				threads_per_worker = 1,
-				local_directory = os.getenv('TMPDIR', '/tmp'))
-			client = Client(cluster)
+	else:
+		cluster = LocalCluster(
+			n_workers = opts['max'],
+			processes = True,
+			threads_per_worker = 1,
+			local_directory = os.getenv('TMPDIR', '/tmp'))
+		client = Client(cluster)
 
 	# read model configuration
 	parameters = configurate()
