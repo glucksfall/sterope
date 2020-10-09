@@ -660,12 +660,12 @@ if __name__ == '__main__':
 				local_directory = os.getenv('TMPDIR', '/tmp'))
 			client = Client(cluster)
 
-	if opts['continue'] == '1':
-		# read model configuration
-		parameters = configurate()
+	# read model configuration
+	parameters = configurate()
 
-	# Sterope Main Algorithm
-	population = populate()
+	if opts['continue'] == '1':
+		# Sterope Main Algorithm
+		population = populate()
 
 	if opts['continue'] == '2':
 		# simulate levels
