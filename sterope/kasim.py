@@ -114,7 +114,7 @@ def argsparser():
 	#parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'		   , help = 'sliced SA: time step to calculate DIN')
 
 	#continue analysis without cleaning files
-	parser.add_argument('--fstep'  , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Continue from (Default 1):\n\t1) Generate models,\n\t2) Simulate models,\n\t3) Bootstrap simulations,\n\t4) Analyze bootstraps.')
+	parser.add_argument('--fstep'  , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Continue from (Default 1):\n\t1) Generate models,\n\t2) Simulate models,\n\t3) Bootstrap simulations,\n\t4) Analyze bootstraps\n\t5) Consolidate analisis into report files.')
 
 	# other options
 	parser.add_argument('--results', metavar = 'path' , type = str  , required = False, default = 'results'    , help = 'Output folder where to move the results. Default results.')
@@ -678,8 +678,9 @@ if __name__ == '__main__':
 		# evaluate sensitivity
 		sensitivity = evaluate()
 
-	# write reports
-	report()
+	if opts['continue'] == '1' or opts['continue'] == '2' or opts['continue'] == '3' or opts['continue'] == '4' or opts['continue'] == '5':
+		# write reports
+		report()
 
 	# move and organize results
 	backup()
