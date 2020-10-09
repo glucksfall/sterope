@@ -72,7 +72,7 @@ def _parallel_analyze(index, method, problem, samples, data, seed):
 	for key in result.keys():
 		result[key] = result[key].tolist()
 
-	with open(str(index) + '.json', 'w') as outfile:
+	with open('{:d}.json'.format(index), 'w') as outfile:
 		json.dump(result, outfile)
 
 	return 0
@@ -114,7 +114,7 @@ def argsparser():
 	#parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'		   , help = 'sliced SA: time step to calculate DIN')
 
 	#continue analysis without cleaning files
-	parser.add_argument('--fstep'  , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Continue from (Default 1):\n\t1) Generate models,\n\t2) Simulate models,\n\t3) Bootstrap results,\n\t4) Analyze simulations.')
+	parser.add_argument('--fstep'  , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Continue from (Default 1):\n\t1) Generate models,\n\t2) Simulate models,\n\t3) Bootstrap simulations,\n\t4) Analyze bootstraps.')
 
 	# other options
 	parser.add_argument('--results', metavar = 'path' , type = str  , required = False, default = 'results'    , help = 'Output folder where to move the results. Default results.')
@@ -272,46 +272,47 @@ def populate():
 	# generate a kappa file per model
 	par_string = '%var: \'{:s}\' {:.' + opts['par_prec'] + '}\n'
 
-	for model in sorted(population.keys()):
-		if model[1] == 'model':
-			for simulation in range(opts['nsims']):
-				model_key = model[0]
-				model_name = population[model_key, 'model']
+	if opts['continue'] == '1':
+		for model in sorted(population.keys()):
+			if model[1] == 'model':
+				for simulation in range(opts['nsims']):
+					model_key = model[0]
+					model_name = population[model_key, 'model']
 
-				# define pertubation to the kappa model that indicates KaSim to calculates the Dinamic Influence Network
-				#if opts['type'] == 'total':
-				if opts['syntax'] == '4':
-					flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [true];\n'.format(opts['tmin'], model_key, simulation)
-					flux += '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [false];'.format(opts['tmax'], model_key, simulation)
-				else: # kappa3.5 uses $FLUX instead of $DIN
-					flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [true]\n'.format(opts['tmin'], model_key, simulation)
-					flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [false]'.format(opts['tmax'], model_key, simulation)
+					# define pertubation to the kappa model that indicates KaSim to calculates the Dinamic Influence Network
+					#if opts['type'] == 'total':
+					if opts['syntax'] == '4':
+						flux = '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [true];\n'.format(opts['tmin'], model_key, simulation)
+						flux += '%mod: [T] > {:s} do $DIN \"flux_{:s}_{:03d}.json\" [false];'.format(opts['tmax'], model_key, simulation)
+					else: # kappa3.5 uses $FLUX instead of $DIN
+						flux = '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [true]\n'.format(opts['tmin'], model_key, simulation)
+						flux += '%mod: [T] > {:s} do $FLUX \"flux_{:s}_{:03d}.json\" [false]'.format(opts['tmax'], model_key, simulation)
 
-			#else: # sliced global sensitivity analysis
-				#if opts['syntax'] == '4':
-					#flux = '%mod: repeat (([T] > DIM_clock) && (DIM_tick > (DIM_length - 1))) do $DIN "flux_".(DIM_tick - DIM_length).".json" [false] until [false];'
-				#else: # kappa3.5 uses $FLUX instead of $DIN
-					#flux = '\n# Added to calculate a sliced global sensitivity analysis\n'
-					#flux += '%var: \'DIN_beat\' {:s}\n'.format(opts['beat'])
-					#flux += '%var: \'DIN_length\' {:s}\n'.format(opts['size'])
-					#flux += '%var: \'DIN_tick\' {:s}\n'.format(opts['tick'])
-					#flux += '%var: \'DIN_clock\' {:s}\n'.format(opts['tmin'])
-					#flux += '%mod: repeat (([T] > DIN_clock) && (DIN_tick > (DIN_length - 1))) do '
-					#flux += '$FLUX \"flux_{:s}\".(DIN_tick - DIN_length).\".json\" [false] until [false]\n'.format(model_key)
-					#flux += '%mod: repeat ([T] > DIN_clock) do '
-					#flux += '$FLUX "flux_{:s}".DIN_tick.".json" "probability" [true] until ((((DIN_tick + DIN_length) + 1) * DIN_beat) > [Tmax])\n'.format(model_key)
-					#flux += '%mod: repeat ([T] > DIN_clock) do $UPDATE DIN_clock (DIN_clock + DIN_beat); $UPDATE DIN_tick (DIN_tick + 1) until [false]'
+				#else: # sliced global sensitivity analysis
+					#if opts['syntax'] == '4':
+						#flux = '%mod: repeat (([T] > DIM_clock) && (DIM_tick > (DIM_length - 1))) do $DIN "flux_".(DIM_tick - DIM_length).".json" [false] until [false];'
+					#else: # kappa3.5 uses $FLUX instead of $DIN
+						#flux = '\n# Added to calculate a sliced global sensitivity analysis\n'
+						#flux += '%var: \'DIN_beat\' {:s}\n'.format(opts['beat'])
+						#flux += '%var: \'DIN_length\' {:s}\n'.format(opts['size'])
+						#flux += '%var: \'DIN_tick\' {:s}\n'.format(opts['tick'])
+						#flux += '%var: \'DIN_clock\' {:s}\n'.format(opts['tmin'])
+						#flux += '%mod: repeat (([T] > DIN_clock) && (DIN_tick > (DIN_length - 1))) do '
+						#flux += '$FLUX \"flux_{:s}\".(DIN_tick - DIN_length).\".json\" [false] until [false]\n'.format(model_key)
+						#flux += '%mod: repeat ([T] > DIN_clock) do '
+						#flux += '$FLUX "flux_{:s}".DIN_tick.".json" "probability" [true] until ((((DIN_tick + DIN_length) + 1) * DIN_beat) > [Tmax])\n'.format(model_key)
+						#flux += '%mod: repeat ([T] > DIN_clock) do $UPDATE DIN_clock (DIN_clock + DIN_beat); $UPDATE DIN_tick (DIN_tick + 1) until [false]'
 
-				model_path = './model_{:s}_{:03d}.kappa'.format(model_name, simulation)
-				if not os.path.exists(model_path):
-					with open(model_path, 'w') as file:
-						for line in par_keys:
-							if parameters[line][0] == 'par':
-								file.write(par_string.format(parameters[line][1], population[model_key, parameters[line][1]]))
-							else:
-								file.write(parameters[line])
-						# add the DIN perturbation at the end of the kappa file
-						file.write(flux)
+					model_path = './model_{:s}_{:03d}.kappa'.format(model_name, simulation)
+					if not os.path.exists(model_path):
+						with open(model_path, 'w') as file:
+							for line in par_keys:
+								if parameters[line][0] == 'par':
+									file.write(par_string.format(parameters[line][1], population[model_key, parameters[line][1]]))
+								else:
+									file.write(parameters[line])
+							# add the DIN perturbation at the end of the kappa file
+							file.write(flux)
 
 	# add problem definition to population dict
 	population['problem', 'definition'] = problem
@@ -663,9 +664,8 @@ if __name__ == '__main__':
 	# read model configuration
 	parameters = configurate()
 
-	if opts['continue'] == '1':
-		# Sterope Main Algorithm
-		population = populate()
+	# Sterope Main Algorithm
+	population = populate()
 
 	if opts['continue'] == '2':
 		# simulate levels
