@@ -105,7 +105,7 @@ def argsparser():
 	parser.add_argument('--boots'  , metavar = 'int'  , type = str  , required = False, default = '100'        , help = 'Number of bootstraps to obtain a representative simulation. Default 100.')
 	parser.add_argument('--min'    , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Perform calculations in a cluster of min workers. Default 1.')
 	parser.add_argument('--max'    , metavar = 'int'  , type = str  , required = False, default = '8'          , help = 'Perform calculations in a cluster of max workers. Default 8.')
-	parser.add_argument('--memory' , metavar = 'int'  , type = str  , required = False, default = '1GB'        , help = 'Memory for each worker. Default 1GB.')
+	parser.add_argument('--memory' , metavar = 'str'  , type = str  , required = False, default = '1GB'        , help = 'Memory for each worker, including unit. Default 1GB.')
 
 	# TODO slice the simulation and perform global sensitivity analysis for each slice (generalization of tmin-tmax)
 	#parser.add_argument('--type'   , metavar = 'str'  , type = str  , required = False, default = 'total'		 , help = 'total or sliced sensitivity analysis')
