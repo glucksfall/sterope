@@ -30,11 +30,13 @@ from SALib.analyze import delta, dgsm, fast, rbd_fast, sobol
 def safe_checks():
 	error_msg = ''
 	if shutil.which(opts['kasim']) is None:
-		error_msg += 'KaSim (at {:s}) can\'t be called to perform simulations.\n' 	'Check the path to KaSim.'.format(opts['kasim'])
+		error_msg += 'KaSim (at {:s}) can\'t be called to perform simulations.\n' \
+			'Check the path to KaSim.'.format(opts['kasim'])
 
 	# check if model file exists
 	if not os.path.isfile(opts['model']):
-		error_msg += 'The "{:s}" file cannot be opened.\n' 	'Please, check the path to the model file.\n'.format(opts['model'])
+		error_msg += 'The "{:s}" file cannot be opened.\n' \
+		'Please, check the path to the model file.\n'.format(opts['model'])
 
 	# print error
 	if error_msg != '':
@@ -77,7 +79,7 @@ def _parallel_analyze(index, method, problem, samples, data, seed):
 
 def argsparser():
 	parser = argparse.ArgumentParser(description = 'Perform a global sensitivity analysis of RBM parameters over the Dynamic Influence Network.',
-			epilog = 'Method shortnames are FAST, RBD-FAST, Morris, Sobol, Delta, DGSM, and Frac\n' \
+			epilog = 'Method shortnames are FAST, RBD-FAST, Morris, Sobol, Delta, DGSM, and Frac (case-insensitive)\n' \
 			'See https://salib.readthedocs.io/en/latest/api.html for more information',
 		formatter_class = argparse.RawTextHelpFormatter)
 
@@ -110,6 +112,9 @@ def argsparser():
 	#parser.add_argument('--tick'   , metavar = 'float', type = str  , required = False, default = '0.0'		   , help = 'sliced SA: ...')
 	#parser.add_argument('--size'   , metavar = 'float', type = str  , required = False, default = '1.0'		   , help = 'sliced SA: ...')
 	#parser.add_argument('--beat'   , metavar = 'float', type = str  , required = False, default = '0.3'		   , help = 'sliced SA: time step to calculate DIN')
+
+	#continue analysis without cleaning files
+	parser.add_argument('--fstep'  , metavar = 'int'  , type = str  , required = False, default = '1'          , help = 'Continue from (Default 1):\n\t1) Generate models,\n\t2) Simulate models,\n\t3) Bootstrap results,\n\t4) Analyze simulations.')
 
 	# other options
 	parser.add_argument('--results', metavar = 'path' , type = str  , required = False, default = 'results'    , help = 'Output folder where to move the results. Default results.')
@@ -158,6 +163,8 @@ def ga_opts():
 		#'size'  : args.size,
 		#'tick'  : args.tick,
 		#'beat'  : args.beat,
+		# continue from
+		'continue'  : args.fstep,
 		# saving to
 		'results'   : args.results,
 		'samples'   : args.samples,
@@ -630,38 +637,48 @@ if __name__ == '__main__':
 	safe_checks()
 
 	# clean the working directory
-	clean()
+	if opts['continue'] == '1':
+		clean()
 
-	# create SLURM Cluster if available; if not, use multiprocessing
-	slurm = os.getenv('SLURM_JOB_PARTITION', None)
+	if opts['continue'] != '1':
+		# create SLURM Cluster if available; if not, use multiprocessing
+		slurm = os.getenv('SLURM_JOB_PARTITION', None)
 
-	if slurm != None:
-		cluster = dask_jobqueue.SLURMCluster(
-			queue = os.environ['SLURM_JOB_PARTITION'],
-			cores = 1, walltime = '0', memory = opts['memory'],
-			local_directory = os.getenv('TMPDIR', '/tmp'))
-		cluster.adapt(minimum_jobs = opts['min'], maximum_jobs = opts['max'])
-		client = Client(cluster)
+		if slurm != None:
+			cluster = dask_jobqueue.SLURMCluster(
+				queue = os.environ['SLURM_JOB_PARTITION'],
+				cores = 1, walltime = '0', memory = opts['memory'],
+				local_directory = os.getenv('TMPDIR', '/tmp'))
+			cluster.adapt(minimum_jobs = opts['min'], maximum_jobs = opts['max'])
+			client = Client(cluster)
 
-	else:
-		cluster = LocalCluster(
-			n_workers = opts['max'],
-			processes = True,
-			threads_per_worker = 1,
-			local_directory = os.getenv('TMPDIR', '/tmp'))
-		client = Client(cluster)
+		else:
+			cluster = LocalCluster(
+				n_workers = opts['max'],
+				processes = True,
+				threads_per_worker = 1,
+				local_directory = os.getenv('TMPDIR', '/tmp'))
+			client = Client(cluster)
 
-	# read model configuration
-	parameters = configurate()
+	if opts['continue'] == '1':
+		# read model configuration
+		parameters = configurate()
 
 	# Sterope Main Algorithm
 	population = populate()
-	# simulate levels
-	simulate()
-	# bootstrapping
-	bootstrapping()
-	# evaluate sensitivity
-	sensitivity = evaluate()
+
+	if opts['continue'] == '2':
+		# simulate levels
+		simulate()
+
+	if opts['continue'] == '3':
+		# bootstrapping
+		bootstrapping()
+
+	if opts['continue'] == '4':
+		# evaluate sensitivity
+		sensitivity = evaluate()
+
 	# write reports
 	report()
 
