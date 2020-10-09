@@ -671,11 +671,11 @@ if __name__ == '__main__':
 		# simulate levels
 		simulate()
 
-	if opts['continue'] == '3':
+	if opts['continue'] == '2' or opts['continue'] == '3':
 		# bootstrapping
 		bootstrapping()
 
-	if opts['continue'] == '4':
+	if opts['continue'] == '2' or opts['continue'] == '3' or opts['continue'] == '4':
 		# evaluate sensitivity
 		sensitivity = evaluate()
 
