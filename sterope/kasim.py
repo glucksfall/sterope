@@ -470,7 +470,7 @@ def evaluate():
 
 def report():
 	# get rule names from one DIN file
-	files = sorted(glob.glob('./flux*json'))
+	files = sorted(glob.glob('./flux_level*_*.json'))
 	with open(files[0], 'r') as file:
 		lst = pandas.read_json(file)
 
